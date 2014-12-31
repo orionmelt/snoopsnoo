@@ -135,6 +135,11 @@ h6 {
   background:#ff851b;
 }
 
+.ui-slider {
+    width: 400px;
+    margin: 20px auto;
+}
+
 /* Custom - Common */
 
 .purple {

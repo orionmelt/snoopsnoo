@@ -40,7 +40,8 @@ function wrap_data(key, text, sources) {
             '</span>';
 }
 
-function word_cloud(data) {
+function word_cloud(words_array) {
+    var data = JSON.parse(JSON.stringify(words_array));
     var fill = d3.scale.category20();
     min_count = data[data.length-1].size-1;
     max_count = data[0].size;
@@ -301,6 +302,26 @@ function populate_results(results) {
             left: 40
         }
     });
+
+    if(data.stats.common_words.length>20) {
+        $( "#top-words-slider" ).slider({
+            value:0,
+            min: 0,
+            max: 10,
+            slide: function( event, ui ) {
+                if(ui.value==0) {
+                    $( "#top-words-count" ).text("Showing all words. Drag slider below to exclude top words.");    
+                } else {
+                    $( "#top-words-count" ).text("Excluded top " + ui.value + " words.");
+                }
+                $("#data-common_words").empty();
+                word_cloud(data.stats.common_words.slice(ui.value));
+            }
+        });
+    } else {
+        $( "#top-words-count" ).hide();
+        $( "#top-words-slider" ).hide();
+    }
 
     word_cloud(data.stats.common_words);
 
