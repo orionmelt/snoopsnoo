@@ -1,0 +1,270 @@
+/* Bootstrap overrides */
+
+.navbar {
+  text-transform: uppercase;
+}
+
+.navbar-brand {
+  font-size: 24px;
+}
+
+.container .jumbotron {
+  padding:15px 0px;
+  background:none;
+}
+
+.jumbotron p {
+  font-weight: 400;
+}
+
+.jumbotron p small {
+  font-size: 14px;
+}
+
+h4 {
+  text-transform: uppercase;
+  color: #9c27b0;
+}
+
+h5 {
+  color: #666;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+h6 {
+  display: block;
+  color: #999;
+  margin-bottom: 30px;
+}
+
+/*
+.text-danger {
+  color: #FA2A00;
+}
+*/
+
+/* Custom - Home */
+
+#main-container {
+  background-color: #CFD5E1;
+}
+
+#about-container {
+  margin:20px 0px;
+}
+
+#credits ul li {
+  margin-bottom: 10px;
+}
+
+.highlight {
+  background-color: #FFCD5A;
+  padding: 10px;
+}
+
+#error {
+  display: none;
+  font-weight: 400;
+}
+
+/* Custom - Profile */
+
+#user-results {
+  margin-top: 10px;
+  opacity: 0.2;
+}
+
+#statistics {
+  overflow: hidden;
+}
+
+#statistics .row, #synopsis .row {
+  margin-bottom:15px;
+}
+
+#synopsis .row {
+  line-height: 25px;
+}
+
+.data-block {
+  display:block;
+  margin-bottom: 10px;
+}
+
+.data-block a {
+  margin-right: 5px;
+}
+
+.feedback a {
+  color: #999;
+  text-decoration: none;
+}
+
+.feedback a:hover {
+  color: #333;
+}
+
+.feedback .correct:hover, .feedback .correct_done {
+  color:#28b62c;
+}
+
+.feedback .incorrect:hover, .feedback .incorrect_done {
+  color:#ff4136;
+}
+
+.thanks {
+  background-color: #28b62c;
+  color: #fff;
+  padding:2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.data-block .content, .likely {
+  background:#158cba;
+  font-weight: 500;
+  color:#fff;
+  padding:2px 5px;
+  margin-right: 5px;
+  white-space: nowrap;
+}
+
+.likely {
+  background:#ff851b;
+}
+
+/* Custom - Common */
+
+.purple {
+  color:#9c27b0;
+}
+
+.buffer {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.bottom-buffer {
+  margin-bottom: 30px; 
+}
+
+#footer {
+  font-size:12px;
+  margin-top: 40px;
+  padding-top: 10px
+}
+
+#posts_by_sub_control label {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+#posts_by_sub_control label input {
+  margin-right: 2px;
+}
+
+.page-error {
+  margin:40px auto;
+}
+
+#posts_words h3 {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* D3 */
+
+text {
+  font-size:11px;
+  fill:#333;
+}
+
+
+/* Treemap */
+.node {
+  border: solid 1px #eee;
+  color:#333;
+  font-size: 11px;
+  line-height: 13px;
+  overflow: hidden;
+  position: absolute;
+  padding:4px;
+  text-align: left;
+}
+
+.cell text {
+  cursor: default;
+}
+
+/* Circle Pack */
+.node {
+  cursor: pointer;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+/* Multiline chart */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke-width: 2px;
+}
+
+/* Tooltips */
+.d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: #333;
+  color: #eee;
+  border-radius: 2px;
+  font-size:11px;
+  text-align: center;
+  border:1px solid #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.d3-tip p {
+  font-weight: 600;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: #333;
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

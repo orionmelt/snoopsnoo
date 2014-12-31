@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %} - Analyze your reddit activity{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+		<div id="main-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8">
+						<section id="main">
+							<div class="jumbotron">
+								{% set title = ["Analyze this.", "You are what you post.", "How much have you told reddit?"]|random %}
+								<h2 class="purple">{{ title }}</h2>
+								<p>Enter your reddit username below and see what your posts say about you.</p>
+								<p><small>Not ready yet? <a href="/random">View a random redditor's profile.</a></small></p>
+								<div class="row buffer">
+									<form id="process_form">
+										<div class="col-md-6 col-s-6 col-xs-6">
+											<input type="text" class="form-control" id="username" name="username" placeholder="reddit username">
+										</div>
+										<div class="col-md-6 col-s-6 col-xs-6">
+											<button id="go" type="submit" class="btn btn-primary" data-loading-text="Analyzing <i class='fa fa-spinner fa-spin'></i>">Go</button>
+										</div>
+									</form>
+								</div>
+								<p><small>(Sit tight. This might take up to a minute.)</small></p>
+								<div id="error" class="row">
+									<div class="col-md-6 col-sm-6 col-xs-12">
+										<div class="alert alert-dismissable alert-danger">
+											<button type="button" class="close" data-dismiss="alert">×</button>
+											<span id="error-message"></span>
+										</div>
+									</div>
+
+								</div>	
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="about-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8">
+						<section id="about">
+							<h4>About</h4>
+							<p><strong>SNOOP <i class="fa fa-search purple"></i> SNOO</strong> is a hobby project by <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a> and an attempt to extract interesting information from your reddit comments and submissions.</p>
+							<p class="highlight"><strong>DISCLAIMER:</strong> All data analyzed is public. This website is not affiliated with reddit and cannot access your private reddit data such as your password, subreddit subscriptions, up/downvotes and private subreddit activity.</p>
+							<p>Analysis is limited to the 1000 most recent comments and submissions due to reddit's API restrictions.</p>
+							<p>Feedback, criticism and suggestions are welcome and greatly appreciated - please PM <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a>.</p>
+						</section>
+					</div>
+					<div class="col-md-3 col-md-offset-1">
+						<section id="credits">
+							<h4>Credits</h4>
+							<ul class="list-unstyled">
+								<li>Natural Language Processing using <a href="https://github.com/sloria/TextBlob">TextBlob</a> and <a href="http://www.nltk.org/">NLTK</a>.</li>
+								<li>Data Visualization using <a href="http://d3js.org/">D3.js</a>.</li>
+								<li>API hosted on <a href="http://blockspring.com/">Blockspring</a>.</li>
+								<li>Bootstrap theme by <a href="http://bootswatch.com/">Bootswatch</a>.</li>
+								<li>Please blame all bugs on <a href="http://www.reddit.com/user/abtheerth">/u/abtheerth</a> and <a href="http://www.reddit.com/user/dejo316">/u/dejo316</a>.</li>
+							</ul>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+		$(window).load(function() {
+			index_setup();
+		});
+		</script>
+
+{% endblock %}
