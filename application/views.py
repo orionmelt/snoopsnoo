@@ -9,6 +9,8 @@ from google.appengine.ext import ndb
 
 from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup
 from itsdangerous import URLSafeSerializer
+from decorators import login_required, admin_required
+
 #TODO - flask_cache
 
 from application import app
@@ -92,6 +94,12 @@ def error_log():
 			error_message=error_message
 		)
 	e.put()
+	return "OK"
+
+@admin_required
+def delete_user(username):
+	user = User.query(User.username == username).get()
+	user.key.delete()
 	return "OK"
 
 '''

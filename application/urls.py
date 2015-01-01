@@ -42,6 +42,9 @@ app.add_url_rule('/feedback', 'feedback', view_func=views.process_feedback)
 # Error log page
 app.add_url_rule('/error-log', 'error_log', view_func=views.error_log)
 
+# Delete page
+app.add_url_rule('/del/<username>', 'delete', view_func=views.delete_user)
+
 # User profile page
 #app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
 
