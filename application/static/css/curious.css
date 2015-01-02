@@ -75,11 +75,11 @@ h6 {
   opacity: 0.2;
 }
 
-#statistics {
+#summary {
   overflow: hidden;
 }
 
-#statistics .row, #synopsis .row {
+#summary .row, #synopsis .row {
   margin-bottom:15px;
 }
 
