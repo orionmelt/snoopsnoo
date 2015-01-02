@@ -33,9 +33,6 @@ app.add_url_rule('/cu/<username>', 'check_user', view_func=views.check_user)
 # Update user data page
 app.add_url_rule('/update_user', 'update_user', view_func=views.update_user, methods=["POST"])
 
-# Retrieve user data page
-app.add_url_rule('/retrieve_user/<username>', 'retrieve_user', view_func=views.retrieve_user)
-
 # Feedback page
 app.add_url_rule('/feedback', 'feedback', view_func=views.process_feedback)
 

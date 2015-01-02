@@ -29,15 +29,21 @@ def random_profile():
 
 def check_user(username):
 	#user = User.get_by_id(username)
-	user = User.query(User.username == username).get()
+	user = User.query(User.username_lower == username.lower()).get()
 	if user:
 		return "OK"
 	else:
-		return "NO"
+		user = User.query(User.username == username).get()
+		if user:
+			return "OK"
+		else:
+			return "NO"
 
 def user_profile(username):
 	#user = User.get_by_id(username)
-	user = User.query(User.username == username).get()
+	user = User.query(User.username_lower == username.lower()).get()
+	if not user:
+		user = User.query(User.username == username).get()
 	if not user:
 		abort(404)
 	user.data["stats"]["basic"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["best"]["text"])) \
@@ -45,15 +51,6 @@ def user_profile(username):
 	user.data["stats"]["basic"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["worst"]["text"])) \
 																if user.data["stats"]["basic"]["comments"]["worst"]["text"] else None
 	return render_template('user_profile.html', user=user, data=json.dumps(user.data))
-
-def retrieve_user(username):
-	#user = User.get_by_id(username)
-	user = User.query(User.username == username).get()
-	logging.info(user)
-	if user:
-		return json.dumps(user.data)
-	else:
-		abort(404)
 
 def update_user():
 	data=request.get_json()
@@ -93,12 +90,6 @@ def error_log():
 		)
 	e.put()
 	return "OK"
-
-'''
-def source():
-	return render_template('source.html')
-'''
-
 
 def warmup():
     """App Engine warmup handler
