@@ -10,7 +10,7 @@
 			<h3 class="buffer"><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3>
 
 	        <div class="row">
-	        	<div id="statistics" class="col-md-6 bottom-buffer">
+	        	<div id="summary" class="col-md-6 bottom-buffer">
 	        		<h4>Summary</h4>
 	        		<h5>Your best, your worst and the basics.</h5>
 	        		<h6>Limited to the most recent 1000 submissions and comments.</h6>
@@ -21,7 +21,7 @@
 	        			</div>
 	        			<div class="col-md-8">
 	        				<p><strong><span id="data-signup_date"></span></strong></p>
-	        				<p><small><span id="data-signup_date_text"></span></small></p>
+	        				<p><small><span id="data-signup_date_humanized"></span></small></p>
 	        			</div>
 	        		</div>
 
@@ -31,7 +31,7 @@
 	        			</div>
 	        			<div class="col-md-8">
 	        				<p><strong><span id="data-first_post_date"></span></strong></p>
-	        				<p><small><span id="data-first_post_date_text"></span> after signup</small></p>
+	        				<p><small><span id="data-first_post_date_humanized"></span> after signup</small></p>
 	        			</div>
 	        		</div>
 
@@ -40,8 +40,8 @@
 	        				<p class="text-muted">longest you've been off reddit since first post</p>
 	        			</div>
 	        			<div class="col-md-8">
-	        				<p><strong><span id="data-lurk_streak_duration"></span></strong></p>
-	        				<p><small><span id="data-lurk_streak_dates"></span></small></p>
+	        				<p><strong><span id="data-lurk_period_humanized"></span></strong></p>
+	        				<p><small><span id="data-lurk_period_dates"></span></small></p>
 	        			</div>
 	        		</div>
 
@@ -56,11 +56,12 @@
 
 	        		<div class="row">
 	        			<div class="col-md-4">
-	        				<p class="text-muted">link karma</p>
+	        				<p class="text-muted">submission karma</p>
 	        			</div>
 	        			<div class="col-md-8">
-	        				<p><strong><span id="data-link_karma"></span></strong> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
-	        				<p><strong><span id="data-average_link_karma"></span></strong> average karma per submission</p>
+	        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
+	        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
+	        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
 	        			</div>
 	        		</div>
 
@@ -69,8 +70,9 @@
 	        				<p class="text-muted">comment karma</p>
 	        			</div>
 	        			<div class="col-md-8">
-	        				<p><strong><span id="data-comment_karma"></span></strong> from <strong><span id="data-total_comments"></span></strong> comments</p>
+	        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
 	        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
+	        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
 	        			</div>
 	        		</div>
 
@@ -114,181 +116,9 @@
 	        	<div id="synopsis" class="col-md-6 bottom-buffer">
 	        		<h4>synopsis</h4>
 	        		<h5>Accuracy or making sense not guaranteed.</h5>
-	        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below.</h6>
+	        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below. Uncertain data is <span class="likely">in orange.</span></h6>
 
 	        		<div id="synopsis-data">
-		        		<div class="row" id="data-container-gender">
-	    					<div class="col-md-3">you are</div>
-	    					<div class="col-md-9"><span id="data-gender"></span></div>
-	    				</div>
-	    				<div class="row" id="data-container-orientation">
-        					<div class="col-md-3">you are</div>
-        					<div class="col-md-9"><span id="data-orientation"></span></div>
-        				</div>
-        				<div class="row" id="data-container-places_lived">
-        					<div class="col-md-3">you live <span class="likely">or have lived</span></div>
-        					<div class="col-md-9"><span id="data-places_lived"></span></div>
-        				</div>
-        				<div class="row" id="data-container-relationship_partner">
-        					<div class="col-md-3">you are in a relationship with</div>
-        					<div class="col-md-9"><span id="data-relationship_partner"></span></div>
-        				</div>
-        				<div class="row" id="data-container-places_grew_up">
-        					<div class="col-md-3">you grew up</div>
-        					<div class="col-md-9"><span id="data-places_grew_up"></span></div>
-        				</div>
-        				<div class="row" id="data-container-family_members">
-        					<div class="col-md-3">people in your family</div>
-        					<div class="col-md-9"><span id="data-family_members"></span></div>
-        				</div>
-        				<div class="row" id="data-container-pets">
-        					<div class="col-md-3">you have</div>
-        					<div class="col-md-9"><span id="data-pets"></span></div>
-        				</div>
-        				<div class="row" id="data-container-favorites">
-        					<div class="col-md-3">you like</div>
-        					<div class="col-md-9"><span id="data-favorites"></span></div>
-        				</div>
-        				<div class="row" id="data-container-attributes">
-        					<div class="col-md-3">you are</div>
-        					<div class="col-md-9"><span id="data-attributes"></span></div>
-        				</div>
-        				<div class="row" id="data-container-possessions">
-        					<div class="col-md-3">you own</div>
-        					<div class="col-md-9"><span id="data-possessions"></span></div>
-        				</div>
-        				<div class="row" id="data-container-locations">
-        					<div class="col-md-3">you <span class="likely">may have</span> lived in</div>
-        					<div class="col-md-9"><span id="data-locations"></span></div>
-        				</div>
-        				<div class="row" id="data-container-tv_shows">
-        					<div class="col-md-3">you like watching</div>
-        					<div class="col-md-9"><span id="data-tv_shows"></span></div>
-        				</div>
-        				<div class="row" id="data-container-interests">
-        					<div class="col-md-3">you like</div>
-        					<div class="col-md-9"><span id="data-interests"></span></div>
-        				</div>
-        				<div class="row" id="data-container-games">
-        					<div class="col-md-3">you like playing</div>
-        					<div class="col-md-9"><span id="data-games"></span></div>
-        				</div>
-        				<div class="row" id="data-container-sports">
-        					<div class="col-md-3">sports/teams you like</div>
-        					<div class="col-md-9"><span id="data-sports"></span></div>
-        				</div>
-        				<div class="row" id="data-container-music">
-        					<div class="col-md-3">you like to listen to</div>
-        					<div class="col-md-9"><span id="data-music"></span></div>
-        				</div>
-        				<div class="row" id="data-container-drugs">
-        					<div class="col-md-3">you use</div>
-        					<div class="col-md-9"><span id="data-drugs"></span></div>
-        				</div>
-        				<div class="row" id="data-container-books">
-        					<div class="col-md-3">you like reading</div>
-        					<div class="col-md-9"><span id="data-books"></span></div>
-        				</div>
-        				<div class="row" id="data-container-celebs">
-        					<div class="col-md-3">you like</div>
-        					<div class="col-md-9"><span id="data-celebs"></span></div>
-        				</div>
-        				<div class="row" id="data-container-business">
-        					<div class="col-md-3">you are interested in</div>
-        					<div class="col-md-9"><span id="data-business"></span></div>
-        				</div>
-        				<div class="row" id="data-container-entertainment">
-        					<div class="col-md-3">you like</div>
-        					<div class="col-md-9"><span id="data-entertainment"></span></div>
-        				</div>
-        				<div class="row" id="data-container-science">
-        					<div class="col-md-3">you are interested in</div>
-        					<div class="col-md-9"><span id="data-science"></span></div>
-        				</div>
-        				<div class="row" id="data-container-tech">
-        					<div class="col-md-3">you are interested in</div>
-        					<div class="col-md-9"><span id="data-tech"></span></div>
-        				</div>
-        				<div class="row" id="data-container-lifestyle">
-        					<div class="col-md-3">you are interested in</div>
-        					<div class="col-md-9"><span id="data-lifestyle"></span></div>
-        				</div>
-        				<div class="row" id="data-container-others">
-        					<div class="col-md-3">you are interested in</div>
-        					<div class="col-md-9"><span id="data-others"></span></div>
-        				</div>
-
-
-
-        				<div class="row" id="data-container-derived-gender">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-gender"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-relationship_status">
-	        				<div class="col-md-3">you are<span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-relationship_status"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-nationality">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-nationality"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-orientation">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-orientation"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-physical_characteristics">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-container-derived-physical_characteristics"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-political_view">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-political_view"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-race">
-	        				<div class="col-md-3">you are<span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-race"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-religion">
-	        				<div class="col-md-3">you are <span class="likely">probably</span></div>
-	        				<div class="col-md-9"><span id="data-derived-religion"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-family_members">
-	        				<div class="col-md-3">your family <span class="likely">probably</span> includes your</div>
-	        				<div class="col-md-9"><span id="data-derived-family_members"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-pets">
-	        				<div class="col-md-3">you <span class="likely">probably</span> have</div>
-	        				<div class="col-md-9"><span id="data-derived-pets"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-location">
-	        				<div class="col-md-3">you <span class="likely">may have</span> lived in</div>
-	        				<div class="col-md-9"><span id="data-derived-location"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-gadget">
-	        				<div class="col-md-3">you <span class="likely">probably</span> have</div>
-	        				<div class="col-md-9"><span id="data-derived-gadget"></span></div>
-	        			</div>
-
-	        			<div class="row" id="data-container-derived-possession">
-	        				<div class="col-md-3">you <span class="likely">probably</span> own</div>
-	        				<div class="col-md-9"><span id="data-derived-possession"></span></div>
-	        			</div>
-
-        				<div class="row" id="data-container-derived-drug">
-	        				<div class="col-md-3">you <span class="likely">probably</span> use</div>
-	        				<div class="col-md-9"><span id="data-derived-drug"></span></div>
-	        			</div>
 	    			</div>
 				</div>
 	        </div>
@@ -298,8 +128,8 @@
 	        		<h4>Posts Across Topics</h4>
 	        		<h5>Look at you, how versatile!</h5>
 	        		<h6>Hover over the chart for more info.</h6>
-					<div id="data-topics"></div>
 					<div id="data-topics_legend"></div>
+					<div id="data-topics"></div>
 	        	</div>
 
 	        	<div class="col-md-6 text-center bottom-buffer">
@@ -379,9 +209,10 @@
 		{% autoescape false %}
 		<script>
 		var results=JSON.stringify({{ data }});
-		window.onload = function() { 
-			user_setup();
-		};
+		$(function () {
+			user_init();
+			$("[data-toggle='tooltip']").tooltip(); 
+		});
 		</script>
 		{% endautoescape %}
 {% endblock %}

@@ -16,6 +16,7 @@ class User(ndb.Model):
 		data            - JSON data
 	"""
 	username = ndb.StringProperty()
+	username_lower = ndb.ComputedProperty(lambda self: self.username.lower())
 	last_updated = ndb.DateTimeProperty(auto_now_add=True)
 	data = ndb.JsonProperty()
 
