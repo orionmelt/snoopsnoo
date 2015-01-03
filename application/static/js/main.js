@@ -185,7 +185,7 @@ function convert_to_v2(data) {
     }
 
     // Fix Lifestyle/Drugs issue
-    if(v2.synopsis.drugs) {
+    if(v2.synopsis.drugs && v2.synopsis.lifestyle) {
         v2.synopsis.lifestyle.data = v2.synopsis.lifestyle.data.filter(function(d) {
             if(!v2.synopsis.drugs.data.indexOf(d.value)) return d;
         });
