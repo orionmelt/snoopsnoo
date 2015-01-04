@@ -22,7 +22,7 @@ var synopsis_keys = [
     {label: "you like playing", key:"games"}, 
     {label: "sports and teams you like:", key:"sports"}, 
     {label: "you like listening to", key:"music"}, 
-    {label: "you use", key:"drugs"}, 
+    //{label: "you use", key:"drugs"}, 
     {label: "you like to read", key:"books"}, 
     {label: "you like", key:"celebs"}, 
     {label: "you are interested in", key:"business"}, 

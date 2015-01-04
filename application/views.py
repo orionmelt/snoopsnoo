@@ -10,6 +10,7 @@ from google.appengine.ext import ndb
 from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup
 from itsdangerous import URLSafeSerializer
 from decorators import login_required, admin_required
+from math import pow
 
 #TODO - flask_cache
 
@@ -25,8 +26,11 @@ def home():
     return render_template('index.html')
 
 def random_profile():
-	keys = User.query().fetch(keys_only=True)
-	key = random.sample(keys, 1)[0]
+	r = ndb.Key("User", random.randrange(pow(2,52)-1))
+	keys = User.query(User.key > r).fetch(10,keys_only=True)
+	if not keys:
+		User.query(User.key < r).fetch(10,keys_only=True)
+	key = random.choice(keys)
 	return redirect("/u/"+key.get().username)
 
 def check_user(username):
