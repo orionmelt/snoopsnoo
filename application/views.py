@@ -52,10 +52,16 @@ def user_profile(username):
 		user = User.query(User.username == username).get()
 	if not user:
 		abort(404)
-	user.data["stats"]["basic"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["best"]["text"])) \
-															  	if user.data["stats"]["basic"]["comments"]["best"]["text"] else None
-	user.data["stats"]["basic"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["worst"]["text"])) \
-																if user.data["stats"]["basic"]["comments"]["worst"]["text"] else None
+	if "version" in user.data and user.data["version"]==2:
+		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
+															  	if user.data["summary"]["comments"]["best"]["text"] else None
+		user.data["summary"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["worst"]["text"])) \
+																	if user.data["summary"]["comments"]["worst"]["text"] else None
+	else:
+		user.data["stats"]["basic"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["best"]["text"])) \
+																  	if user.data["stats"]["basic"]["comments"]["best"]["text"] else None
+		user.data["stats"]["basic"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["worst"]["text"])) \
+																	if user.data["stats"]["basic"]["comments"]["worst"]["text"] else None
 	return render_template('user_profile.html', user=user, data=json.dumps(user.data))
 
 def update_user():

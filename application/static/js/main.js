@@ -75,7 +75,7 @@ function convert_to_v2(data) {
             "lurk_period": {
                 "from": Date.parse(data.stats.basic.lurk_streak.date1)/1000,
                 "to": Date.parse(data.stats.basic.lurk_streak.date2)/1000,
-                "humanized": data.stats.basic.lurk_streak.duration
+                "days_humanized": data.stats.basic.lurk_streak.duration
             },
             "comments": {
                 "count": data.stats.basic.comments.count,
@@ -293,7 +293,7 @@ function populate_results(results) {
     $("#data-first_post_date").text(new Date(data.summary.first_post_date.date*1000).toLocaleDateString());
     $("#data-first_post_date_humanized").text(data.summary.first_post_date.humanized);
 
-    $("#data-lurk_period_humanized").text(data.summary.lurk_period.humanized);
+    $("#data-lurk_period_humanized").text(data.summary.lurk_period.days_humanized);
     $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
 
     if(data.summary.submissions.gilded>0) {
