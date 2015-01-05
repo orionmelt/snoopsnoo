@@ -65,16 +65,16 @@ function convert_to_v2(data) {
         "username": data.username,
         "summary": {
             "signup_date": {
-                "date": data.stats.basic.signup_date,
+                "date": Date.parse(data.stats.basic.signup_date)/1000,
                 "humanized": data.stats.basic.signup_date_text,
             },
             "first_post_date": {
-                "date": data.stats.basic.first_post_date,
+                "date": Date.parse(data.stats.basic.first_post_date)/1000,
                 "humanized": data.stats.basic.first_post_date_text
             },
             "lurk_period": {
-                "from": data.stats.basic.lurk_streak.date1,
-                "to": data.stats.basic.lurk_streak.date2,
+                "from": Date.parse(data.stats.basic.lurk_streak.date1)/1000,
+                "to": Date.parse(data.stats.basic.lurk_streak.date2)/1000,
                 "humanized": data.stats.basic.lurk_streak.duration
             },
             "comments": {
@@ -287,14 +287,14 @@ function populate_results(results) {
     }
 
     // Summary
-    $("#data-signup_date").text(data.summary.signup_date.date);
+    $("#data-signup_date").text(new Date(data.summary.signup_date.date*1000).toLocaleDateString());
     $("#data-signup_date_humanized").text(data.summary.signup_date.humanized);
 
-    $("#data-first_post_date").text(data.summary.first_post_date.date);
+    $("#data-first_post_date").text(new Date(data.summary.first_post_date.date*1000).toLocaleDateString());
     $("#data-first_post_date_humanized").text(data.summary.first_post_date.humanized);
 
     $("#data-lurk_period_humanized").text(data.summary.lurk_period.humanized);
-    $("#data-lurk_period_dates").text(data.summary.lurk_period.from + " to " + data.summary.lurk_period.to);
+    $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
 
     if(data.summary.submissions.gilded>0) {
         $("#data-submissions_gilded").html("<a href='http://www.reddit.com/user/" + data.username + "/gilded' target='_blank'>" 
@@ -389,7 +389,7 @@ function populate_results(results) {
     });
 
     // Common words
-    if(data.metrics.words.length>20) {
+    if(data.metrics.common_words.length>20) {
         $( "#top-words-slider" ).slider({
             value:0,
             min: 0,
@@ -409,7 +409,7 @@ function populate_results(results) {
         $( "#top-words-slider" ).hide();
     }
 
-    word_cloud(data.metrics.words);
+    word_cloud(data.metrics.common_words);
 
     // Metrics chart - Date
     curious.timeseries({
