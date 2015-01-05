@@ -19,12 +19,14 @@ var synopsis_keys = [
     {label: "you <span class=\"likely\">may have</span> lived in", key:"locations"}, 
     {label: "you like to watch", key:"tv_shows"}, 
     {label: "you like", key:"interests"}, 
-    {label: "you like playing", key:"games"}, 
+    {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
+    {label: "you like playing", key:"gaming"}, 
     {label: "sports and teams you like:", key:"sports"}, 
     {label: "you like listening to", key:"music"}, 
     //{label: "you use", key:"drugs"}, 
-    {label: "you like to read", key:"books"}, 
-    {label: "you like", key:"celebs"}, 
+    {label: "you like to read", key:"books"},
+    {label: "you like", key:"celebs"}, // For backward compatibility with v1 data
+    {label: "you like", key:"celebrities"},
     {label: "you are interested in", key:"business"}, 
     {label: "you like", key:"entertainment"},
     {label: "you are interested in", key:"science"}, 
@@ -84,7 +86,7 @@ function convert_to_v2(data) {
                 "best": data.stats.basic.comments.best,
                 "worst": data.stats.basic.comments.worst,
                 "total_word_count": data.stats.basic.words_in_posts.total_word_count, //Fix to exclude words in submissions
-                "uniq_word_count": data.stats.basic.words_in_posts.unique_word_count, //Fix to exclude words in submissions
+                "unique_word_count": data.stats.basic.words_in_posts.unique_word_count, //Fix to exclude words in submissions
                 "karma_per_word": data.stats.basic.words_in_posts.karma_per_word, //Fix to exclude words in submissions
                 "hours_typed": data.stats.basic.words_in_posts.hours_typed
             },
@@ -106,7 +108,7 @@ function convert_to_v2(data) {
             "weekday": data.stats.metrics.weekday,
             "subreddit": data.stats.metrics.subreddit,
             "topic": data.stats.metrics.topic,
-            "words": data.stats.common_words
+            "common_words": data.stats.common_words
         }
     }
     for(var key in data.about) {
@@ -270,7 +272,13 @@ function word_cloud(words_array) {
 function populate_results(results) {
     $("#user-results").empty();
     $("#user-results").html(base_results);
-    var data = convert_to_v2(JSON.parse(results));
+    var _data = JSON.parse(results);
+    var data;
+    if(_data.version && _data.version===2) {
+        data = _data;
+    } else {
+        data = convert_to_v2(_data);
+    }
     username = data.username;
     if(location.search.substring(1)==="sources") show_source=true;
     if(show_source) {
@@ -393,7 +401,7 @@ function populate_results(results) {
                     $( "#top-words-count" ).text("Excluded top " + ui.value + " words.");
                 }
                 $("#data-common_words").empty();
-                word_cloud(data.metrics.words.slice(ui.value));
+                word_cloud(data.metrics.common_words.slice(ui.value));
             }
         });
     } else {
@@ -517,7 +525,7 @@ function populate_results(results) {
 
     // Text in Comments
     $("#data-total_word_count").text(data.summary.comments.total_word_count);
-    $("#data-unique_word_count").text(data.summary.comments.uniq_word_count);
+    $("#data-unique_word_count").text(data.summary.comments.unique_word_count);
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
     $("#data-karma_per_word").text(data.summary.comments.karma_per_word);
 
