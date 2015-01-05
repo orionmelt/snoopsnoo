@@ -16,7 +16,8 @@ var synopsis_keys = [
     {label: "you like", key:"favorites"}, 
     {label: "you are", key:"attributes"},
     {label: "you have", key:"possessions"}, 
-    {label: "you <span class=\"likely\">may have</span> lived in", key:"locations"}, 
+    {label: "you <span class=\"likely\">may have</span> lived in", key:"locations"}, // For backward compatibility with v1 data
+    {label: "you <span class=\"likely\">may have</span> lived in", key:"location"}, 
     {label: "you like to watch", key:"tv_shows"}, 
     {label: "you like", key:"interests"}, 
     {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
@@ -129,7 +130,7 @@ function convert_to_v2(data) {
                 } else if(typeof data.about[key] === "object" && data.about[key].core && data.about[key].core.length) {
                     s["data"] = data.about[key].core;
                 } else if(typeof data.about[key] === "object" && data.about[key].more && data.about[key].more.length) {
-                    s["extra_data"] = data.about[key].more;
+                    s["data_extra"] = data.about[key].more;
                 } else if(typeof data.about[key] === "object") {
 
                 } else {
@@ -138,16 +139,16 @@ function convert_to_v2(data) {
             }
             if(data.about["derived_attributes"] && data.about["derived_attributes"][d_key]) {
                 if(typeof data.about["derived_attributes"][d_key] === "string") {
-                    s["derived_data"] = {
+                    s["data_derived"] = {
                         "value": data.about["derived_attributes"][d_key],
                         "count": null,
                         "sources": null
                     }
                 } else if($.isArray(data.about["derived_attributes"][d_key])) {
                     if(data.about["derived_attributes"][d_key].length) {
-                        s["derived_data"] = [];
+                        s["data_derived"] = [];
                         data.about["derived_attributes"][d_key].forEach(function(d) {
-                             s["derived_data"].push({
+                             s["data_derived"].push({
                                 "value": d[0],
                                 "count": d[1],
                                 "sources": null
@@ -160,7 +161,7 @@ function convert_to_v2(data) {
                 }
             }
 
-            if(s.data || s.derived_data) {
+            if(s.data || s.data_derived) {
                 v2.synopsis[key] = s;
             }
         }
@@ -172,9 +173,9 @@ function convert_to_v2(data) {
             var s = {};
             if(data.about.derived_attributes[key]) {
                 if(data.about.derived_attributes[key].length) {
-                    s["derived_data"] = [];
+                    s["data_derived"] = [];
                     data.about["derived_attributes"][key].forEach(function(d) {
-                         s["derived_data"].push({
+                         s["data_derived"].push({
                             "value": d[0],
                             "count": d[1],
                             "sources": null
@@ -182,7 +183,7 @@ function convert_to_v2(data) {
                     });
                 }
             }
-            if(s.derived_data) v2.synopsis[key]=s;
+            if(s.data_derived) v2.synopsis[key]=s;
         }
     }
 
@@ -348,7 +349,7 @@ function populate_results(results) {
         var row_end = '</div>';
         var once = [];
         if(data.synopsis[d.key]) {
-            if((data.synopsis[d.key].data && data.synopsis[d.key].data.length) || (data.synopsis[d.key].derived_data && data.synopsis[d.key].derived_data.length)) {
+            if((data.synopsis[d.key].data && data.synopsis[d.key].data.length) || (data.synopsis[d.key].data_derived && data.synopsis[d.key].data_derived.length)) {
                 row_content += '<div class="col-md-3">' + d.label + '</div>';
                 row_content += '<div class="col-md-9">';
                 
@@ -361,8 +362,8 @@ function populate_results(results) {
                     });
                 }
 
-                if(data.synopsis[d.key].derived_data && data.synopsis[d.key].derived_data.length && once.indexOf(d.key)===-1) {
-                    data.synopsis[d.key].derived_data.forEach(function(e) {
+                if(data.synopsis[d.key].data_derived && data.synopsis[d.key].data_derived.length && once.indexOf(d.key)===-1) {
+                    data.synopsis[d.key].data_derived.forEach(function(e) {
                         row_content+=wrap_data(d.key, e.value, e.sources, 0);
                     });
                 }
