@@ -36,9 +36,15 @@ elif os.getenv('FLASK_CONF') == 'TEST':
 else:
     app.config.from_object('application.settings.Production')
 
+from jinja_filters import format_date, time_since, format_month, format_day
 # Enable jinja2 loop controls extension
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.jinja_env.add_extension('jinja2.ext.autoescape')
+
+app.jinja_env.filters['format_date'] = format_date
+app.jinja_env.filters['format_month'] = format_month
+app.jinja_env.filters['format_day'] = format_day
+app.jinja_env.filters['time_since'] = time_since
 
 # Pull in URL dispatch routes
 import urls
