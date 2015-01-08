@@ -17,7 +17,8 @@ class User(ndb.Model):
 	"""
 	username = ndb.StringProperty()
 	username_lower = ndb.ComputedProperty(lambda self: self.username.lower())
-	last_updated = ndb.DateTimeProperty(auto_now_add=True)
+	version = ndb.IntegerProperty()
+	last_updated = ndb.DateTimeProperty(auto_now=True)
 	data = ndb.JsonProperty()
 
 class Feedback(ndb.Model):
