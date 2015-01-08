@@ -43,7 +43,7 @@ def check_user(username):
 		if user:
 			return "OK"
 		else:
-			return "NO"
+			return "NOT_FOUND"
 
 def user_profile(username):
 	#user = User.get_by_id(username)
@@ -52,7 +52,7 @@ def user_profile(username):
 		user = User.query(User.username == username).get()
 	if not user:
 		abort(404)
-	if "version" in user.data and user.data["version"]==2:
+	if "version" in user.data and user.data["version"] in [2,3]:
 		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
 															  	if user.data["summary"]["comments"]["best"]["text"] else None
 		user.data["summary"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["worst"]["text"])) \
@@ -67,14 +67,23 @@ def user_profile(username):
 def update_user():
 	data=request.get_json()
 	if not data:
-		return "EMPTY"
+		return "NO_DATA"
 	username = data["username"]
-	user = User(
-				#id=username,
-				username=username,
-				data=data
-			)
-	user.put()
+	user = User.query(User.username_lower == username.lower()).get()
+	version = data["version"]
+	if user:
+		user.username = username
+		user.version = version
+		user.data = data
+		user.put()
+	else:
+		user = User(
+					#id=username,
+					username=username,
+					version=version,
+					data=data
+				)
+		user.put()
 	return "OK"
 
 def process_feedback():
