@@ -7,7 +7,18 @@
 		</div>
 
 		<div id="user-results" class="container">
-			<h3 class="buffer"><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3>
+			<div class="row">
+				<div class="col-md-6 buffer">
+					<ul class="list-inline">
+						<li><h3><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3></li>
+						<li>Last Updated {{ user.last_updated|time_since }} ago</li>
+						<li><button id="go" type="button" class="btn btn-primary" data-loading-text="Refreshing <i class='fa fa-spinner fa-spin'></i>">Refresh Now</button></li>
+					</ul>
+				</div>
+				<div class="col-md-6 text-right">
+					
+				</div>
+			</div>
 
 	        <div class="row">
 	        	<div id="summary" class="col-md-6 bottom-buffer">
@@ -123,8 +134,66 @@
 				</div>
 	        </div>
 
+			<div class="row">
+	        	<div id="activity-heatmap" class="col-md-6 text-center bottom-buffer">
+					<h4>Activity Heatmap Over Last 60 Days</h4>
+					<h5>Needs more red!</h5>
+					<h6>Higher activity shown in darker shades. All times in <span class="user-timezone"></span>.</h6>
+					<div id="data-heatmap"></div>
+				</div>
+
+				<div id="karma-stats" class="col-md-6 text-center bottom-buffer">
+					<h4>Karma Statistics</h4>
+					<h5>Needs more red!</h5>
+					<h6>Higher activity shown in darker shades.</h6>
+
+					<div class="text-left">
+
+						<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">most karma/comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_karma_per_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">least karma/comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_karma_per_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">most karma/submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_karma_per_submission"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">least karma/submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_karma_per_submission"></span></p>
+		        			</div>
+		        		</div>
+
+	        		</div>
+
+					
+				</div>
+			</div>
+
+
 	        <div class="row">
-	        	<div class="col-md-6 text-center bottom-buffer">
+	        	<div id="topics-sunburst" class="col-md-6 text-center bottom-buffer">
 	        		<h4>Posts Across Topics</h4>
 	        		<h5>Look at you, how versatile!</h5>
 	        		<h6>Hover over the chart for more info.</h6>
@@ -132,7 +201,7 @@
 					<div id="data-topics"></div>
 	        	</div>
 
-	        	<div class="col-md-6 text-center bottom-buffer">
+	        	<div id="common-words" class="col-md-6 text-center bottom-buffer">
 	        		<h4>Common Words in Posts</h4>
 	        		<h5>Impressive vocabulary.</h5>
 	        		<h6>Size of a word is directly proportional to its frequency.</h6>
@@ -143,7 +212,7 @@
 	        </div>
 	        
 	        <div class="row">
-	        	<div class="col-md-12 text-center bottom-buffer">
+	        	<div id="activity-timeline" class="col-md-12 text-center bottom-buffer">
 	        		<h4>Activity Over Time</h4>
 	        		<h5>Further proof that you have no life outside of reddit?</h5>
 	        		<h6>Hover over the circles for more info.</h6>
@@ -152,23 +221,23 @@
 			</div>
 
 			<div class="row">
-				<div class="col-md-6 text-center bottom-buffer">
+				<div "activity-weekday" class="col-md-6 text-center bottom-buffer">
 					<h4>Activity by Weekday</h4>
 					<h5>Have you tried /r/outside?</h5>
 					<h6>Hover over the bars for more info.</h6>
 					<div id="data-activity_weekday"></div>
 				</div>
 
-	        	<div class="col-md-6 text-center bottom-buffer">
+	        	<div id="activity-hour" class="col-md-6 text-center bottom-buffer">
 					<h4>Activity by Time of Day</h4>
 					<h5>Do you even sleep, bro?</h5>
-					<h6>Hover over the bars for more info.</h6>
+					<h6>Hover over the bars for more info. All times in <span class="user-timezone"></span>.</h6>
 					<div id="data-activity_hour"></div>
 				</div>
 			</div>
 
 			<div class="row">
-	        	<div class="col-md-12 text-center bottom-buffer">
+	        	<div id="subreddit-treemap" class="col-md-12 text-center bottom-buffer">
 					<h4>Activity Across Subreddits</h4>
 					<h5>Only a few hundred thousand more to go.</h5>
 					<h6>Click to zoom in. Click again to zoom out. Hover for more info.</h6>
@@ -181,7 +250,7 @@
 			</div>
 
 			<div class="row">
-	        	<div class="col-md-6 text-center bottom-buffer">
+	        	<div id="submissions-sunburst" class="col-md-6 text-center bottom-buffer">
 	        		<h4>Submissions By Type and Domain</h4>
 	        		<h5>You're quite the surfer.</h5>
 	        		<h6>Hover over the chart for more info.</h6>
@@ -190,7 +259,7 @@
 					<div id="data-submissions_legend"></div>
 	        	</div>
 	        	
-	        	<div class="col-md-6 text-center bottom-buffer" id="posts_words">
+	        	<div id="word-stats" class="col-md-6 text-center bottom-buffer" id="posts_words">
 	        		<h4>Text in Posts</h4>
 	        		<h5>Words, oh so many words.</h5>
 	        		<h6>Time spent calculated using average of 40 WPM.</h6>
@@ -204,12 +273,14 @@
 	        		<h3 class="text-success" id="data-karma_per_word"></h3>
 	        	</div>
 	        </div>
+
 		</div>
 
 		{% autoescape false %}
 		<script>
 		var results=JSON.stringify({{ data }});
 		$(function () {
+			_last_updated = new Date("{{ user.last_updated }}");
 			user_init();
 			$("[data-toggle='tooltip']").tooltip(); 
 		});
