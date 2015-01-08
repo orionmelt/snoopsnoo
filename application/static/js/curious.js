@@ -25,7 +25,7 @@
         var x_label = options.x_label || "Date";
 
         // If data doesn't contain a "date" field, write error message to log
-        if (!("date" in data[0])) console.log("Error: Data doesn't contain field named 'date'.");
+        if (!data.length || !("date" in data[0])) console.log("Error: Data doesn't contain field named 'date'.");
 
         // Let's just assume that all our dates are of the format YYYY-MM-DD
         var parseDate = d3.time.format("%Y-%m-%d").parse;
@@ -44,8 +44,6 @@
         // Create SVG canvas
         var svg = d3.select(container)
         .append("svg")
-            .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
-            .attr("preserveAspectRatio", "xMidYMid")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -861,6 +859,72 @@
 
         // Get total size of the tree = value of root node from partition.
         totalSize = path.node().__data__.value;
+    };
+
+    // Draws a heatmap chart.
+    curious.heatmap = function(options) {
+        options = options || {};
+        var container = "#"+options.container;
+        var data = JSON.parse(JSON.stringify(options.data));
+        var width = options.width;
+        var height = options.height;
+        var margin = options.margin;
+        var color = options.color || d3.scale.linear().domain([0,1,2,3,4,5,6,7,8,9]).range(["#ffe4e1","#fec6bf","#fea99e","#fd8b7c","#fd6d5b","#fd4f39","#fc3118","#ef1d03","#ce1902","#bd1702"]);
+        var tooltips = options.tooltips || false;
+        var tooltips_msg = options.tooltips_msg || function(){};
+
+
+        var grid_size = Math.floor(width/data.length);
+        var buckets = 10;
+
+        var svg = d3.select(container).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var _data = [];
+        
+
+        for(var i=0; i<data.length; i++) {
+            for(var j=0; j<data[i].length; j++) {
+                _data.push({
+                    "x": i,
+                    "y": j,
+                    "value": +data[i][j]
+                });
+            }
+        }
+
+        var heatMap = svg.selectAll(".hour")
+            .data(_data)
+            .enter().append("rect")
+            .attr("x", function(d) { return (d.x + 1) * grid_size; })
+            .attr("y", function(d) { return (d.y + 1) * grid_size; })
+            .attr("rx", 2)
+            .attr("ry", 2)
+            .attr("width", grid_size)
+            .attr("height", grid_size)
+            .style("fill", "#fff")
+            .attr("title", function(d) { return d.value+"/"+color(d.value)})
+
+        
+        if(tooltips) {
+            // Create tip object
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(tooltips_msg);
+
+            svg.call(tip);
+
+            heatMap
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
+        }
+
+        heatMap.transition().duration(1000)
+            .style("fill", function(d) { return color(d.value); });              
     };
 
     this.curious = curious;
