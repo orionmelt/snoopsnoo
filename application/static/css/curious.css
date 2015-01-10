@@ -101,12 +101,12 @@ h6 {
   margin-right: 5px;
 }
 
-.feedback a, .share a {
+.feedback a, .share a, .permalink a {
   color: #999;
   text-decoration: none;
 }
 
-.feedback a:hover, .share a:hover {
+.feedback a:hover, .share a:hover, .permalink a:hover {
   color: #333;
 }
 
@@ -163,8 +163,13 @@ h6 {
   padding:140px 0px;
 }
 
-#karma-stats .row h4 {
+#recommendations .row h4 {
   text-transform: none;
+}
+
+.permalink {
+  margin:0px 5px;
+  font-size:14px;
 }
 
 /* Custom - Common */

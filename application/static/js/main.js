@@ -594,7 +594,7 @@ function log_error(error_object) {
 function wrap_data(key, text, sources, confidence) {
     var source_links = "";
     sources && sources.forEach(function (s) {
-        source_links += " <a href=\""+s+"\">#</i></a> ";
+        source_links += " <a href=\""+s+"\" target=\"_blank\">#</i></a> ";
     });
     var c = "content";
     if(!confidence) c = "likely";
@@ -608,7 +608,9 @@ function wrap_data(key, text, sources, confidence) {
                     '<a class="incorrect" data-key="' + key + '" data-value="' + text + '" data-feedback="0" href="#">' +
                         '<i class="fa fa-times-circle-o" data-toggle="tooltip" data-placement="top" title="" data-original-title="This is incorrect/gibberish"></i>' +
                     '</a> ' + 
-                    source_links + 
+                '</span>' + 
+                '<span class="feedback">' +
+                source_links + 
                 '</span>' + 
             '</span>';
 }
@@ -758,7 +760,7 @@ function populate_results(results) {
         }
     });
     if(!found_synopsis) {
-        $("#synopsis-data").html("<h3>No synopsis data available.</h3>");
+        $("#synopsis-data").html('<div class="col-md-6 alert alert-warning"><p>No synopsis data available.</p></div>');
     }
 
     // Posts across topics
@@ -1012,6 +1014,8 @@ function populate_results(results) {
             "<p><small>" + c[c.length-1].comment_karma + " total karma over " + c[c.length-1].comments + " comments</small></p>"
         );
 
+        $("#no-recommendations").hide();
+
     } else {
         $("#best-comment-sub-reco").hide();
         $("#worst-comment-sub-reco").hide();
@@ -1037,6 +1041,8 @@ function populate_results(results) {
             "<p><small>" + s[s.length-1].submission_karma + " total karma over " + s[s.length-1].submissions + " submissions</small></p>"
         );
 
+        $("#no-recommendations").hide();
+
     } else {
         $("#best-post-sub-reco").hide();
         $("#worst-post-sub-reco").hide();
@@ -1050,7 +1056,7 @@ function populate_results(results) {
         if(other_subreddits && other_subreddits.children) {
             other_subreddits.children.forEach(function(c) {
                 $("#sub-categorize-table-tbody").append(
-                    '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/">' + c.name + '</td>' +
+                    '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</td>' +
                     '<td><a href="#" class="input-editable-category" data-type="typeaheadjs" data-placement="right" data-title="Enter category"' +
                         ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Category</a></td>' +
                     '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter sub-category"' +
@@ -1066,7 +1072,8 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
                     data['subreddit'] = params.pk;
                     data['level_name'] = params.name;
                     data['level_value'] = params.value;
@@ -1083,7 +1090,8 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
                     data['subreddit'] = params.pk;
                     data['level_name'] = params.name;
                     data['level_value'] = params.value;
@@ -1100,7 +1108,8 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
                     data['subreddit'] = params.pk;
                     data['level_name'] = params.name;
                     data['level_value'] = params.value;
@@ -1112,8 +1121,6 @@ function populate_results(results) {
         }
         
     }
-
-    
 
 }
 
