@@ -1,12 +1,12 @@
 
-http://orionmelt.github.io/snoopsnoo/archive.html
-http://orionmelt.github.io/snoopsnoo/atom.xml
-http://orionmelt.github.io/snoopsnoo/categories.html
-http://orionmelt.github.io/snoopsnoo/index.html
-http://orionmelt.github.io/snoopsnoo/pages.html
-http://orionmelt.github.io/snoopsnoo/rss.xml
-http://orionmelt.github.io/snoopsnoo/sitemap.txt
-http://orionmelt.github.io/snoopsnoo/tags.html
+blog.snoopsnoo.com/archive.html
+blog.snoopsnoo.com/atom.xml
+blog.snoopsnoo.com/categories.html
+blog.snoopsnoo.com/index.html
+blog.snoopsnoo.com/pages.html
+blog.snoopsnoo.com/rss.xml
+blog.snoopsnoo.com/sitemap.txt
+blog.snoopsnoo.com/tags.html
 
-http://orionmelt.github.io/snoopsnoo/2015/01/05/hello-reddit
-http://orionmelt.github.io/snoopsnoo/2015/01/01/lets-begin
+blog.snoopsnoo.com/2015/01/05/hello-reddit
+blog.snoopsnoo.com/2015/01/01/lets-begin

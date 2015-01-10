@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
  
  <title>Snoop Snoo Blog</title>
- <link href="http://orionmelt.github.io/snoopsnoo/" rel="self"/>
- <link href="http://orionmelt.github.io/snoopsnoo"/>
- <updated>2015-01-10T11:43:27-07:00</updated>
- <id>http://orionmelt.github.io/snoopsnoo</id>
+ <link href="blog.snoopsnoo.com/" rel="self"/>
+ <link href="blog.snoopsnoo.com"/>
+ <updated>2015-01-10T13:03:39-07:00</updated>
+ <id>blog.snoopsnoo.com</id>
  <author>
    <name>OrionMelt</name>
    <email>orionmelt@gmail.com</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Hello reddit.</title>
-   <link href="http://orionmelt.github.io/snoopsnoo/2015/01/05/hello-reddit"/>
+   <link href="blog.snoopsnoo.com/2015/01/05/hello-reddit"/>
    <updated>2015-01-05T00:00:00-07:00</updated>
-   <id>http://orionmelt.github.io/snoopsnoo/2015/01/05/hello-reddit</id>
+   <id>blog.snoopsnoo.com/2015/01/05/hello-reddit</id>
    <content type="html">
 &lt;p&gt;I had wanted to add several new features to &lt;strong&gt;SNOOP &lt;i class=&quot;fa fa-search purple&quot;&gt;&lt;/i&gt; SNOO&lt;/strong&gt; before I released it publicly, such as letting users authenticate via OAuth, profile views and even more charts and analytics. But after realizing that it would never be &lt;em&gt;truly&lt;/em&gt; ready for public release, I bought SnoopSnoo.com, uploaded the current version and posted the link on &lt;a href=&quot;http://www.reddit.com/r/InternetIsBeautiful/comments/2qucap/a_website_that_shows_interesting_information/&quot;&gt;/r/InternetIsBeautiful&lt;/a&gt; and &lt;a href=&quot;http://www.reddit.com/r/dataisbeautiful/comments/2r3jnk/your_reddit_activity_analyzed_and_visualized_oc/&quot;&gt;/r/dataisbeautiful&lt;/a&gt;. Both posts were received quite well, and I got a ton of useful feedback from redditors. &lt;/p&gt;
 
@@ -28,9 +28,9 @@
  
  <entry>
    <title>Let's begin.</title>
-   <link href="http://orionmelt.github.io/snoopsnoo/2015/01/01/lets-begin"/>
+   <link href="blog.snoopsnoo.com/2015/01/01/lets-begin"/>
    <updated>2015-01-01T00:00:00-07:00</updated>
-   <id>http://orionmelt.github.io/snoopsnoo/2015/01/01/lets-begin</id>
+   <id>blog.snoopsnoo.com/2015/01/01/lets-begin</id>
    <content type="html">
 &lt;p&gt;Hello, and welcome to &lt;strong&gt;SNOOP &lt;i class=&quot;fa fa-search purple&quot;&gt;&lt;/i&gt; SNOO&lt;/strong&gt;’s development blog. I’ve been on reddit since its inception way back in 2005 (mostly lurking, though) and have always thought it would be interesting to analyze the massive amounts of data it generates, especially after its huge growth in the past few years – so I built &lt;strong&gt;SNOOP &lt;i class=&quot;fa fa-search purple&quot;&gt;&lt;/i&gt; SNOO&lt;/strong&gt;.&lt;/p&gt;
 
