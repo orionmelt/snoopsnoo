@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  
- <title>Jekyll Bootstrap</title>
- <link href="http://username.github.io/" rel="self"/>
- <link href="http://username.github.io"/>
- <updated>2015-01-09T21:25:40-07:00</updated>
- <id>http://username.github.io</id>
+ <title>Snoop Snoo Blog</title>
+ <link href="http://orionmelt.github.io/snoopsnoo/" rel="self"/>
+ <link href="http://orionmelt.github.io/snoopsnoo"/>
+ <updated>2015-01-09T21:38:41-07:00</updated>
+ <id>http://orionmelt.github.io/snoopsnoo</id>
  <author>
-   <name>Name Lastname</name>
-   <email>blah@email.test</email>
+   <name>OrionMelt</name>
+   <email>orionmelt@gmail.com</email>
  </author>
 
  
  <entry>
    <title>Jekyll Introduction</title>
-   <link href="http://username.github.io/lessons/2011/12/29/jekyll-introduction"/>
+   <link href="http://orionmelt.github.io/snoopsnoo/lessons/2011/12/29/jekyll-introduction"/>
    <updated>2011-12-29T00:00:00-07:00</updated>
-   <id>http://username.github.io/lessons/2011/12/29/jekyll-introduction</id>
+   <id>http://orionmelt.github.io/snoopsnoo/lessons/2011/12/29/jekyll-introduction</id>
    <content type="html">
 &lt;p&gt;This Jekyll introduction will outline specifically  what Jekyll is and why you would want to use it.
 Directly following the intro we’ll learn exactly &lt;em&gt;how&lt;/em&gt; Jekyll does what it does.&lt;/p&gt;

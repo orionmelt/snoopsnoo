@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-        <title>Jekyll Bootstrap</title>
-        <description>Jekyll Bootstrap - Name Lastname</description>
-        <link>http://username.github.io</link>
-        <link>http://username.github.io</link>
-        <lastBuildDate>2015-01-09T21:25:40-07:00</lastBuildDate>
-        <pubDate>2015-01-09T21:25:40-07:00</pubDate>
+        <title>Snoop Snoo Blog</title>
+        <description>Snoop Snoo Blog - OrionMelt</description>
+        <link>http://orionmelt.github.io/snoopsnoo</link>
+        <link>http://orionmelt.github.io/snoopsnoo</link>
+        <lastBuildDate>2015-01-09T21:38:41-07:00</lastBuildDate>
+        <pubDate>2015-01-09T21:38:41-07:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -428,8 +428,8 @@ As noted, our main programming constraint is the fact that our API is limited to
 &lt;p&gt;Please take a look at []()
 or jump right into &lt;a href=&quot;&quot;&gt;Usage&lt;/a&gt; if you’d like.&lt;/p&gt;
 </description>
-                <link>http://username.github.io/lessons/2011/12/29/jekyll-introduction</link>
-                <guid>http://username.github.io/lessons/2011/12/29/jekyll-introduction</guid>
+                <link>http://orionmelt.github.io/snoopsnoo/lessons/2011/12/29/jekyll-introduction</link>
+                <guid>http://orionmelt.github.io/snoopsnoo/lessons/2011/12/29/jekyll-introduction</guid>
                 <pubDate>2011-12-29T00:00:00-07:00</pubDate>
         </item>
 
