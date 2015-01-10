@@ -4,13 +4,36 @@
  <title>Snoop Snoo Blog</title>
  <link href="blog.snoopsnoo.com/" rel="self"/>
  <link href="blog.snoopsnoo.com"/>
- <updated>2015-01-10T13:07:06-07:00</updated>
+ <updated>2015-01-10T13:30:03-07:00</updated>
  <id>blog.snoopsnoo.com</id>
  <author>
    <name>OrionMelt</name>
    <email>orionmelt@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>What's better than version 0.1?</title>
+   <link href="blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01"/>
+   <updated>2015-01-10T00:00:00-07:00</updated>
+   <id>blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01</id>
+   <content type="html">
+&lt;p&gt;Version 0.2, of course. Since the public release of &lt;strong&gt;SNOOP &lt;i class=&quot;fa fa-search purple&quot;&gt;&lt;/i&gt; SNOO&lt;/strong&gt; ten days ago, I’ve received lots of feedback that helped me make some important changes. I’ve just published v0.2 of the site, and I hope to continue to add features and improve accuracy. Here is the list of new features that went live today:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;You can now refresh data to keep your profile up-to-date.&lt;/li&gt;
+  &lt;li&gt;Client-side fetching of data to prevent “Server too busy” errors.&lt;/li&gt;
+  &lt;li&gt;See which subreddits are most likely to bring you maximum karma.&lt;/li&gt;
+  &lt;li&gt;Charts detailing last 60 days of activity.&lt;/li&gt;
+  &lt;li&gt;All charts updated to use local timezone instead of UTC.&lt;/li&gt;
+  &lt;li&gt;Help categorize your subreddits.&lt;/li&gt;
+  &lt;li&gt;Marginally improved NLP.&lt;/li&gt;
+  &lt;li&gt;Bug fixes and cosmetic changes.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Like the new features? Hate the changes? Want a new feature altogther? Let me know in the comments below, &lt;a href=&quot;http://www.reddit.com/message/compose/?to=orionmelt&quot;&gt;PM me on reddit&lt;/a&gt; or head over to &lt;a href=&quot;http://www.reddit.com/r/SnoopSnoo&quot;&gt;/r/SnoopSnoo&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Hello reddit.</title>
