@@ -1,0 +1,20 @@
+# Standard ignores
+*.pyc
+*.pyo
+*.DS_Store
+*.swp
+*.idea
+*.project
+*.pydevproject
+*.kpf
+venv
+
+# Don't store secret keys and OS local settings in version control
+secret_keys.py
+
+# Minified resources
+*.min.js
+*.min.css
+
+# Analytics
+analytics.html
