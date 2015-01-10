@@ -70,17 +70,17 @@ def update_user():
 		return "NO_DATA"
 	username = data["username"]
 	user = User.query(User.username_lower == username.lower()).get()
-	version = data["version"]
+	data_version = data["version"]
 	if user:
 		user.username = username
-		user.version = version
+		user.data_version = data_version
 		user.data = data
 		user.put()
 	else:
 		user = User(
 					#id=username,
 					username=username,
-					version=version,
+					data_version=data_version,
 					data=data
 				)
 		user.put()
@@ -113,12 +113,14 @@ def error_log():
 	return "OK"
 
 def insert_subreddit_category():
-	page_id = request.form.get("page_id")
+	page_id = int(request.form.get("page_id"))
+	page_user = request.form.get("page_user")
 	subreddit = request.form.get("subreddit")
 	level_name = request.form.get("level_name")
 	level_value = request.form.get("level_value")
 	c = SubredditCategory(
 			page_id=page_id,
+			page_user=page_user,
 			subreddit=subreddit,
 			level_name=level_name,
 			level_value=level_value
