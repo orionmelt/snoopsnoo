@@ -15,7 +15,7 @@ from math import pow
 #TODO - flask_cache
 
 from application import app
-from models import User, Feedback, ErrorLog
+from models import User, Feedback, ErrorLog, SubredditCategory
 
 import sys, logging
 from datetime import datetime, date
@@ -111,6 +111,20 @@ def error_log():
 		)
 	e.put()
 	return "OK"
+
+def insert_subreddit_category():
+	page_id = request.form.get("page_id")
+	subreddit = request.form.get("subreddit")
+	level_name = request.form.get("level_name")
+	level_value = request.form.get("level_value")
+	c = SubredditCategory(
+			page_id=page_id,
+			subreddit=subreddit,
+			level_name=level_name,
+			level_value=level_value
+		)
+	c.put()
+	return ""
 
 @admin_required
 def delete_user(username):

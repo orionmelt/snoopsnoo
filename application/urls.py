@@ -42,6 +42,9 @@ app.add_url_rule('/error-log', 'error_log', view_func=views.error_log)
 # Delete page
 app.add_url_rule('/delete/<username>', 'delete', view_func=views.delete_user)
 
+# Subreddit Category Update page
+app.add_url_rule('/categorize', 'insert_subreddit_category', view_func=views.insert_subreddit_category, methods=["POST"])
+
 # User profile page
 #app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
 

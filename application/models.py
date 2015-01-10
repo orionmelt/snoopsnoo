@@ -22,7 +22,7 @@ class User(ndb.Model):
 	data = ndb.JsonProperty()
 
 class Feedback(ndb.Model):
-	"""Models a feedback entry.
+	"""Models a feedback entry that records user feedback about synopsis items.
 	"""
 	username = ndb.StringProperty()
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
@@ -37,3 +37,12 @@ class ErrorLog(ndb.Model):
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
 	error_type = ndb.StringProperty()
 	error_message = ndb.StringProperty(indexed=False)
+
+class SubredditCategory(ndb.Model):
+	"""Models a subreddit category entry that user entered in the Help Categorize Subreddits section.
+	"""
+	page_id = ndb.StringProperty()
+	subreddit = ndb.StringProperty()
+	level_name = ndb.StringProperty()
+	level_value = ndb.StringProperty()
+
