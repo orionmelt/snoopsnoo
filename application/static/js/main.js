@@ -1058,10 +1058,10 @@ function populate_results(results) {
                 $("#sub-categorize-table-tbody").append(
                     '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</td>' +
                     '<td><a href="#" class="input-editable-category" data-type="typeaheadjs" data-placement="right" data-title="Enter category"' +
-                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Category</a></td>' +
-                    '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter sub-category"' +
-                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" data-pk="' + c.name + '"title="">Sub-category</a></td>' +
-                    '<td><a href="#" class="input-editable-desc" data-type="text" data-pk="' + c.name + '" data-title="Enter description">Description</a></td>'
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Edit category</a></td>' +
+                    '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter subcategory"' +
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" data-pk="' + c.name + '"title="">Edit subcategory</a></td>' +
+                    '<td><a href="#" class="input-editable-desc" data-type="text" data-pk="' + c.name + '" data-title="Enter description">Edit description</a></td>'
                 );
             });
             $.fn.editable.defaults.mode = 'inline';
