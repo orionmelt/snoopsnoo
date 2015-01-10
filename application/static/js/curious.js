@@ -218,6 +218,7 @@
         var secondary_scale = options.secondary_scale || [];
         var tooltip_names = options.tooltip_names || null;
         var x_label = options.x_label;
+        var hide_axes = options.hide_axes || false;
 
         // Create x and y scales
         var x0 = d3.scale.ordinal().rangeRoundBands([0, width-margin.left], .1),
@@ -270,57 +271,59 @@
         ys.domain([0, ys_max]);
         
         // Attach x and y axes to SVG
-        var x_axis = svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(x_axis_fn);
+        if(!hide_axes) {
+            var x_axis = svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(x_axis_fn);
 
-        var y_axis = svg.append("g")
-            .attr("class", "y axis")
-            .call(y_axis_fn);
-                    
-
-        if(secondary_scale && secondary_scale.length>0) {
-            var y_axis_secondary = svg.append("g")
+            var y_axis = svg.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(" + (width-margin.right) + " ,0)")
-                .call(ys_axis_fn);
-        }
+                .call(y_axis_fn);
+                        
 
-        // Add label to x axis
-        x_axis.append("g").append("text")
-            .attr("transform", function() { return "translate(0,0)"; })
-            .attr("x", width/2)
-            .attr("y", 30)
-            .attr("dy", ".71em")
-            .style("text-anchor", "middle")
-            .attr("font-weight", "bold")
-            .text(x_label);
-        
-        // Add legend to y axis
-        y_axis.selectAll(".legend")
-            .data(series_names.filter(function(d) { return secondary_scale.indexOf(d)<0;}))
-        .enter().append("g").append("text")
-            .attr("transform", function(d, i) { return "translate(0," + i*20 + ")"; })
-            .attr("x", 6)
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "start")
-            .style("fill", function(d) { return color(d); })
-            .text(function(d) { return "◼ "+d; });
+            if(secondary_scale && secondary_scale.length>0) {
+                var y_axis_secondary = svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + (width-margin.right) + " ,0)")
+                    .call(ys_axis_fn);
+            }
 
-        if(secondary_scale && secondary_scale.length>0) {
-            y_axis_secondary.selectAll(".legend")
-                .data(series_names.filter(function(d) { return secondary_scale.indexOf(d)>-1;}))
-            .enter().append("g")
-                .append("text")
+            // Add label to x axis
+            x_axis.append("g").append("text")
+                .attr("transform", function() { return "translate(0,0)"; })
+                .attr("x", width/2)
+                .attr("y", 30)
+                .attr("dy", ".71em")
+                .style("text-anchor", "middle")
+                .attr("font-weight", "bold")
+                .text(x_label);
+            
+            // Add legend to y axis
+            y_axis.selectAll(".legend")
+                .data(series_names.filter(function(d) { return secondary_scale.indexOf(d)<0;}))
+            .enter().append("g").append("text")
                 .attr("transform", function(d, i) { return "translate(0," + i*20 + ")"; })
-                .attr("x", -6)
+                .attr("x", 6)
                 .attr("y", 6)
                 .attr("dy", ".71em")
-                .style("text-anchor", "end")
+                .style("text-anchor", "start")
                 .style("fill", function(d) { return color(d); })
                 .text(function(d) { return "◼ "+d; });
+
+            if(secondary_scale && secondary_scale.length>0) {
+                y_axis_secondary.selectAll(".legend")
+                    .data(series_names.filter(function(d) { return secondary_scale.indexOf(d)>-1;}))
+                .enter().append("g")
+                    .append("text")
+                    .attr("transform", function(d, i) { return "translate(0," + i*20 + ")"; })
+                    .attr("x", -6)
+                    .attr("y", 6)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .style("fill", function(d) { return color(d); })
+                    .text(function(d) { return "◼ "+d; });
+            }
         }
         
         // For each series, create group element...
@@ -869,7 +872,12 @@
         var width = options.width;
         var height = options.height;
         var margin = options.margin;
-        var color = options.color || d3.scale.linear().domain([0,1,2,3,4,5,6,7,8,9]).range(["#ffe4e1","#fec6bf","#fea99e","#fd8b7c","#fd6d5b","#fd4f39","#fc3118","#ef1d03","#ce1902","#bd1702"]);
+        var color = options.color || d3.scale.linear()
+            //.domain([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
+            .domain([0,15])
+            .range(["#ffeeee","#FF0000"]);
+            //.range(["#ffeeee", "#FECDCD", "#FEBEBE", "#FEAFAF", "#FEA1A1", "#FE9292", "#FE8383", "#FE7575", 
+            //        "#FE6666", "#FE5757", "#FE4949", "#FE3A3A", "#FE2B2B", "#FE1D1D", "#FE0E0E", "#FF0000"]);
         var tooltips = options.tooltips || false;
         var tooltips_msg = options.tooltips_msg || function(){};
 
@@ -905,8 +913,7 @@
             .attr("ry", 2)
             .attr("width", grid_size)
             .attr("height", grid_size)
-            .style("fill", "#fff")
-            .attr("title", function(d) { return d.value+"/"+color(d.value)})
+            .style("fill", "#fff");
 
         
         if(tooltips) {

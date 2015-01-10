@@ -36,6 +36,11 @@ h6 {
   display: block;
   color: #999;
   margin-bottom: 30px;
+  line-height: 16px;
+}
+
+.panel-body {
+  padding: 5px;
 }
 
 /*
@@ -96,12 +101,12 @@ h6 {
   margin-right: 5px;
 }
 
-.feedback a {
+.feedback a, .share a {
   color: #999;
   text-decoration: none;
 }
 
-.feedback a:hover {
+.feedback a:hover, .share a:hover {
   color: #333;
 }
 
@@ -140,6 +145,28 @@ h6 {
     margin: 20px auto;
 }
 
+#data-recent_activity svg {
+  border-bottom: 1px solid #999;
+}
+
+.heatmap-sample {
+  background: url('../img/heatmap-sample.png') no-repeat center center;
+  min-width: 500px;
+  min-height: 336px;
+  margin: auto;
+}
+
+.heatmap-sample div {
+  background: #fff;
+  opacity: 0.8;
+  min-height: 336px;
+  padding:140px 0px;
+}
+
+#karma-stats .row h4 {
+  text-transform: none;
+}
+
 /* Custom - Common */
 
 .purple {
@@ -149,6 +176,10 @@ h6 {
 .buffer {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.no-top-margin {
+  margin-top: 0px;
 }
 
 .bottom-buffer {

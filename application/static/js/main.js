@@ -1,14 +1,14 @@
-var base_results = "";
-var _username = "";
-var _last_updated = "";
-var show_source = false;
-var user_data = {
+var g_base_results = "";
+var g_username = "";
+var g_last_updated = "";
+var debug = false;
+var g_user_data = {
     "about": null,
     "comments": [],
     "submissions": [],
 };
 
-var user_timezone = jstz.determine().name();
+var g_user_timezone = jstz.determine().name();
 
 var FULL_WIDTH=860;
 var HALF_WIDTH=430;
@@ -51,12 +51,146 @@ var SYNOPSIS_KEYS = [
     {label: "your religious beliefs", key:"religion"}
 ];
 
+var CATEGORIES = [
+    'Anthropology',
+    'Archaeology',
+    'Architecture',
+    'Art',
+    'Business',
+    'Entertainment',
+    'Gaming',
+    'History',
+    'Interests',
+    'Law',
+    'Lifestyle',
+    'Location',
+    'Meta',
+    'Music',
+    'News & Politics',
+    'Organization',
+    'Philosophy',
+    'Psychology',
+    'Science',
+    'Sports',
+    'Technology',
+    'Travel',
+    'General'
+];
+
+var SUB_CATEGORIES = [
+    'Anime',
+    'Astronomy',
+    'Automobiles',
+    'Backpacking',
+    'Baseball',
+    'Basketball',
+    'Biology',
+    'Board/Card Games',
+    'Books',
+    'Botany',
+    'Camping',
+    'Celebrities',
+    'Chemistry',
+    'Chess',
+    'City',
+    'Classical',
+    'Climbing',
+    'Comedy',
+    'Comics',
+    'Computer Science',
+    'Cooking',
+    'Country',
+    'Crafts',
+    'Cycling',
+    'Data Visualization',
+    'Design',
+    'Discussion',
+    'DIY',
+    'Drugs',
+    'Dubstep',
+    'Economics',
+    'Electronic',
+    'Employment',
+    'Engineering',
+    'Entrepreneurship',
+    'Fantasy',
+    'Fashion',
+    'Finance',
+    'Fitness',
+    'Food',
+    'Football',
+    'Gadgets',
+    'Gardening',
+    'General Business',
+    'General Science',
+    'General Technology',
+    'Geology',
+    'Golf',
+    'Graffiti',
+    'Hardware',
+    'Health',
+    'Hiking',
+    'Hip Hop',
+    'Hockey',
+    'Horror',
+    'House',
+    'Humor',
+    'Internet',
+    'Jazz',
+    'Longboarding',
+    'Marketing',
+    'Math',
+    'Medicine',
+    'Memes',
+    'Metal',
+    'MMA',
+    'Mobile',
+    'Motivation',
+    'Motorsports',
+    'Movies',
+    'Music',
+    'Networking',
+    'Other',
+    'Personal Finance',
+    'Photography',
+    'Physics',
+    'Pictures',
+    'Politics',
+    'Pop',
+    'Programming',
+    'Punk',
+    'Rap',
+    'Relationships',
+    'Religion',
+    'Rock',
+    'Rugby',
+    'Science Fiction',
+    'Shopping',
+    'Skateboarding',
+    'Skiing',
+    'Skydiving',
+    'Snowboarding',
+    'Soccer',
+    'Software',
+    'State',
+    'Tennis',
+    'Trance',
+    'TV Shows',
+    'University',
+    'USMC',
+    'Video Games',
+    'Videos',
+    'World News',
+    'Wrestling',
+    'Writing'
+]
+
 $(function () {
-    $(".user-timezone").text(user_timezone); 
+    $(".user-timezone").text(g_user_timezone); 
 });
 
 function get_data(username) {
-    _username=username;
+    g_username=username;
     get_about(username);
 }
 
@@ -67,7 +201,7 @@ function get_about(username) {
         async: false,
         beforeSend: set_user_agent
     }).done(function(data) {
-        user_data["about"] = data.data;
+        g_user_data["about"] = data.data;
         get_comments(username);
     }).fail(function() {
         $("#error-message").text("Username not found.");
@@ -100,7 +234,7 @@ function get_comment_page(url,after,count) {
         $("#go").html("Fetching " + count + " comments <i class='fa fa-spinner fa-spin'></i>");
         if(data.data && data.data.children) {
             data.data.children.forEach(function(d) {
-                user_data["comments"].push({
+                g_user_data["comments"].push({
                     "id": d.data.id,
                     "subreddit": d.data.subreddit,
                     "text": d.data.body,
@@ -120,13 +254,18 @@ function get_comment_page(url,after,count) {
                     get_comment_page(url,after, count);
                 }, 2000);
             } else {
-                get_submissions(_username);
+                get_submissions(g_username);
             }
         } else {
             // ERROR
         }
     }).fail(function() {
         console.log("Error");
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
     });
 }
 
@@ -152,7 +291,7 @@ function get_submission_page(url,after,count) {
         $("#go").html("Fetching " + count + " submissions <i class='fa fa-spinner fa-spin'></i>");
         if(data.data && data.data.children) {
             data.data.children.forEach(function(d) {
-                user_data["submissions"].push({
+                g_user_data["submissions"].push({
                     "id": d.data.id,
                     "subreddit": d.data.subreddit,
                     "text": d.data.selftext,
@@ -180,26 +319,35 @@ function get_submission_page(url,after,count) {
         }
     }).fail(function() {
         console.log("Error");
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
     });
 }
 
 function call_blockspring() {
     $("#go").html("Processing <i class='fa fa-spinner fa-spin'></i>");
+    if(!(g_user_data.comments.length || g_user_data.submissions.length)) {
+        $( "#error-message" ).text("No data available.");
+        $( "#error" ).show();
+        var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+        return;
+    }
     $.ajax({
             url: "https://sender.blockspring.com/api_v1/blocks/15d8e54759752564d45241992687b98f?api_key=d1b2e14d5b005465cfe3c83976a9240a",
             type: "POST",
-            data: { username: _username, json_data: JSON.stringify(user_data)},
+            data: { username: g_username, json_data: JSON.stringify(g_user_data)},
             crossDomain: true
     }).done(function(response){
         //Data is here from API
         results = JSON.parse(response.results);
         result = JSON.parse(results.result);
         if(!response.error && result) {
-            /*
-            if(!data) {
-                return;
-            }*/
-            _username = result.username;
+            g_username = result.username;
             //Update data in local DB
             $.ajax({
                 url: "/update",
@@ -209,32 +357,36 @@ function call_blockspring() {
             }).done(function(response) {
                 if(response=="OK") {
                     //Now user exists in local DB, forward to profile page
-                    window.location.href = "/u/"+_username;
+                    window.location.href = "/u/"+g_username;
                 } else if(response=="NO_DATA") {
                     $( "#error-message" ).text("No data available.");
                     $( "#error" ).show();
-                    var error_object = {"username":username, "error_type": "empty", "error_message":null};
+                    var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
                     log_error(error_object);
                 }
             });
         } else if(response.error) {
             //Something went wrong
-            $( "#error-message" ).text("Sorry, an unexpected error has occurred. Please try again in a few minutes.");
+            $( "#error-message" ).text("An unexpected error has occurred. Please try again in a few minutes.");
             $( "#error" ).show();
-            var error_object = {"username":username, "error_type": "server_error", "error_message":response.errors};
+            var error_object = {"username":g_username, "error_type": "server_error", "error_message":response.error};
             log_error(error_object);
-            //TODO - Update response.error in DB 
         } else {
             //Server too busy
             $( "#error-message" ).text("Server too busy. Please try again in a few minutes.");
             $( "#error" ).show();
-            var error_object = {"username":username, "error_type": "timeout", "error_message":null};
+            var error_object = {"username":g_username, "error_type": "timeout", "error_message":null};
             log_error(error_object);
         }
         $( "#go" ).button("reset");
         
     }).fail(function(jqXHR, status) {
         console.log(jqXHR, status);
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
     });
 }
 
@@ -424,7 +576,7 @@ function flatten_subreddits_tree(tree, flattened_array) {
 }
 
 function send_feedback(key, value, feedback) {
-    url = "/feedback?u="+_username+"&k="+key+"&v="+value+"&f="+feedback;
+    url = "/feedback?u="+g_username+"&k="+key+"&v="+value+"&f="+feedback;
     $.ajax({
         url: url,
         type: "GET"
@@ -441,7 +593,7 @@ function log_error(error_object) {
 
 function wrap_data(key, text, sources, confidence) {
     var source_links = "";
-    show_source && sources && sources.forEach(function (s) {
+    sources && sources.forEach(function (s) {
         source_links += " <a href=\""+s+"\">#</i></a> ";
     });
     var c = "content";
@@ -500,7 +652,7 @@ function word_cloud(words_array) {
 
 function populate_results(results) {
     $("#user-results").empty();
-    $("#user-results").html(base_results);
+    $("#user-results").html(g_base_results);
     var _data = JSON.parse(results);
     var data;
     if(_data.version) { // Check if version in [2,3]?
@@ -508,9 +660,9 @@ function populate_results(results) {
     } else {
         data = convert_to_v2(_data);
     }
-    _username = data.username;
-    if(location.search.substring(1)==="sources") show_source=true;
-    if(show_source) {
+    g_username = data.username;
+    if(location.search.substring(1)==="debug") debug=true;
+    if(debug) {
         console.log(JSON.parse(results));
         console.log(data);
     }
@@ -573,6 +725,7 @@ function populate_results(results) {
     }
 
     // Synopsis
+    var found_synopsis = false;
     SYNOPSIS_KEYS.forEach(function(d) {
         var row_start = '<div class="row">';
         var row_content = "";
@@ -580,8 +733,9 @@ function populate_results(results) {
         var once = [];
         if(data.synopsis[d.key]) {
             if((data.synopsis[d.key].data && data.synopsis[d.key].data.length) || (data.synopsis[d.key].data_derived && data.synopsis[d.key].data_derived.length)) {
-                row_content += '<div class="col-md-3">' + d.label + '</div>';
-                row_content += '<div class="col-md-9">';
+                found_synopsis = true;
+                row_content += '<div class="col-md-4">' + d.label + '</div>';
+                row_content += '<div class="col-md-8">';
                 
                 if(data.synopsis[d.key].data && data.synopsis[d.key].data.length) {
                     if(d.key==="gender" || d.key==="orientation") {
@@ -603,6 +757,9 @@ function populate_results(results) {
             }
         }
     });
+    if(!found_synopsis) {
+        $("#synopsis-data").html("<h3>No synopsis data available.</h3>");
+    }
 
     // Posts across topics
     curious.sunburst({
@@ -699,8 +856,7 @@ function populate_results(results) {
         container: "data-activity_hour",
         data: data.metrics.hour.map(function(d) {
             return {
-                //hour:d.hour>=offset_hours ? d.hour-offset_hours : (23+d.hour-offset_hours)%23,
-                hour:Math.abs(d.hour-offset_hours)%23,
+                hour:offset_hours>0 ? (24 + d.hour-offset_hours)%24 : (d.hour-offset_hours)%24,
                 posts:d.comments+d.submissions,
                 karma:d.comment_karma+d.submission_karma
             };
@@ -718,7 +874,7 @@ function populate_results(results) {
         tooltips:true,
         x: "hour",
         secondary_scale:["karma"],
-        x_label: "Hour of Day (in " + user_timezone + ")",
+        x_label: "Hour of Day (in " + g_user_timezone + ")",
         tooltip_names: hour_names
     });
 
@@ -757,7 +913,7 @@ function populate_results(results) {
         });
     }
 
-    // Text in Comments
+    // Corpus Statistics
     $("#data-total_word_count").text(data.summary.comments.total_word_count);
     $("#data-unique_word_count").text(data.summary.comments.unique_word_count);
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
@@ -767,37 +923,74 @@ function populate_results(results) {
     $("#user-results").css({opacity:1});
 
     // Heatmap
-    if(data.metrics.activity_heatmap) {
-        heatmap=data.metrics.activity_heatmap;
-        heatmap = heatmap.substring(24+offset_hours);
+    if(data.metrics.recent_activity_heatmap) {
+        var heatmap=data.metrics.recent_activity_heatmap;
+        var local_last_updated_hour = offset_hours>0 ? (24 + new Date(g_last_updated).getHours()-offset_hours)%24 : (new Date(g_last_updated).getHours()-offset_hours)%24;
+        var hours_to_add = 23 - local_last_updated_hour;
+        heatmap += Array(hours_to_add+1).join("0");
+        heatmap = heatmap.substring(heatmap.length-(60*24));
         
         var heatmap_data = [];
         for(var i=0;i<heatmap.length/24;i++) {
             heatmap_data[i] = [];
             for(var j=0;j<24;j++) {
-                heatmap_data[i][j] = heatmap[i*24+j];
+                heatmap_data[i][j] = parseInt("0x"+heatmap[i*24+j],16);
             }
         }
-        
+
         curious.heatmap({
             container: "data-heatmap",
             data: heatmap_data,
-            width: 440,
+            width: 500,
             height: 210,
             margin: {
                 top: 0,
-                right: 40,
+                right: 0,
                 bottom: 20,
-                left: 40
+                left: 0
             },
             tooltips:true,
             tooltips_msg: function(d) {
-                return "<p>" + new Date(new Date().setDate(new Date(_last_updated).getDate()-(60-d.x-1))).toLocaleDateString() + "</p>" + hour_names[d.y];
+                return "<p>" + new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-d.x))).toLocaleDateString() + "</p>" + hour_names[d.y];
             }
         });
-    }   
+    } else {
+        $("#data-heatmap").html("<div class=\"heatmap-sample\"><div><h3>Refresh data to see this chart.</h3></div></div>")
 
-    // Karma Stats
+    }
+
+
+    // Recent posts and karma
+    if(data.metrics.recent_karma && data.metrics.recent_posts && data.metrics.recent_karma.length===data.metrics.recent_posts.length) {
+        var recent_activity = data.metrics.recent_karma.slice(1).map(function(d,i) {
+            return {
+                date: new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-i-1))).toLocaleDateString(),
+                posts: data.metrics.recent_posts[i],
+                karma: d
+            };
+        });
+
+
+        curious.bar({
+            container: "data-recent_activity",
+            data: recent_activity,
+            width: 500,
+            height: 80,
+            margin: {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            },
+            tooltips:true,
+            x: "date",
+            x_label: "Date",
+            secondary_scale:["karma"],
+            hide_axes:true
+        });
+    }
+
+    // Recommendations
     var subreddits_array = flatten_subreddits_tree(data.metrics.subreddit);
     var c = subreddits_array.filter(function(a) {
         return a.average_karma_per_comment;
@@ -805,19 +998,23 @@ function populate_results(results) {
         return a.average_karma_per_comment - b.average_karma_per_comment;
     });
 
-    if(c && c.length) {
+    if(c && c.length>1) {
 
-        $("#data-worst_karma_per_comment").html(
-            "<p>/r/" + c[0].name + "</p>" + 
-            "<p class=\"text-warning\"><small>" + c[0].average_karma_per_comment + " karma/comment " + 
-            "<span class=\"text-muted\">(" + c[0].comment_karma + " total comment karma over " + c[0].comments + " comments)</span></small></p>"
+        $("#data-worst_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[0].name + "\">/r/"+c[0].name+"</a>");
+        $("#data-worst_karma_per_comment_subtext").html(
+            "<p>" + c[0].average_karma_per_comment + " karma/comment on average</p>" + 
+            "<p><small>" + c[0].comment_karma + " total karma over " + c[0].comments + " comments</small></p>"
         );
 
-        $("#data-best_karma_per_comment").html(
-            "<p>/r/" + c[c.length-1].name + "</p>" +
-            "<p class=\"text-success\"><small>" + c[c.length-1].average_karma_per_comment + " karma/comment " +
-            "<span class=\"text-muted\">(" + c[c.length-1].comment_karma + " total comment karma over " + c[c.length-1].comments + " comments)</span></small></p>"
+        $("#data-best_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[c.length-1].name + "\">/r/"+c[c.length-1].name+"</a>");
+        $("#data-best_karma_per_comment_subtext").html(
+            "<p>" + c[c.length-1].average_karma_per_comment + " karma/comment on average</p>" + 
+            "<p><small>" + c[c.length-1].comment_karma + " total karma over " + c[c.length-1].comments + " comments</small></p>"
         );
+
+    } else {
+        $("#best-comment-sub-reco").hide();
+        $("#worst-comment-sub-reco").hide();
     }
 
     var s = subreddits_array.filter(function(a) {
@@ -826,20 +1023,97 @@ function populate_results(results) {
         return a.average_karma_per_submission - b.average_karma_per_submission;
     });
 
-    if(s && s.length) {
+    if(s && s.length>1) {
 
-        $("#data-worst_karma_per_submission").html(
-            "<p>/r/" + s[0].name + "</p>" + 
-            "<p class=\"text-warning\"><small>" + s[0].average_karma_per_submission + " karma/submission " + 
-            "<span class=\"text-muted\">(" + s[0].submission_karma + " total submission karma over " + s[0].submissions + " submissions)</span></small></p>"
+        $("#data-worst_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[0].name + "\">/r/"+s[0].name+"</a>");
+        $("#data-worst_karma_per_submission_subtext").html(
+            "<p>" + s[0].average_karma_per_submission + " karma/submission on average</p>" + 
+            "<p><small>" + s[0].submission_karma + " total karma over " + s[0].submissions + " submissions</small></p>"
         );
 
-        $("#data-best_karma_per_submission").html(
-            "<p>/r/" + s[s.length-1].name + "</p>" +
-            "<p class=\"text-success\"><small>" + s[s.length-1].average_karma_per_submission + " karma/submission " +
-            "<span class=\"text-muted\">(" + s[s.length-1].submission_karma + " total submission karma over " + s[s.length-1].submissions + " submissions)</span></small></p>"
+        $("#data-best_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[s.length-1].name + "\">/r/"+s[s.length-1].name+"</a>");
+        $("#data-best_karma_per_submission_subtext").html(
+            "<p>" + s[s.length-1].average_karma_per_submission + " karma/submission on average</p>" + 
+            "<p><small>" + s[s.length-1].submission_karma + " total karma over " + s[s.length-1].submissions + " submissions</small></p>"
         );
+
+    } else {
+        $("#best-post-sub-reco").hide();
+        $("#worst-post-sub-reco").hide();
     }
+
+    // Subreddit categorization
+    if(data.metrics.subreddit.children && data.metrics.subreddit.children.length) {
+        var other_subreddits = data.metrics.subreddit.children.filter(function(d) {
+            return d.name==="Other";
+        }).shift();
+        if(other_subreddits && other_subreddits.children) {
+            other_subreddits.children.forEach(function(c) {
+                $("#sub-categorize-table-tbody").append(
+                    '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/">' + c.name + '</td>' +
+                    '<td><a href="#" class="input-editable-category" data-type="typeaheadjs" data-placement="right" data-title="Enter category"' +
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Category</a></td>' +
+                    '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter sub-category"' +
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" data-pk="' + c.name + '"title="">Sub-category</a></td>' +
+                    '<td><a href="#" class="input-editable-desc" data-type="text" data-pk="' + c.name + '" data-title="Enter description">Description</a></td>'
+                );
+            });
+            $.fn.editable.defaults.mode = 'inline';
+        
+            $('#sub-categorize-table a.input-editable-category').editable({
+                value: '',
+                name: 'category',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+                typeahead: {
+                    name: 'category',
+                    local: CATEGORIES
+                }
+            });
+            $('#sub-categorize-table a.input-editable-subcategory').editable({
+                value: '',
+                name: 'subcategory',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+                typeahead: {
+                    name: 'subcategory',
+                    local: SUB_CATEGORIES
+                }
+            });
+            $('#sub-categorize-table a.input-editable-desc').editable({
+                value: '',
+                name: 'description',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = g_username + Math.floor(Date.now() / 1000);
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+            });
+        } else {
+            $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>')
+        }
+        
+    }
+
+    
 
 }
 
@@ -850,6 +1124,7 @@ function home_init() {
         var $form = $( this ),
         username = $form.find( "input[name='username']" ).val();
         if(!username) return;
+        g_username = username;
         $.ajax({
             url: "/check/" + username,
             type: "GET",
@@ -866,7 +1141,7 @@ function home_init() {
 }
 
 function user_init() {
-    base_results = $("#user-results").html();
+    g_base_results = $("#user-results").html();
     populate_results(results);
     $(".feedback .correct, .feedback .incorrect").click(function() {
         key = $(this).data("key");
@@ -884,8 +1159,8 @@ function user_init() {
     $("#go").click(function(event) {
         $("#go").button("loading");
         event.preventDefault();
-        if(!_username) return;
-        get_data(_username);
+        if(!g_username) return;
+        get_data(g_username);
     });
 }
 
