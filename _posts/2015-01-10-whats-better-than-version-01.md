@@ -18,4 +18,4 @@ Version 0.2, of course. Since the public release of **SNOOP <i class="fa fa-sear
 * Marginally improved NLP.
 * Bug fixes and cosmetic changes.
 
-Like the new features? Hate the changes? Want a new feature altogther? Let me know in the comments below, [PM me on reddit](http://www.reddit.com/message/compose/?to=orionmelt) or head over to [/r/SnoopSnoo](http://www.reddit.com/r/SnoopSnoo).
+Like the new features? Hate the changes? Want a new feature altogether? Let me know in the comments below, [PM me on reddit](http://www.reddit.com/message/compose/?to=orionmelt) or head over to [/r/SnoopSnoo](http://www.reddit.com/r/SnoopSnoo).
