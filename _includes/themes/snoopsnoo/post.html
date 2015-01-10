@@ -1,0 +1,46 @@
+		<div class="post">
+			<div class="header">
+				<h4>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h4>
+				<h5>{{ page.date | date_to_long_string }}</h5>
+			</div>
+
+			<div class="content">
+			{{ content }}
+			</div>
+
+			{% unless page.categories == empty %}
+			<ul class="tag_box inline">
+				<li><i class="glyphicon glyphicon-open"></i></li>
+				{% assign categories_list = page.categories %}
+				{% include JB/categories_list %}
+			</ul>
+			{% endunless %}  
+
+			{% unless page.tags == empty %}
+			<ul class="tag_box inline">
+				<li><i class="glyphicon glyphicon-tags"></i></li>
+				{% assign tags_list = page.tags %}
+				{% include JB/tags_list %}
+			</ul>
+			{% endunless %}  
+			
+			<div class="comments">
+				{% include JB/comments %}
+			</div>
+
+			<ul class="pager">
+				{% if page.previous %}
+				<li class="previous"><a href="{{ BASE_PATH }}{{ page.previous.url }}" title="{{ page.previous.title }}"><i class="fa fa-arrow-circle-o-left fa-lg"></i> Previous</a></li>
+				{% else %}
+				<li class="previous disabled"><a><i class="fa fa-arrow-circle-o-left fa-lg"></i> Previous</a></li>
+				{% endif %}
+				<!--<li><a href="{{ BASE_PATH }}{{ site.JB.archive_path }}">Archive</a></li>-->
+				{% if page.next %}
+				<li class="next"><a href="{{ BASE_PATH }}{{ page.next.url }}" title="{{ page.next.title }}">Next <i class="fa fa-arrow-circle-o-right fa-lg"></i></a></li>
+				{% else %}
+				<li class="next disabled"><a>Next <i class="fa fa-arrow-circle-o-right fa-lg"></i></a></li>
+				{% endif %}
+			</ul>
+		</div>
+
+		

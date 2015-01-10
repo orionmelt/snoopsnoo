@@ -1,0 +1,27 @@
+#blog-wrapper {
+}
+
+.post {
+	margin-bottom: 40px;
+}
+
+.post .header {
+	margin-bottom: 25px;
+}
+
+.post p, ul {
+	margin-bottom: 15px;
+}
+
+.post .comments {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.sidebar-section {
+	margin-bottom: 40px;
+}
+
+.sidebar-section h4 {
+	margin-bottom: 15px;
+}

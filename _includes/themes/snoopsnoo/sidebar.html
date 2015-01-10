@@ -1,0 +1,30 @@
+		<div class="sidebar-section">
+			<h4>About</h4>
+			<p><strong>SNOOP <i class="fa fa-search purple"></i> SNOO</strong>'s development blog. Feature announcements, development updates and thoughts on new ideas. </p>
+		</div>
+
+		<div class="sidebar-section">
+			<h4>Recent Posts</h4>
+			<ul class="list-unstyled">
+				{% for post in site.posts %}
+				<li>
+					<a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
+					<small>{{ post.date | date_to_string }}</small>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<div class="sidebar-section">
+			<h4>Subscribe</h4>
+			<ul class="list-unstyled">
+				<li><a href="/rss.xml"><i class="fa fa-rss"></i> RSS</a></li>
+			</ul>
+		</div>
+		
+		<!--
+		<div class="sidebar-section">
+			<h4>On Reddit</h4>
+			<p><a href="http://www.reddit.com/r/SnoopSnoo">/r/SnoopSnoo</a></p>
+		</div>
+		-->

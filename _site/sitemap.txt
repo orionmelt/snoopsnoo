@@ -8,4 +8,5 @@ http://orionmelt.github.io/snoopsnoo/rss.xml
 http://orionmelt.github.io/snoopsnoo/sitemap.txt
 http://orionmelt.github.io/snoopsnoo/tags.html
 
-http://orionmelt.github.io/snoopsnoo/lessons/2011/12/29/jekyll-introduction
+http://orionmelt.github.io/snoopsnoo/2015/01/05/hello-reddit
+http://orionmelt.github.io/snoopsnoo/2015/01/01/lets-begin
