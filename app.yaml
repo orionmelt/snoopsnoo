@@ -26,6 +26,10 @@ handlers:
   static_files: application/static/icons/favicon.ico
   upload: application/static/icons/favicon.ico
 
+- url: /apple-touch-icon.png
+  static_files: application/static/icons/apple-touch-icon.png
+  upload: application/static/icons/apple-touch-icon.png
+
 - url: /robots.txt
   static_files: application/static/robots.txt
   upload: application/static/robots.txt
