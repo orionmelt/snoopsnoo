@@ -957,7 +957,7 @@ function populate_results(results) {
             }
         });
     } else {
-        $("#data-heatmap").html("<div class=\"heatmap-sample\"><div><h3>Refresh data to see this chart.</h3></div></div>")
+        $("#data-heatmap").html('<div class="heatmap-sample"><div class="col-md-6 col-md-offset-3 alert alert-info"><p>Refresh data to see this chart.</p></div></div>');
 
     }
 

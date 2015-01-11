@@ -154,13 +154,7 @@ h6 {
   min-width: 500px;
   min-height: 336px;
   margin: auto;
-}
-
-.heatmap-sample div {
-  background: #fff;
-  opacity: 0.8;
-  min-height: 336px;
-  padding:140px 0px;
+  padding:120px 0px;
 }
 
 #recommendations .row h4 {
