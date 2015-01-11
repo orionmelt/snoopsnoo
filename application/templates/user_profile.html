@@ -7,171 +7,175 @@
 		</div>
 
 		<div id="user-results" class="container">
-			<h3 class="buffer"><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3>
-
-	        <div class="row">
-	        	<div id="summary" class="col-md-6 bottom-buffer">
-	        		<h4>Summary</h4>
-	        		<h5>Your best, your worst and the basics.</h5>
-	        		<h6>Limited to the most recent 1000 submissions and comments.</h6>
-	        		
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">redditor since</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><strong><span id="data-signup_date"></span></strong></p>
-	        				<p><small><span id="data-signup_date_humanized"></span></small></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">first post on</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><strong><span id="data-first_post_date"></span></strong></p>
-	        				<p><small><span id="data-first_post_date_humanized"></span> after signup</small></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">longest period between two consecutive posts</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><strong><span id="data-lurk_period_humanized"></span></strong></p>
-	        				<p><small><span id="data-lurk_period_dates"></span></small></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">gilded</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><span id="data-submissions_gilded"></span> and <span id="data-comments_gilded"></span></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">submission karma</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
-	        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
-	        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">comment karma</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
-	        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
-	        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">best comment</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><span id="data-best_comment"></span></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">worst comment</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><span id="data-worst_comment"></span></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">best submission</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><span id="data-best_submission"></span></p>
-	        			</div>
-	        		</div>
-
-	        		<div class="row">
-	        			<div class="col-md-4">
-	        				<p class="text-muted">worst submission</p>
-	        			</div>
-	        			<div class="col-md-8">
-	        				<p><span id="data-worst_submission"></span></p>
-	        			</div>
-	        		</div>
-	        	</div>
-
-	        	<div id="synopsis" class="col-md-6 bottom-buffer">
-	        		<h4>synopsis</h4>
-	        		<h5>Accuracy or making sense not guaranteed.</h5>
-	        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below. Uncertain data is <span class="likely">in orange.</span></h6>
-
-	        		<div id="synopsis-data">
-	    			</div>
+			<!-- Username -->
+			<div class="row">
+				<div class="col-md-8">
+					<h3><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3>
 				</div>
-	        </div>
+			</div>
+			<!-- /Username -->
 
-	        <div class="row">
-	        	<div class="col-md-6 text-center bottom-buffer">
-	        		<h4>Posts Across Topics</h4>
-	        		<h5>Look at you, how versatile!</h5>
-	        		<h6>Hover over the chart for more info.</h6>
-					<div id="data-topics_legend"></div>
-					<div id="data-topics"></div>
-	        	</div>
+			<!-- Toolbar -->
+			<div class="row">
+				<div class="col-md-8">
+					<ul class="list-inline">
+						<li><h5>Last updated {{ user.last_updated|time_since }} ago</h5></li>
+						<li><button id="go" type="button" class="btn btn-primary btn-xs" data-loading-text="Refreshing <i class='fa fa-spinner fa-spin'></i>">Refresh Now</button></li>
+					</ul>
+				</div>
+				<!--
+				<div class="col-md-4">
+					<ul class="list-inline share">
+						<li><h5>Share your results</h5></li>
+						<li>
+							<a title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-facebook-square fa-lg"></i></a>
+						</li>
+						<li>
+							<a title="Share on reddit" href="http://www.reddit.com/submit?url=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-reddit fa-lg"></i></a>
+						</li>
+						<li>
+							<a title="Share on Google+" href="https://plus.google.com/share?url=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-google-plus-square fa-lg"></i></a>
+						</li>
+						<li>
+							<a title="Share on Twitter" href="https://twitter.com/intent/tweet?text=Check out my Snoop Snoo results!&url=http://snoopsnoo.com/u/{{ user.username }}&hashtags=reddit,snoopsnoo" target="_blank"><i class="fa fa-twitter fa-lg"></i></a>
+						</li>
+						
+					</ul>
+				</div>
+				-->
+			</div>
+			<!-- /Toolbar -->
 
-	        	<div class="col-md-6 text-center bottom-buffer">
-	        		<h4>Common Words in Posts</h4>
-	        		<h5>Impressive vocabulary.</h5>
-	        		<h6>Size of a word is directly proportional to its frequency.</h6>
-	        		<p id="top-words-count">Showing all words. Drag slider below to exclude top words.</p>
-	        		<div id="top-words-slider"></div>
-	        		<div id="data-common_words"></div>
-	        	</div>
-	        </div>
-	        
+			<!-- Quick Stats -->
+			<hr>
 	        <div class="row">
-	        	<div class="col-md-12 text-center bottom-buffer">
-	        		<h4>Activity Over Time</h4>
-	        		<h5>Further proof that you have no life outside of reddit?</h5>
+				<div class="col-md-6 text-center bottom-buffer">
+					<div id="recommendations">
+						<h4>Recommendations for you <span class="permalink"><a href="#recommendations" title="Permalink">#</a></span></h4>
+						<h5>{{ ["Please earn karma responsibly.", "Friends tell friends where to earn karma.", "To repost, or not to repost, that is the question."]|random }}</h5>
+						<h6>Based on your average karma earnings.</h6>
+
+						<div class="row">
+							<div id="no-recommendations" class="buffer">
+								<div class="col-md-6 col-md-offset-3 alert alert-warning">
+									<p>Not enough data for recommendations.</p>
+								</div>
+			        		</div>
+							
+							<div id="best-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										<h3 class="panel-title text-lowercase">best for submissions</h3>
+									</div>
+									<div class="panel-body">
+										<h4 id="data-best_karma_per_submission"></h4>
+										<div id="data-best_karma_per_submission_subtext"></div>
+									</div>
+								</div>
+							</div>
+
+							<div id="best-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										<h3 class="panel-title text-lowercase">best for comments</h3>
+									</div>
+									<div class="panel-body">
+										<h4 id="data-best_karma_per_comment"></h4>
+										<div id="data-best_karma_per_comment_subtext"></div>
+									</div>
+								</div>
+							</div>
+
+							<div id="worst-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+								<div class="panel panel-warning">
+									<div class="panel-heading">
+										<h3 class="panel-title text-lowercase">Improve submissions on</h3>
+									</div>
+									<div class="panel-body">
+										<h4 id="data-worst_karma_per_submission"></h4>
+										<div id="data-worst_karma_per_submission_subtext"></div>
+									</div>
+								</div>
+							</div>
+
+							<div id="worst-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+								<div class="panel panel-warning">
+									<div class="panel-heading">
+										<h3 class="panel-title text-lowercase">Improve comments on</h3>
+									</div>
+									<div class="panel-body">
+										<h4 id="data-worst_karma_per_comment"></h4>
+										<div id="data-worst_karma_per_comment_subtext"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 text-center bottom-buffer">
+					<div id="heatmap">
+						<h4>Activity Over Last 60 Days <span class="permalink"><a href="#heatmap" title="Permalink">#</a></span></h4>
+						<h5><h5>{{ ["Needs more red.", "Make them bleed.", "If not on reddit, what are we?"]|random }}</h5></h5>
+						<h6>Darker dots mean more activity. All times in <span class="user-timezone"></span>.</h6>
+						<div id="data-heatmap"></div>
+						<div id="data-recent_activity"></div>
+					</div>
+				</div>
+			</div>
+			<!-- /Quick Stats -->
+
+			<!-- Activity Charts -->
+			<hr>
+			<div class="row">
+	        	<div id="timeline" class="col-md-12 text-center bottom-buffer">
+	        		<h4>Activity Timeline <span class="permalink"><a href="#timeline" title="Permalink">#</a></span></h4>
+	        		<h5>{{ ["Further proof that you have no life outside of reddit?", "First they came for the lurkers..."]|random }}</h5>
 	        		<h6>Hover over the circles for more info.</h6>
 					<div id="data-activity_date"></div>
 				</div>
 			</div>
-
 			<div class="row">
-				<div class="col-md-6 text-center bottom-buffer">
-					<h4>Activity by Weekday</h4>
-					<h5>Have you tried /r/outside?</h5>
+				<div id="by-weekday" class="col-md-6 text-center bottom-buffer">
+					<h4>Activity by Weekday <span class="permalink"><a href="#by-weekday" title="Permalink">#</a></span></h4>
+					<h5>{{ ["Have you tried /r/outside?", "That's all right, outdoors are overrated anyway.", "Bored on reddit? Let's see what's on reddit."]|random }}</h5>
 					<h6>Hover over the bars for more info.</h6>
 					<div id="data-activity_weekday"></div>
 				</div>
 
-	        	<div class="col-md-6 text-center bottom-buffer">
-					<h4>Activity by Time of Day</h4>
-					<h5>Do you even sleep, bro?</h5>
-					<h6>Hover over the bars for more info.</h6>
+	        	<div id="by-hour" class="col-md-6 text-center bottom-buffer">
+					<h4>Activity by Time of Day <span class="permalink"><a href="#by-hour" title="Permalink">#</a></span></h4>
+					<h5>{{ ["Do you even sleep, bro?", "Insomniacs of reddit, upvote!", "Sleep (noun) - Period right after this one last reddit post."]|random }}</h5>
+					<h6>Hover over the bars for more info. All times in <span class="user-timezone"></span>.</h6>
 					<div id="data-activity_hour"></div>
 				</div>
 			</div>
-
 			<div class="row">
-	        	<div class="col-md-12 text-center bottom-buffer">
-					<h4>Activity Across Subreddits</h4>
-					<h5>Only a few hundred thousand more to go.</h5>
-					<h6>Click to zoom in. Click again to zoom out. Hover for more info.</h6>
+				<div id="topics" class="col-md-6 text-center bottom-buffer">
+	        		<h4>Posts Across Topics <span class="permalink"><a href="#topics" title="Permalink">#</a></span></h4>
+	        		<h5>{{ ["Look at you, how versatile!", "Jack of all trades, master of some."]|random }}</h5>
+	        		<h6>Hover over the chart for more info.</h6>
+					<div id="data-topics"></div>
+					<div id="data-topics_legend"></div>
+	        	</div>
+
+	        	<div id="submissions" class="col-md-6 text-center bottom-buffer">
+	        		<h4>Submissions By Type and Domain <span class="permalink"><a href="#submissions" title="Permalink">#</a></span></h4>
+	        		<h5>{{ ["You're still the master of your domains.", "Those who can, submit. Those who can't, lurk."]|random }}</h5>
+	        		<h6>Hover over the chart for more info.</h6>
+	        		<div id="no-submissions" class="buffer">
+						<div class="col-md-6 col-md-offset-3 alert alert-warning">
+							<p>You have no submissions.</p>
+						</div>
+	        		</div>
+					<div id="data-submissions"></div>
+					<div id="data-submissions_legend"></div>
+	        	</div>
+	        </div>
+	        <div class="row">
+	        	<div id="by-subreddit" class="col-md-12 text-center bottom-buffer">
+					<h4>Activity Across Subreddits <span class="permalink"><a href="#by-subreddit" title="Permalink">#</a></span></h4>
+					<h5>{{ ["Only a few hundred thousand left.", "Where might /r/random take you next?"]|random }}</h5>
+					<h6>Click to zoom in. Click again to zoom out. Hover for more info. <a href="#categorize-subreddits">Want to help categorize subreddits?</a></h6>
 					<form id="posts_by_sub_control">
 					  <label><input type="radio" name="mode" value="posts" checked> posts</label>
 					  <label><input type="radio" name="mode" value="karma"> karma</label>
@@ -179,37 +183,193 @@
 					<div id="data-posts_by_subreddit"></div>
 				</div>
 			</div>
+			<!-- /Activity Charts -->
 
+			<!-- Word Charts -->
+			<hr>
 			<div class="row">
-	        	<div class="col-md-6 text-center bottom-buffer">
-	        		<h4>Submissions By Type and Domain</h4>
-	        		<h5>You're quite the surfer.</h5>
-	        		<h6>Hover over the chart for more info.</h6>
-	        		<h3 id="no-submissions" class="buffer">No submission data</h3>
-					<div id="data-submissions"></div>
-					<div id="data-submissions_legend"></div>
+				<div id="common-words" class="col-md-6 text-center bottom-buffer">
+	        		<h4>Most Common Words <span class="permalink"><a href="#common-words" title="Permalink">#</a></span></h4>
+	        		<h5>{{ ["A word is worth ten imgur links. True story.", "Don't forget to use that new word you learned!"]|random }}</h5>
+	        		<h6>Size of a word is directly proportional to its frequency.</h6>
+	        		<p id="top-words-count">Showing all words. Drag slider below to exclude top words.</p>
+	        		<div id="top-words-slider"></div>
+	        		<div id="data-common_words"></div>
 	        	</div>
-	        	
-	        	<div class="col-md-6 text-center bottom-buffer" id="posts_words">
-	        		<h4>Text in Posts</h4>
-	        		<h5>Words, oh so many words.</h5>
+
+	        	<div id="corpus-stats" class="col-md-6 text-center bottom-buffer" id="posts_words">
+	        		<h4>Corpus Statistics <span class="permalink"><a href="#corpus-stats" title="Permalink">#</a></span></h4>
+	        		<h5>{{ ["If only you had typed this much for that college essay...", "If you can't convince them, write more and confuse them."]|random }}</h5>
 	        		<h6>Time spent calculated using average of 40 WPM.</h6>
 	        		<p><big>total words in your posts</big></p>
-	        		<h3 class="text-success" id="data-total_word_count"></h3>
+	        		<h3 class="no-top-margin bottom-buffer text-success" id="data-total_word_count"></h3>
 	        		<p><big>unique words</big></p>
-	        		<h3 class="text-success" id="data-unique_word_count"></h3>
+	        		<h3 class="no-top-margin bottom-buffer text-success" id="data-unique_word_count"></h3>
 	        		<p><big>time spent typing posts</big></p>
-	        		<h3 class="text-success" id="data-hours_typed"></h3>
+	        		<h3 class="no-top-margin bottom-buffer text-success" id="data-hours_typed"></h3>
 	        		<p><big>karma per word</big></p>
-	        		<h3 class="text-success" id="data-karma_per_word"></h3>
+	        		<h3 class="no-top-margin bottom-buffer text-success" id="data-karma_per_word"></h3>
 	        	</div>
 	        </div>
+	        <!-- /Word Charts -->
+
+	        <!-- Detailed Summary -->
+	        <hr>
+	        <div id="summary">
+	        	<h4>Summary</h4>
+	    		<h5>Your best, your worst and the basics. <span class="permalink"><a href="#summary" title="Permalink">#</a></span></h5>
+	    		<h6>Limited to the most recent 1000 submissions and comments.</h6>
+	    		<div class="row">
+		        	<div class="col-md-6 bottom-buffer">
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">redditor since</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-signup_date"></span></strong></p>
+		        				<p><small><span id="data-signup_date_humanized"></span></small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">first post on</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-first_post_date"></span></strong></p>
+		        				<p><small><span id="data-first_post_date_humanized"></span> after signup</small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">longest period between two consecutive posts</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-lurk_period_humanized"></span></strong></p>
+		        				<p><small><span id="data-lurk_period_dates"></span></small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">gilded</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-submissions_gilded"></span> and <span id="data-comments_gilded"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">submission karma</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
+		        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
+		        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">comment karma</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
+		        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
+		        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
+		        			</div>
+		        		</div>
+		        	</div>
+		        	<div class="col-md-6 bottom-buffer">
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">best comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">worst comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">best submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_submission"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">worst submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_submission"></span></p>
+		        			</div>
+		        		</div>
+		        	</div>
+	        	</div>
+	        </div>
+	        <!-- /Detailed Summary -->
+
+	        <!-- Experimental -->
+	        <p class="highlight text-center"><strong>WARNING:</strong> Sections below this line are experimental and may contain more bugs than the rest of the site.</p>
+	        <hr>
+			<div class="row">
+				<div id="synopsis" class="col-md-8 bottom-buffer">
+	        		<h4>Synopsis <span class="permalink"><a href="#synopsis" title="Permalink">#</a></span></h4>
+	        		<h5 class="text-danger">Accuracy or making sense not guaranteed. Results may be incorrect or misleading. Please do not use this data to harass people.</h5>
+	        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below. Uncertain data is <span class="likely">in orange.</span> Follow # links for sources.</h6>
+	        		<div id="synopsis-data">
+	    			</div>
+				</div>
+			</div>
+			<div class="row">
+				<div id="categorize-subreddits" class="col-md-12 bottom-buffer">
+					<h4>Help Categorize Subreddits</h4>
+	        		<h5>So many subreddits. So few categorized.</h5>
+	        		<h6>Click on edit links below to update. Choose from predefined categories or create your own. THANKS A BUNCH!</h6>
+					<div id="sub-categorize-table">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Subreddit</th>
+									<th>Category</th>
+									<th>Subcategory</th>
+									<th>Optional Description</th>
+								</tr>
+							</thead>
+							<tbody id="sub-categorize-table-tbody">
+								<tr>
+									<td><p><a href="http://www.reddit.com/r/Sherlock" target="_blank">/r/Sherlock</a></p><p><i>(Example)</i></p></td>
+									<td>Entertainment</td>
+									<td>TV Shows</td>
+									<td>Sherlock</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
 		</div>
 
 		{% autoescape false %}
 		<script>
 		var results=JSON.stringify({{ data }});
 		$(function () {
+			g_last_updated = new Date("{{ user.last_updated }}");
 			user_init();
 			$("[data-toggle='tooltip']").tooltip(); 
 		});

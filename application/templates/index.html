@@ -9,9 +9,9 @@
 					<div class="col-md-8">
 						<section id="main">
 							<div class="jumbotron">
-								{% set title = ["Analyze this.", "You are what you post.", "How much have you told reddit?"]|random %}
+								{% set title = ["Analyze this.", "You are what you post."]|random %}
 								<h2 class="purple">{{ title }}</h2>
-								<p>Enter your reddit username below and see what your posts say about you.</p>
+								<p>Enter your reddit username below and get insights on your reddit activity.</p>
 								<p><small>Not ready yet? <a href="/random">View a random redditor's profile.</a></small></p>
 								<div class="row buffer">
 									<form id="process_form">
@@ -37,7 +37,7 @@
 						</section>
 					</div>
 					<div class="col-md-4">
-						<img class="img-responsive" src="/static/img/sunb.png">
+						
 					</div>
 				</div>
 			</div>
@@ -47,6 +47,10 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-8">
+						<section id="announcements" class="bottom-buffer">
+							<h4>New Version</h4>
+							<p>Version 0.2 is here! <a href="http://blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01/">Read more about it on the blog</a>.</p>
+						</section>
 						<section id="about">
 							<h4>About</h4>
 							<p><strong>SNOOP <i class="fa fa-search purple"></i> SNOO</strong> is a hobby project by <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a> and an attempt to extract interesting information from your reddit comments and submissions.</p>

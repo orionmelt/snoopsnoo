@@ -15,7 +15,7 @@ from math import pow
 #TODO - flask_cache
 
 from application import app
-from models import User, Feedback, ErrorLog
+from models import User, Feedback, ErrorLog, SubredditCategory
 
 import sys, logging
 from datetime import datetime, date
@@ -43,7 +43,7 @@ def check_user(username):
 		if user:
 			return "OK"
 		else:
-			return "NO"
+			return "NOT_FOUND"
 
 def user_profile(username):
 	#user = User.get_by_id(username)
@@ -52,7 +52,7 @@ def user_profile(username):
 		user = User.query(User.username == username).get()
 	if not user:
 		abort(404)
-	if "version" in user.data and user.data["version"]==2:
+	if "version" in user.data and user.data["version"] in [2,3]:
 		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
 															  	if user.data["summary"]["comments"]["best"]["text"] else None
 		user.data["summary"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["worst"]["text"])) \
@@ -67,14 +67,23 @@ def user_profile(username):
 def update_user():
 	data=request.get_json()
 	if not data:
-		return "EMPTY"
+		return "NO_DATA"
 	username = data["username"]
-	user = User(
-				#id=username,
-				username=username,
-				data=data
-			)
-	user.put()
+	user = User.query(User.username_lower == username.lower()).get()
+	data_version = data["version"]
+	if user:
+		user.username = username
+		user.data_version = data_version
+		user.data = data
+		user.put()
+	else:
+		user = User(
+					#id=username,
+					username=username,
+					data_version=data_version,
+					data=data
+				)
+		user.put()
 	return "OK"
 
 def process_feedback():
@@ -102,6 +111,22 @@ def error_log():
 		)
 	e.put()
 	return "OK"
+
+def insert_subreddit_category():
+	page_id = int(request.form.get("page_id"))
+	page_user = request.form.get("page_user")
+	subreddit = request.form.get("subreddit")
+	level_name = request.form.get("level_name")
+	level_value = request.form.get("level_value")
+	c = SubredditCategory(
+			page_id=page_id,
+			page_user=page_user,
+			subreddit=subreddit,
+			level_name=level_name,
+			level_value=level_value
+		)
+	c.put()
+	return ""
 
 @admin_required
 def delete_user(username):

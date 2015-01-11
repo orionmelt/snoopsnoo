@@ -28,10 +28,10 @@ app.add_url_rule('/random', 'random', view_func=views.random_profile)
 app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
 
 # User existence check page
-app.add_url_rule('/cu/<username>', 'check_user', view_func=views.check_user)
+app.add_url_rule('/check/<username>', 'check_user', view_func=views.check_user)
 
 # Update user data page
-app.add_url_rule('/update_user', 'update_user', view_func=views.update_user, methods=["POST"])
+app.add_url_rule('/update', 'update_user', view_func=views.update_user, methods=["POST"])
 
 # Feedback page
 app.add_url_rule('/feedback', 'feedback', view_func=views.process_feedback)
@@ -40,7 +40,10 @@ app.add_url_rule('/feedback', 'feedback', view_func=views.process_feedback)
 app.add_url_rule('/error-log', 'error_log', view_func=views.error_log)
 
 # Delete page
-app.add_url_rule('/del/<username>', 'delete', view_func=views.delete_user)
+app.add_url_rule('/delete/<username>', 'delete', view_func=views.delete_user)
+
+# Subreddit Category Update page
+app.add_url_rule('/categorize', 'insert_subreddit_category', view_func=views.insert_subreddit_category, methods=["POST"])
 
 # User profile page
 #app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)

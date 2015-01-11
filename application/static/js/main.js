@@ -1,23 +1,31 @@
-var base_results = "";
-var username = "";
-var show_source = false;
+var g_base_results = "";
+var g_username = "";
+var g_last_updated = "";
+var debug = false;
+var g_user_data = {
+    "about": null,
+    "comments": [],
+    "submissions": [],
+};
+
+var g_user_timezone = jstz.determine().name();
 
 var FULL_WIDTH=860;
 var HALF_WIDTH=430;
 
-var synopsis_keys = [
+var SYNOPSIS_KEYS = [
     {label: "you are", key:"gender"},
     {label: "you are", key:"orientation"},
     {label: "you are in a relationship with your", key:"relationship_partner"}, 
     {label: "you live(d)", key:"places_lived"}, 
     {label: "you grew up", key:"places_grew_up"},
     {label: "people in your family", key:"family_members"}, 
-    {label: "you have these pets:", key:"pets"}, 
-    {label: "you like", key:"favorites"}, 
+    {label: "you have these pets", key:"pets"}, 
+    {label: "things you've said you like", key:"favorites"}, 
     {label: "you are", key:"attributes"},
     {label: "you have", key:"possessions"}, 
-    {label: "you <span class=\"likely\">may have</span> lived in", key:"locations"}, // For backward compatibility with v1 data
-    {label: "you <span class=\"likely\">may have</span> lived in", key:"location"}, 
+    {label: "your locations of interest", key:"locations"}, // For backward compatibility with v1 data
+    {label: "your locations of interest", key:"location"}, 
     {label: "you like to watch", key:"tv_shows"}, 
     {label: "you like", key:"interests"}, 
     {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
@@ -31,14 +39,360 @@ var synopsis_keys = [
     {label: "you are interested in", key:"business"}, 
     {label: "you like", key:"entertainment"},
     {label: "you are interested in", key:"science"}, 
-    {label: "you are interested in", key:"tech"}, 
+    {label: "you are interested in", key:"tech"}, // For backward compatibility with v1 data
+    {label: "you are interested in", key:"technology"},
     {label: "you are interested in", key:"lifestyle"}, 
-    {label: "you are interested in", key:"others"}, 
+    {label: "you like to discuss", key:"others"}, // For backward compatibility with v1 data
+    {label: "you like to discuss", key:"other"}, 
+    {label: "you like to discuss", key:"news & politics"}, 
     {label: "you have", key:"gadget"}, 
     {label: "you are", key:"political_view"}, 
     {label: "you are", key:"physical_characteristics"}, 
-    {label: "you are", key:"religion"}
+    {label: "your religious beliefs", key:"religion"}
 ];
+
+var CATEGORIES = [
+    'Anthropology',
+    'Archaeology',
+    'Architecture',
+    'Art',
+    'Business',
+    'Entertainment',
+    'Gaming',
+    'History',
+    'Interests',
+    'Law',
+    'Lifestyle',
+    'Location',
+    'Meta',
+    'Music',
+    'News & Politics',
+    'Organization',
+    'Philosophy',
+    'Psychology',
+    'Science',
+    'Sports',
+    'Technology',
+    'Travel',
+    'General'
+];
+
+var SUB_CATEGORIES = [
+    'Anime',
+    'Astronomy',
+    'Automobiles',
+    'Backpacking',
+    'Baseball',
+    'Basketball',
+    'Biology',
+    'Board/Card Games',
+    'Books',
+    'Botany',
+    'Camping',
+    'Celebrities',
+    'Chemistry',
+    'Chess',
+    'City',
+    'Classical',
+    'Climbing',
+    'Comedy',
+    'Comics',
+    'Computer Science',
+    'Cooking',
+    'Country',
+    'Crafts',
+    'Cycling',
+    'Data Visualization',
+    'Design',
+    'Discussion',
+    'DIY',
+    'Drugs',
+    'Dubstep',
+    'Economics',
+    'Electronic',
+    'Employment',
+    'Engineering',
+    'Entrepreneurship',
+    'Fantasy',
+    'Fashion',
+    'Finance',
+    'Fitness',
+    'Food',
+    'Football',
+    'Gadgets',
+    'Gardening',
+    'General Business',
+    'General Science',
+    'General Technology',
+    'Geology',
+    'Golf',
+    'Graffiti',
+    'Hardware',
+    'Health',
+    'Hiking',
+    'Hip Hop',
+    'Hockey',
+    'Horror',
+    'House',
+    'Humor',
+    'Internet',
+    'Jazz',
+    'Longboarding',
+    'Marketing',
+    'Math',
+    'Medicine',
+    'Memes',
+    'Metal',
+    'MMA',
+    'Mobile',
+    'Motivation',
+    'Motorsports',
+    'Movies',
+    'Music',
+    'Networking',
+    'Other',
+    'Personal Finance',
+    'Photography',
+    'Physics',
+    'Pictures',
+    'Politics',
+    'Pop',
+    'Programming',
+    'Punk',
+    'Rap',
+    'Relationships',
+    'Religion',
+    'Rock',
+    'Rugby',
+    'Science Fiction',
+    'Shopping',
+    'Skateboarding',
+    'Skiing',
+    'Skydiving',
+    'Snowboarding',
+    'Soccer',
+    'Software',
+    'State',
+    'Tennis',
+    'Trance',
+    'TV Shows',
+    'University',
+    'USMC',
+    'Video Games',
+    'Videos',
+    'World News',
+    'Wrestling',
+    'Writing'
+]
+
+$(function () {
+    $(".user-timezone").text(g_user_timezone); 
+});
+
+function get_data(username) {
+    g_username=username;
+    get_about(username);
+}
+
+function get_about(username) {
+    var about_url = "http://www.reddit.com/user/" + username + "/about.json";
+    $.ajax({
+        url: about_url,
+        async: false,
+        beforeSend: set_user_agent
+    }).done(function(data) {
+        g_user_data["about"] = data.data;
+        get_comments(username);
+    }).fail(function() {
+        $("#error-message").text("Username not found.");
+        $("#error").show();
+        var error_object = {"username":username, "error_type": "not_found", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+    });
+}
+
+function get_comments(username) {
+    var more = true;
+    var after = null;
+    var base_url = "http://www.reddit.com/user/" + username + "/comments/.json?limit=100";
+    var url = base_url;
+    get_comment_page(base_url,after);
+}
+
+function get_comment_page(url,after,count) {
+    if(after) url+="&after="+after;
+    $.ajax({
+        url: url,
+        async: false
+    }).done(function(data) {
+        if(!count) {
+            count=100; 
+        } else {
+            count+=100;
+        }
+        $("#go").html("Fetching " + count + " comments <i class='fa fa-spinner fa-spin'></i>");
+        if(data.data && data.data.children) {
+            data.data.children.forEach(function(d) {
+                g_user_data["comments"].push({
+                    "id": d.data.id,
+                    "subreddit": d.data.subreddit,
+                    "text": d.data.body,
+                    "created_utc": d.data.created_utc,
+                    "score": +d.data.score,
+                    "submission_id": d.data.link_id.substring(3),
+                    "edited": d.data.edited,
+                    "top_level": d.data.parent_id.lastIndexOf("t3")===0,
+                    "gilded": d.data.gilded,
+                    "permalink": "http://www.reddit.com/r/" + d.data.subreddit + "/comments/" + d.data.link_id.substring(3) + "/_/" + d.data.id
+                });
+            });
+            if(data.data.after) {
+                after = data.data.after;
+                url = url + "&after=" + after;
+                setTimeout(function() {
+                    get_comment_page(url,after, count);
+                }, 2000);
+            } else {
+                get_submissions(g_username);
+            }
+        } else {
+            // ERROR
+        }
+    }).fail(function() {
+        console.log("Error");
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+    });
+}
+
+function get_submissions(username) {
+    var more = true;
+    var after = null;
+    var base_url = "http://www.reddit.com/user/" + username + "/submitted/.json?limit=100";
+    var url = base_url;
+    get_submission_page(base_url,after);
+}
+
+function get_submission_page(url,after,count) {
+    if(after) url+="&after="+after;
+    $.ajax({
+        url: url,
+        async: false
+    }).done(function(data) {
+        if(!count) {
+            count=100; 
+        } else {
+            count+=100;
+        }
+        $("#go").html("Fetching " + count + " submissions <i class='fa fa-spinner fa-spin'></i>");
+        if(data.data && data.data.children) {
+            data.data.children.forEach(function(d) {
+                g_user_data["submissions"].push({
+                    "id": d.data.id,
+                    "subreddit": d.data.subreddit,
+                    "text": d.data.selftext,
+                    "created_utc": d.data.created_utc,
+                    "score": +d.data.score,
+                    "permalink": "http://www.reddit.com" + d.data.permalink,
+                    "url": d.data.url,
+                    "title": d.data.title,
+                    "is_self": d.data.is_self,
+                    "gilded": d.data.gilded,
+                    "domain": d.data.domain
+                });
+            });
+            if(data.data.after) {
+                after = data.data.after;
+                url = url + "&after=" + after;
+                setTimeout(function() {
+                    get_submission_page(url,after,count);
+                }, 2000);
+            } else {
+                call_blockspring();
+            }
+        } else {
+            // ERROR
+        }
+    }).fail(function() {
+        console.log("Error");
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+    });
+}
+
+function call_blockspring() {
+    $("#go").html("Processing <i class='fa fa-spinner fa-spin'></i>");
+    if(!(g_user_data.comments.length || g_user_data.submissions.length)) {
+        $( "#error-message" ).text("No data available.");
+        $( "#error" ).show();
+        var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+        return;
+    }
+    $.ajax({
+            url: "https://sender.blockspring.com/api_v1/blocks/15d8e54759752564d45241992687b98f?api_key=d1b2e14d5b005465cfe3c83976a9240a",
+            type: "POST",
+            data: { username: g_username, json_data: JSON.stringify(g_user_data)},
+            crossDomain: true
+    }).done(function(response){
+        //Data is here from API
+        results = JSON.parse(response.results);
+        result = JSON.parse(results.result);
+        if(!response.error && result) {
+            g_username = result.username;
+            //Update data in local DB
+            $.ajax({
+                url: "/update",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(result),
+            }).done(function(response) {
+                if(response=="OK") {
+                    //Now user exists in local DB, forward to profile page
+                    window.location.href = "/u/"+g_username;
+                } else if(response=="NO_DATA") {
+                    $( "#error-message" ).text("No data available.");
+                    $( "#error" ).show();
+                    var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
+                    log_error(error_object);
+                }
+            });
+        } else if(response.error) {
+            //Something went wrong
+            $( "#error-message" ).text("An unexpected error has occurred. Please try again in a few minutes.");
+            $( "#error" ).show();
+            var error_object = {"username":g_username, "error_type": "server_error", "error_message":response.error};
+            log_error(error_object);
+        } else {
+            //Server too busy
+            $( "#error-message" ).text("Server too busy. Please try again in a few minutes.");
+            $( "#error" ).show();
+            var error_object = {"username":g_username, "error_type": "timeout", "error_message":null};
+            log_error(error_object);
+        }
+        $( "#go" ).button("reset");
+        
+    }).fail(function(jqXHR, status) {
+        console.log(jqXHR, status);
+        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
+        $("#error").show();
+        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
+        log_error(error_object);
+        $("#go").button("reset");
+    });
+}
+
+function set_user_agent(xhr, username) {
+    xhr.setRequestHeader('Sherlock v0.2 by /u/orionmelt on behalf of /u/'+username)
+}
 
 function convert_to_v2(data) {
     var computed_comment_karma = 0,
@@ -196,8 +550,33 @@ function convert_to_v2(data) {
     return v2;
 }
 
+function flatten_subreddits_tree(tree, flattened_array) {
+    var a = flattened_array;
+    if(!a) {
+        a = [];
+    }
+    if(tree.hasOwnProperty("children")) {
+        tree["children"].forEach(function(c) {
+            flatten_subreddits_tree(c,a);
+        })
+    } else {
+        a.push({
+            "name": tree["name"], 
+            "submissions": tree["submissions"],
+            "comments": tree["comments"],
+            "submission_karma": tree["submission_karma"],
+            "comment_karma": tree["comment_karma"],
+            "posts": tree["posts"],
+            "karma": tree["karma"],
+            "average_karma_per_comment": +tree["comments"]>0 ? +(+tree["comment_karma"]/+tree["comments"]).toFixed(2) : null,
+            "average_karma_per_submission": +tree["submissions"]>0 ? +(+tree["submission_karma"]/+tree["submissions"]).toFixed(2) : null,
+        });
+    }
+    return a;
+}
+
 function send_feedback(key, value, feedback) {
-    url = "/feedback?u="+username+"&k="+key+"&v="+value+"&f="+feedback;
+    url = "/feedback?u="+g_username+"&k="+key+"&v="+value+"&f="+feedback;
     $.ajax({
         url: url,
         type: "GET"
@@ -214,8 +593,8 @@ function log_error(error_object) {
 
 function wrap_data(key, text, sources, confidence) {
     var source_links = "";
-    show_source && sources && sources.forEach(function (s) {
-        source_links += " <a href=\""+s+"\">#</i></a> ";
+    sources && sources.forEach(function (s) {
+        source_links += " <a href=\""+s+"\" target=\"_blank\">#</i></a> ";
     });
     var c = "content";
     if(!confidence) c = "likely";
@@ -229,7 +608,9 @@ function wrap_data(key, text, sources, confidence) {
                     '<a class="incorrect" data-key="' + key + '" data-value="' + text + '" data-feedback="0" href="#">' +
                         '<i class="fa fa-times-circle-o" data-toggle="tooltip" data-placement="top" title="" data-original-title="This is incorrect/gibberish"></i>' +
                     '</a> ' + 
-                    source_links + 
+                '</span>' + 
+                '<span class="feedback">' +
+                source_links + 
                 '</span>' + 
             '</span>';
 }
@@ -237,6 +618,7 @@ function wrap_data(key, text, sources, confidence) {
 function word_cloud(words_array) {
     var data = JSON.parse(JSON.stringify(words_array));
     var fill = d3.scale.category20();
+    if(!data.length) return;
     min_count = data[data.length-1].size-1;
     max_count = data[0].size;
 
@@ -272,20 +654,22 @@ function word_cloud(words_array) {
 
 function populate_results(results) {
     $("#user-results").empty();
-    $("#user-results").html(base_results);
+    $("#user-results").html(g_base_results);
     var _data = JSON.parse(results);
     var data;
-    if(_data.version && _data.version===2) {
+    if(_data.version) { // Check if version in [2,3]?
         data = _data;
     } else {
         data = convert_to_v2(_data);
     }
-    username = data.username;
-    if(location.search.substring(1)==="sources") show_source=true;
-    if(show_source) {
+    g_username = data.username;
+    if(location.search.substring(1)==="debug") debug=true;
+    if(debug) {
         console.log(JSON.parse(results));
         console.log(data);
     }
+
+    var offset_hours = Math.floor(new Date().getTimezoneOffset()/60);
 
     // Summary
     $("#data-signup_date").text(new Date(data.summary.signup_date.date*1000).toLocaleDateString());
@@ -343,15 +727,17 @@ function populate_results(results) {
     }
 
     // Synopsis
-    synopsis_keys.forEach(function(d) {
+    var found_synopsis = false;
+    SYNOPSIS_KEYS.forEach(function(d) {
         var row_start = '<div class="row">';
         var row_content = "";
         var row_end = '</div>';
         var once = [];
         if(data.synopsis[d.key]) {
             if((data.synopsis[d.key].data && data.synopsis[d.key].data.length) || (data.synopsis[d.key].data_derived && data.synopsis[d.key].data_derived.length)) {
-                row_content += '<div class="col-md-3">' + d.label + '</div>';
-                row_content += '<div class="col-md-9">';
+                found_synopsis = true;
+                row_content += '<div class="col-md-4">' + d.label + '</div>';
+                row_content += '<div class="col-md-8">';
                 
                 if(data.synopsis[d.key].data && data.synopsis[d.key].data.length) {
                     if(d.key==="gender" || d.key==="orientation") {
@@ -373,6 +759,9 @@ function populate_results(results) {
             }
         }
     });
+    if(!found_synopsis) {
+        $("#synopsis-data").html('<div class="col-md-6 alert alert-warning"><p>No synopsis data available.</p></div>');
+    }
 
     // Posts across topics
     curious.sunburst({
@@ -469,10 +858,12 @@ function populate_results(results) {
         container: "data-activity_hour",
         data: data.metrics.hour.map(function(d) {
             return {
-                hour:d.hour,
+                hour:offset_hours>0 ? (24 + d.hour-offset_hours)%24 : (d.hour-offset_hours)%24,
                 posts:d.comments+d.submissions,
                 karma:d.comment_karma+d.submission_karma
             };
+        }).sort(function(a,b) {
+            return a.hour - b.hour
         }),
         width: 430,
         height: 430,
@@ -485,7 +876,7 @@ function populate_results(results) {
         tooltips:true,
         x: "hour",
         secondary_scale:["karma"],
-        x_label: "Hour of Day (in UTC)",
+        x_label: "Hour of Day (in " + g_user_timezone + ")",
         tooltip_names: hour_names
     });
 
@@ -493,13 +884,13 @@ function populate_results(results) {
     curious.treemap({
         container: "data-posts_by_subreddit",
         data: data.metrics.subreddit,
-        width: 860,
-        height: 430,
+        width: 840,
+        height: 384,
         margin: {
             top: 0,
-            right: 40,
-            bottom: 40,
-            left: 40
+            right: 0,
+            bottom: 0,
+            left: 0
         },
         tooltips:true,
         size_col: "posts"
@@ -524,7 +915,7 @@ function populate_results(results) {
         });
     }
 
-    // Text in Comments
+    // Corpus Statistics
     $("#data-total_word_count").text(data.summary.comments.total_word_count);
     $("#data-unique_word_count").text(data.summary.comments.unique_word_count);
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
@@ -532,6 +923,205 @@ function populate_results(results) {
 
     $("#user-results-loading").hide();
     $("#user-results").css({opacity:1});
+
+    // Heatmap
+    if(data.metrics.recent_activity_heatmap) {
+        var heatmap=data.metrics.recent_activity_heatmap;
+        var local_last_updated_hour = offset_hours>0 ? (24 + new Date(g_last_updated).getHours()-offset_hours)%24 : (new Date(g_last_updated).getHours()-offset_hours)%24;
+        var hours_to_add = 23 - local_last_updated_hour;
+        heatmap += Array(hours_to_add+1).join("0");
+        heatmap = heatmap.substring(heatmap.length-(60*24));
+        
+        var heatmap_data = [];
+        for(var i=0;i<heatmap.length/24;i++) {
+            heatmap_data[i] = [];
+            for(var j=0;j<24;j++) {
+                heatmap_data[i][j] = parseInt("0x"+heatmap[i*24+j],16);
+            }
+        }
+
+        curious.heatmap({
+            container: "data-heatmap",
+            data: heatmap_data,
+            width: 500,
+            height: 210,
+            margin: {
+                top: 0,
+                right: 0,
+                bottom: 20,
+                left: 0
+            },
+            tooltips:true,
+            tooltips_msg: function(d) {
+                return "<p>" + new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-d.x))).toLocaleDateString() + "</p>" + hour_names[d.y];
+            }
+        });
+    } else {
+        $("#data-heatmap").html("<div class=\"heatmap-sample\"><div><h3>Refresh data to see this chart.</h3></div></div>")
+
+    }
+
+
+    // Recent posts and karma
+    if(data.metrics.recent_karma && data.metrics.recent_posts && data.metrics.recent_karma.length===data.metrics.recent_posts.length) {
+        var recent_activity = data.metrics.recent_karma.slice(1).map(function(d,i) {
+            return {
+                date: new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-i-1))).toLocaleDateString(),
+                posts: data.metrics.recent_posts[i],
+                karma: d
+            };
+        });
+
+
+        curious.bar({
+            container: "data-recent_activity",
+            data: recent_activity,
+            width: 500,
+            height: 80,
+            margin: {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            },
+            tooltips:true,
+            x: "date",
+            x_label: "Date",
+            secondary_scale:["karma"],
+            hide_axes:true
+        });
+    }
+
+    // Recommendations
+    var subreddits_array = flatten_subreddits_tree(data.metrics.subreddit);
+    var c = subreddits_array.filter(function(a) {
+        return a.average_karma_per_comment;
+    }).sort(function(a,b) {
+        return a.average_karma_per_comment - b.average_karma_per_comment;
+    });
+
+    if(c && c.length>1) {
+
+        $("#data-worst_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[0].name + "\">/r/"+c[0].name+"</a>");
+        $("#data-worst_karma_per_comment_subtext").html(
+            "<p>" + c[0].average_karma_per_comment + " karma/comment on average</p>" + 
+            "<p><small>" + c[0].comment_karma + " total karma over " + c[0].comments + " comments</small></p>"
+        );
+
+        $("#data-best_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[c.length-1].name + "\">/r/"+c[c.length-1].name+"</a>");
+        $("#data-best_karma_per_comment_subtext").html(
+            "<p>" + c[c.length-1].average_karma_per_comment + " karma/comment on average</p>" + 
+            "<p><small>" + c[c.length-1].comment_karma + " total karma over " + c[c.length-1].comments + " comments</small></p>"
+        );
+
+        $("#no-recommendations").hide();
+
+    } else {
+        $("#best-comment-sub-reco").hide();
+        $("#worst-comment-sub-reco").hide();
+    }
+
+    var s = subreddits_array.filter(function(a) {
+        return a.average_karma_per_submission;
+    }).sort(function(a,b) {
+        return a.average_karma_per_submission - b.average_karma_per_submission;
+    });
+
+    if(s && s.length>1) {
+
+        $("#data-worst_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[0].name + "\">/r/"+s[0].name+"</a>");
+        $("#data-worst_karma_per_submission_subtext").html(
+            "<p>" + s[0].average_karma_per_submission + " karma/submission on average</p>" + 
+            "<p><small>" + s[0].submission_karma + " total karma over " + s[0].submissions + " submissions</small></p>"
+        );
+
+        $("#data-best_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[s.length-1].name + "\">/r/"+s[s.length-1].name+"</a>");
+        $("#data-best_karma_per_submission_subtext").html(
+            "<p>" + s[s.length-1].average_karma_per_submission + " karma/submission on average</p>" + 
+            "<p><small>" + s[s.length-1].submission_karma + " total karma over " + s[s.length-1].submissions + " submissions</small></p>"
+        );
+
+        $("#no-recommendations").hide();
+
+    } else {
+        $("#best-post-sub-reco").hide();
+        $("#worst-post-sub-reco").hide();
+    }
+
+    // Subreddit categorization
+    if(data.metrics.subreddit.children && data.metrics.subreddit.children.length) {
+        var other_subreddits = data.metrics.subreddit.children.filter(function(d) {
+            return d.name==="Other";
+        }).shift();
+        if(other_subreddits && other_subreddits.children) {
+            other_subreddits.children.forEach(function(c) {
+                $("#sub-categorize-table-tbody").append(
+                    '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</td>' +
+                    '<td><a href="#" class="input-editable-category" data-type="typeaheadjs" data-placement="right" data-title="Enter category"' +
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Edit category</a></td>' +
+                    '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter subcategory"' +
+                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" data-pk="' + c.name + '"title="">Edit subcategory</a></td>' +
+                    '<td><a href="#" class="input-editable-desc" data-type="text" data-pk="' + c.name + '" data-title="Enter description">Edit description</a></td>'
+                );
+            });
+            $.fn.editable.defaults.mode = 'inline';
+        
+            $('#sub-categorize-table a.input-editable-category').editable({
+                value: '',
+                name: 'category',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+                typeahead: {
+                    name: 'category',
+                    local: CATEGORIES
+                }
+            });
+            $('#sub-categorize-table a.input-editable-subcategory').editable({
+                value: '',
+                name: 'subcategory',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+                typeahead: {
+                    name: 'subcategory',
+                    local: SUB_CATEGORIES
+                }
+            });
+            $('#sub-categorize-table a.input-editable-desc').editable({
+                value: '',
+                name: 'description',
+                url: '/categorize',
+                params: function(params) {
+                    var data = {};
+                    data['page_id'] = Math.floor(Date.now());
+                    data['page_user'] = g_username;
+                    data['subreddit'] = params.pk;
+                    data['level_name'] = params.name;
+                    data['level_value'] = params.value;
+                    return data;
+                },
+            });
+        } else {
+            $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>')
+        }
+        
+    }
+
 }
 
 function home_init() {
@@ -540,10 +1130,10 @@ function home_init() {
         event.preventDefault();
         var $form = $( this ),
         username = $form.find( "input[name='username']" ).val();
-
-        //Check if user exists in local DB
+        if(!username) return;
+        g_username = username;
         $.ajax({
-            url: "/cu/" + username,
+            url: "/check/" + username,
             type: "GET",
         }).done(function(response) {
             if(response=="OK") {
@@ -551,70 +1141,33 @@ function home_init() {
                 window.location.href = "/u/"+username;
             } else {
                 //No dice, retrieve data from API
-                $.ajax({
-                    url: "https://sender.blockspring.com/api_v1/blocks/de18d68b50728daf9b35fcc49010a2fd?api_key=d1b2e14d5b005465cfe3c83976a9240a",
-                    type: "POST",
-                    data: { username: username},
-                    crossDomain: true
-                }).done(function(response){
-                    //Data is here from API
-                    $( "#go" ).button("reset");
-                    console.log(response);
-                    if(!response.error && response.results) {
-                        //Update data in local DB
-                        $.ajax({
-                            url: "/update_user",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: response.results,
-                        }).done(function(response) {
-                            if(response=="OK") {
-                                //Now user exists in local DB, forward to profile page
-                                window.location.href = "/u/"+username;
-                            } else if(response=="EMPTY") {
-                                $( "#error-message" ).text("No data available.");
-                                $( "#error" ).show();
-                                var error_object = {"username":username, "error_type": "empty", "error_message":response.error};
-                                log_error(error_object);
-                            }
-                        });
-                    } else if(response.error) {
-                        //Something went wrong
-                        $( "#error-message" ).text("Sorry, an unexpected error has occurred. Please try again in a few minutes.");
-                        $( "#error" ).show();
-                        var error_object = {"username":username, "error_type": "server_error", "error_message":response.error};
-                        log_error(error_object);
-                        //TODO - Update response.error in DB 
-                    } else {
-                        //Server too busy
-                        $( "#error-message" ).text("Server too busy. Please try again in a few minutes.");
-                        $( "#error" ).show();
-                        var error_object = {"username":username, "error_type": "timeout", "error_message":response.error};
-                        log_error(error_object);
-                    }
-                }).fail(function(jqXHR, status) {
-                    console.log(jqXHR, status);
-                });
-
-
+                get_data(username);
             }
         });
     });
 }
 
 function user_init() {
-    base_results = $("#user-results").html();
+    g_base_results = $("#user-results").html();
     populate_results(results);
     $(".feedback .correct, .feedback .incorrect").click(function() {
         key = $(this).data("key");
         value = $(this).data("value");
         feedback = $(this).data("feedback");
         send_feedback(key, value, feedback);
-        _f = $(this).parent();
-        _f.html("<span class='thanks'>Thanks!</span>");
-        _f.fadeOut(1000,function() {
+        feedback_container = $(this).parent();
+        feedback_container.html("<span class='thanks'>Thanks!</span>");
+        feedback_container.fadeOut(1000,function() {
             $(this).html(feedback?"<i class='fa fa-check correct_done'></i>":"<i class='fa fa-close incorrect_done'></i>");
         }).fadeIn(200);
         return false;
     });
+
+    $("#go").click(function(event) {
+        $("#go").button("loading");
+        event.preventDefault();
+        if(!g_username) return;
+        get_data(g_username);
+    });
 }
+
