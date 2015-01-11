@@ -185,30 +185,62 @@ var SUB_CATEGORIES = [
     'Writing'
 ]
 
+var ERROR_MSGS = {
+    "UNEXPECTED_ERROR": "An unexpected error has occurred. Please try again in a few minutes.",
+    "USER_NOT_FOUND": "User not found.",
+    "NO_DATA": "No data available.",
+    "REQUEST_CANCELED": "Server too busy. Please try again in a few minutes.",
+    "SERVER_BUSY": "Server too busy. Please try again in a few minutes."
+}
+
 $(function () {
-    $(".user-timezone").text(g_user_timezone); 
+    $(".user-timezone").text(g_user_timezone);
+    $("[data-hide]").on("click", function(){
+        $(this).closest("#error").hide();
+    });
 });
+
+function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
+    if(jqXHR.status===404) {
+        $("#error-message").text(ERROR_MSGS["USER_NOT_FOUND"]);
+        var error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":error_message};
+    } else if(jqXHR.status===0 && !jqXHR.responseText) {
+        $("#error-message").text(ERROR_MSGS["REQUEST_CANCELED"]);
+        var error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":error_message};
+    } else {
+        $("#error-message").text(ERROR_MSGS["UNEXPECTED_ERROR"]);
+        var error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":error_message};
+    }
+    $("#error").show();
+    log_error(error_object);
+    $("#go").button("reset");
+}
+
+function app_error(error_type, error_message) {
+    $( "#error-message" ).text(error_message);
+    $( "#error" ).show();
+    var error_object = {"username":g_username, "error_type": error_type, "error_message":error_message};
+    log_error(error_object);
+    $("#go").button("reset");
+}
 
 function get_data(username) {
     g_username=username;
-    get_about(username);
+    setTimeout(function() {
+        get_about(username);
+    }, 2000);
 }
 
 function get_about(username) {
     var about_url = "http://www.reddit.com/user/" + username + "/about.json";
     $.ajax({
         url: about_url,
-        async: false,
-        beforeSend: set_user_agent
+        timeout: 5000,
     }).done(function(data) {
         g_user_data["about"] = data.data;
         get_comments(username);
-    }).fail(function() {
-        $("#error-message").text("Username not found.");
-        $("#error").show();
-        var error_object = {"username":username, "error_type": "not_found", "error_message":null};
-        log_error(error_object);
-        $("#go").button("reset");
+    }).fail(function(jqXHR, status_text, error_thrown) {
+        jqXHR_error(jqXHR, status_text, error_thrown, "Error getting about.json");
     });
 }
 
@@ -224,7 +256,7 @@ function get_comment_page(url,after,count) {
     if(after) url+="&after="+after;
     $.ajax({
         url: url,
-        async: false
+        timeout: 3000,
     }).done(function(data) {
         if(!count) {
             count=100; 
@@ -259,13 +291,8 @@ function get_comment_page(url,after,count) {
         } else {
             // ERROR
         }
-    }).fail(function() {
-        console.log("Error");
-        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
-        $("#error").show();
-        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
-        log_error(error_object);
-        $("#go").button("reset");
+    }).fail(function(jqXHR, status_text, error_thrown) {
+        jqXHR_error(jqXHR, status_text, error_thrown, "Error getting comments.json");
     });
 }
 
@@ -281,7 +308,7 @@ function get_submission_page(url,after,count) {
     if(after) url+="&after="+after;
     $.ajax({
         url: url,
-        async: false
+        timeout: 3000,
     }).done(function(data) {
         if(!count) {
             count=100; 
@@ -317,24 +344,15 @@ function get_submission_page(url,after,count) {
         } else {
             // ERROR
         }
-    }).fail(function() {
-        console.log("Error");
-        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
-        $("#error").show();
-        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
-        log_error(error_object);
-        $("#go").button("reset");
+    }).fail(function(jqXHR, status_text, error_thrown) {
+        jqXHR_error(jqXHR, status_text, error_thrown, "Error getting submitted.json");
     });
 }
 
 function call_blockspring() {
     $("#go").html("Processing <i class='fa fa-spinner fa-spin'></i>");
     if(!(g_user_data.comments.length || g_user_data.submissions.length)) {
-        $( "#error-message" ).text("No data available.");
-        $( "#error" ).show();
-        var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
-        log_error(error_object);
-        $("#go").button("reset");
+        app_error("NO_DATA", ERROR_MSGS["NO_DATA"])
         return;
     }
     $.ajax({
@@ -366,32 +384,14 @@ function call_blockspring() {
                 }
             });
         } else if(response.error) {
-            //Something went wrong
-            $( "#error-message" ).text("An unexpected error has occurred. Please try again in a few minutes.");
-            $( "#error" ).show();
-            var error_object = {"username":g_username, "error_type": "server_error", "error_message":response.error};
-            log_error(error_object);
+            app_error("UNEXPECTED_ERROR",response.error)
         } else {
-            //Server too busy
-            $( "#error-message" ).text("Server too busy. Please try again in a few minutes.");
-            $( "#error" ).show();
-            var error_object = {"username":g_username, "error_type": "timeout", "error_message":null};
-            log_error(error_object);
+            app_error("SERVER_BUSY","")
         }
-        $( "#go" ).button("reset");
         
-    }).fail(function(jqXHR, status) {
-        console.log(jqXHR, status);
-        $("#error-message").text("An unexpected error has occurred. Please try again in a few minutes.");
-        $("#error").show();
-        var error_object = {"username":g_username, "error_type": "unknown_error", "error_message":null};
-        log_error(error_object);
-        $("#go").button("reset");
+    }).fail(function(jqXHR, status, error_thrown) {
+        jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");
     });
-}
-
-function set_user_agent(xhr, username) {
-    xhr.setRequestHeader('Sherlock v0.2 by /u/orionmelt on behalf of /u/'+username)
 }
 
 function convert_to_v2(data) {
