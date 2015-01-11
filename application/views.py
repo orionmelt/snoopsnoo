@@ -27,9 +27,9 @@ def home():
 
 def random_profile():
 	r = ndb.Key("User", random.randrange(pow(2,52)-1))
-	keys = User.query(User.key > r).fetch(10,keys_only=True)
+	keys = User.query(User.key > r).fetch(1000,keys_only=True)
 	if not keys:
-		User.query(User.key < r).fetch(10,keys_only=True)
+		User.query(User.key < r).fetch(1000,keys_only=True)
 	key = random.choice(keys)
 	return redirect("/u/"+key.get().username)
 
