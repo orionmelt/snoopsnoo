@@ -217,7 +217,7 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
 }
 
 function app_error(error_type, error_message) {
-    $( "#error-message" ).text(error_message);
+    $( "#error-message" ).text(ERROR_MSGS[error_type]); 
     $( "#error" ).show();
     var error_object = {"username":g_username, "error_type": error_type, "error_message":error_message};
     log_error(error_object);
@@ -226,19 +226,19 @@ function app_error(error_type, error_message) {
 
 function get_data(username) {
     g_username=username;
-    setTimeout(function() {
-        get_about(username);
-    }, 2000);
+    get_about(username);
 }
 
 function get_about(username) {
     var about_url = "http://www.reddit.com/user/" + username + "/about.json";
     $.ajax({
         url: about_url,
-        timeout: 5000,
+        timeout: 30000,
     }).done(function(data) {
         g_user_data["about"] = data.data;
-        get_comments(username);
+        setTimeout(function() {
+            get_comments(username);
+        }, 2000);
     }).fail(function(jqXHR, status_text, error_thrown) {
         jqXHR_error(jqXHR, status_text, error_thrown, "Error getting about.json");
     });
@@ -253,10 +253,10 @@ function get_comments(username) {
 }
 
 function get_comment_page(url,after,count) {
-    if(after) url+="&after="+after;
+    //if(after) url+="&after="+after;
     $.ajax({
-        url: url,
-        timeout: 3000,
+        url: after?url+"&after="+after:url,
+        timeout: 30000,
     }).done(function(data) {
         if(!count) {
             count=100; 
@@ -281,7 +281,7 @@ function get_comment_page(url,after,count) {
             });
             if(data.data.after) {
                 after = data.data.after;
-                url = url + "&after=" + after;
+                //url = url + "&after=" + after;
                 setTimeout(function() {
                     get_comment_page(url,after, count);
                 }, 2000);
@@ -292,6 +292,7 @@ function get_comment_page(url,after,count) {
             // ERROR
         }
     }).fail(function(jqXHR, status_text, error_thrown) {
+        console.log(jqXHR);
         jqXHR_error(jqXHR, status_text, error_thrown, "Error getting comments.json");
     });
 }
@@ -301,14 +302,16 @@ function get_submissions(username) {
     var after = null;
     var base_url = "http://www.reddit.com/user/" + username + "/submitted/.json?limit=100";
     var url = base_url;
-    get_submission_page(base_url,after);
+    setTimeout(function() {
+        get_submission_page(base_url,after);
+    }, 2000);
 }
 
 function get_submission_page(url,after,count) {
-    if(after) url+="&after="+after;
+    //if(after) url+="&after="+after;
     $.ajax({
-        url: url,
-        timeout: 3000,
+        url: after?url+"&after="+after:url,
+        timeout: 30000,
     }).done(function(data) {
         if(!count) {
             count=100; 
@@ -334,7 +337,7 @@ function get_submission_page(url,after,count) {
             });
             if(data.data.after) {
                 after = data.data.after;
-                url = url + "&after=" + after;
+                //url = url + "&after=" + after;
                 setTimeout(function() {
                     get_submission_page(url,after,count);
                 }, 2000);
@@ -362,6 +365,38 @@ function call_blockspring() {
             crossDomain: true
     }).done(function(response){
         //Data is here from API
+        if(response.error) {
+            app_error("UNEXPECTED_ERROR",response.error);
+        } else if(!response.results) {
+            app_error("SERVER_BUSY","");
+        } else {
+            var blockspring_results = JSON.parse(response.results);
+            if(blockspring_results) {
+                var sherlock_results = JSON.parse(blockspring_results.result);
+                if(sherlock_results) {
+                    g_username = sherlock_results.username;
+                    //Update data in local DB
+                    $.ajax({
+                        url: "/update",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(sherlock_results),
+                    }).done(function(response) {
+                        if(response=="OK") {
+                            //Now user exists in local DB, forward to profile page
+                            window.location.href = "/u/"+g_username;
+                        } else if(response=="NO_DATA") {
+                            app_error("NO_DATA", "");
+                        }
+                    });
+                } else {
+                    app_error("SERVER_BUSY","");
+                }
+            } else {
+                app_error("SERVER_BUSY","");
+            }
+        }
+        /*
         results = JSON.parse(response.results);
         result = JSON.parse(results.result);
         if(!response.error && result) {
@@ -371,7 +406,7 @@ function call_blockspring() {
                 url: "/update",
                 type: "POST",
                 contentType: "application/json",
-                data: JSON.stringify(result),
+                data: JSON.stringify(results),
             }).done(function(response) {
                 if(response=="OK") {
                     //Now user exists in local DB, forward to profile page
@@ -384,10 +419,13 @@ function call_blockspring() {
                 }
             });
         } else if(response.error) {
-            app_error("UNEXPECTED_ERROR",response.error)
+            console.log(response.error);
+            app_error("UNEXPECTED_ERROR",response.error);
+
         } else {
-            app_error("SERVER_BUSY","")
+            app_error("SERVER_BUSY","");
         }
+        */
         
     }).fail(function(jqXHR, status, error_thrown) {
         jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");

@@ -9,20 +9,24 @@
 		<div id="user-results" class="container">
 			<!-- Username -->
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-4">
 					<h3><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h3>
+				</div>
+				<div class="col-md-8">
+					
 				</div>
 			</div>
 			<!-- /Username -->
 
 			<!-- Toolbar -->
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-4">
 					<ul class="list-inline">
 						<li><h5>Last updated {{ user.last_updated|time_since }} ago</h5></li>
 						<li><button id="go" type="button" class="btn btn-primary btn-xs" data-loading-text="Refreshing <i class='fa fa-spinner fa-spin'></i>">Refresh Now</button></li>
 					</ul>
 				</div>
+				
 				<!--
 				<div class="col-md-4">
 					<ul class="list-inline share">
@@ -53,7 +57,122 @@
 						<span id="error-message"></span>
 					</div>
 				</div>
-			</div>	
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<div id="summary">
+			        	<h4>Summary <span class="permalink"><a href="#summary" title="Permalink">#</a></span></h4>
+			    		<h5>Your best, your worst and the basics.</h5>
+			    		<h6>Limited to the most recent 1000 submissions and comments.</h6>
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">redditor since</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-signup_date"></span></strong></p>
+		        				<p><small><span id="data-signup_date_humanized"></span></small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">first post on</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-first_post_date"></span></strong></p>
+		        				<p><small><span id="data-first_post_date_humanized"></span> after signup</small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">longest period between two consecutive posts</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-lurk_period_humanized"></span></strong></p>
+		        				<p><small><span id="data-lurk_period_dates"></span></small></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">gilded</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-submissions_gilded"></span> and <span id="data-comments_gilded"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">submission karma</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
+		        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
+		        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">comment karma</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
+		        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
+		        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
+		        			</div>
+		        		</div>
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">best comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">worst comment</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_comment"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">best submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-best_submission"></span></p>
+		        			</div>
+		        		</div>
+
+		        		<div class="row">
+		        			<div class="col-md-4">
+		        				<p class="text-muted">worst submission</p>
+		        			</div>
+		        			<div class="col-md-8">
+		        				<p><span id="data-worst_submission"></span></p>
+		        			</div>
+		        		</div>
+			        </div>
+				</div>
+				<div class="col-md-6">
+					<div id="synopsis">
+		        		<h4>Synopsis <span class="permalink"><a href="#synopsis" title="Permalink">#</a></span></h4>
+		        		<h5>Accuracy or making sense not guaranteed. Results may be incorrect or misleading.</h5>
+		        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below. Uncertain data is <span class="likely">in orange.</span> Follow # links for sources.</h6>
+		        		<div id="synopsis-data">
+		    			</div>
+					</div>
+				</div>
+			</div>
+			
 
 			<!-- Quick Stats -->
 			<hr>
@@ -224,125 +343,16 @@
 
 	        <!-- Detailed Summary -->
 	        <hr>
-	        <div id="summary">
-	        	<h4>Summary</h4>
-	    		<h5>Your best, your worst and the basics. <span class="permalink"><a href="#summary" title="Permalink">#</a></span></h5>
-	    		<h6>Limited to the most recent 1000 submissions and comments.</h6>
-	    		<div class="row">
-		        	<div class="col-md-6 bottom-buffer">
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">redditor since</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><strong><span id="data-signup_date"></span></strong></p>
-		        				<p><small><span id="data-signup_date_humanized"></span></small></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">first post on</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><strong><span id="data-first_post_date"></span></strong></p>
-		        				<p><small><span id="data-first_post_date_humanized"></span> after signup</small></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">longest period between two consecutive posts</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><strong><span id="data-lurk_period_humanized"></span></strong></p>
-		        				<p><small><span id="data-lurk_period_dates"></span></small></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">gilded</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><span id="data-submissions_gilded"></span> and <span id="data-comments_gilded"></span></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">submission karma</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
-		        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
-		        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">comment karma</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
-		        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
-		        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
-		        			</div>
-		        		</div>
-		        	</div>
-		        	<div class="col-md-6 bottom-buffer">
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">best comment</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><span id="data-best_comment"></span></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">worst comment</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><span id="data-worst_comment"></span></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">best submission</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><span id="data-best_submission"></span></p>
-		        			</div>
-		        		</div>
-
-		        		<div class="row">
-		        			<div class="col-md-4">
-		        				<p class="text-muted">worst submission</p>
-		        			</div>
-		        			<div class="col-md-8">
-		        				<p><span id="data-worst_submission"></span></p>
-		        			</div>
-		        		</div>
-		        	</div>
-	        	</div>
-	        </div>
+	        
 	        <!-- /Detailed Summary -->
 
 	        <!-- Experimental -->
+	        <!--
 	        <p class="highlight text-center"><strong>WARNING:</strong> Sections below this line are experimental and may contain more bugs than the rest of the site.</p>
+	    	-->
 	        <hr>
 			<div class="row">
-				<div id="synopsis" class="col-md-8 bottom-buffer">
-	        		<h4>Synopsis <span class="permalink"><a href="#synopsis" title="Permalink">#</a></span></h4>
-	        		<h5 class="text-danger">Accuracy or making sense not guaranteed. Results may be incorrect or misleading. Please do not use this data to harass people.</h5>
-	        		<h6>You can help by using the <i class="fa fa-check-circle-o"></i> and <i class="fa fa-times-circle-o"></i> feedback buttons below. Uncertain data is <span class="likely">in orange.</span> Follow # links for sources.</h6>
-	        		<div id="synopsis-data">
-	    			</div>
-				</div>
+				
 			</div>
 			<div class="row">
 				<div id="categorize-subreddits" class="col-md-12 bottom-buffer">
