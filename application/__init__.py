@@ -14,7 +14,7 @@ app = Flask('application')
 if 'Development' in os.getenv('SERVER_SOFTWARE'):
     os.environ['FLASK_CONF'] = 'DEV'
 
-if os.getenv('FLASK_CONF') == 'DEV':
+if os.getenv('FLASK_CONF') == 'DEV_PROFILER':
 	#development settings n
     app.config.from_object('application.settings.Development')
 	# Flask-DebugToolbar (only enabled when DEBUG=True)

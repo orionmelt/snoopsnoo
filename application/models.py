@@ -26,7 +26,7 @@ class Feedback(ndb.Model):
 	"""Models a feedback entry that records user feedback about synopsis items.
 	"""
 	username = ndb.StringProperty()
-	log_date = ndb.DateTimeProperty(auto_now_add=True)
+	log_date = ndb.DateTimeProperty(auto_now=True)
 	data_key = ndb.StringProperty()
 	data_value = ndb.StringProperty(indexed=False)
 	feedback = ndb.BooleanProperty()

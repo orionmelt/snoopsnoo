@@ -427,7 +427,7 @@ function call_blockspring() {
         }
         */
         
-    }).fail(function(jqXHR, status, error_thrown) {
+    }).fail(function(jqXHR, status_text, error_thrown) {
         jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");
     });
 }
