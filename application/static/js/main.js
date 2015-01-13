@@ -359,74 +359,38 @@ function call_blockspring() {
         return;
     }
     $.ajax({
-            url: "https://sender.blockspring.com/api_v1/blocks/15d8e54759752564d45241992687b98f?api_key=d1b2e14d5b005465cfe3c83976a9240a",
+            url: "https://sender.blockspring.com/api_v2/blocks/d81ee45151b68b00a2b25f0a464d1f1a?api_key=d1b2e14d5b005465cfe3c83976a9240a",
             type: "POST",
             data: { username: g_username, json_data: JSON.stringify(g_user_data)},
             crossDomain: true
     }).done(function(response){
         //Data is here from API
-        if(response.error) {
-            app_error("UNEXPECTED_ERROR",response.error);
+        if(response._errors && response._errors.length) {
+            app_error("UNEXPECTED_ERROR",response._errors.join("//"));
         } else if(!response.results) {
             app_error("SERVER_BUSY","");
         } else {
-            var blockspring_results = JSON.parse(response.results);
-            if(blockspring_results) {
-                var sherlock_results = JSON.parse(blockspring_results.result);
-                if(sherlock_results) {
-                    g_username = sherlock_results.username;
-                    //Update data in local DB
-                    $.ajax({
-                        url: "/update",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(sherlock_results),
-                    }).done(function(response) {
-                        if(response=="OK") {
-                            //Now user exists in local DB, forward to profile page
-                            window.location.href = "/u/"+g_username;
-                        } else if(response=="NO_DATA") {
-                            app_error("NO_DATA", "");
-                        }
-                    });
-                } else {
-                    app_error("SERVER_BUSY","");
-                }
+            var results = JSON.parse(response.results);
+            if(results) {
+                g_username = results.username;
+                //Update data in local DB
+                $.ajax({
+                    url: "/update",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(results),
+                }).done(function(response) {
+                    if(response=="OK") {
+                        //Now user exists in local DB, forward to profile page
+                        window.location.href = "/u/"+g_username;
+                    } else if(response=="NO_DATA") {
+                        app_error("NO_DATA", "");
+                    }
+                });
             } else {
                 app_error("SERVER_BUSY","");
             }
-        }
-        /*
-        results = JSON.parse(response.results);
-        result = JSON.parse(results.result);
-        if(!response.error && result) {
-            g_username = result.username;
-            //Update data in local DB
-            $.ajax({
-                url: "/update",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(results),
-            }).done(function(response) {
-                if(response=="OK") {
-                    //Now user exists in local DB, forward to profile page
-                    window.location.href = "/u/"+g_username;
-                } else if(response=="NO_DATA") {
-                    $( "#error-message" ).text("No data available.");
-                    $( "#error" ).show();
-                    var error_object = {"username":g_username, "error_type": "empty", "error_message":null};
-                    log_error(error_object);
-                }
-            });
-        } else if(response.error) {
-            console.log(response.error);
-            app_error("UNEXPECTED_ERROR",response.error);
-
-        } else {
-            app_error("SERVER_BUSY","");
-        }
-        */
-        
+        }        
     }).fail(function(jqXHR, status_text, error_thrown) {
         jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");
     });
@@ -1167,7 +1131,7 @@ function home_init() {
         $( "#go" ).button("loading");
         event.preventDefault();
         var $form = $( this ),
-        username = $form.find( "input[name='username']" ).val();
+        username = $form.find( "input[name='username']" ).val().trim();
         if(!username) return;
         g_username = username;
         $.ajax({
