@@ -211,12 +211,16 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
         $("#error-message").text(ERROR_MSGS["UNEXPECTED_ERROR"]);
         var error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":error_message};
     }
+    $(".loading-progress").hide();
+    $(".loading-done").show();
     $("#error").show();
     log_error(error_object);
     $("#go").button("reset");
 }
 
 function app_error(error_type, error_message) {
+    $(".loading-progress").hide();
+    $(".loading-done").show();
     $( "#error-message" ).text(ERROR_MSGS[error_type]); 
     $( "#error" ).show();
     var error_object = {"username":g_username, "error_type": error_type, "error_message":error_message};
@@ -342,7 +346,7 @@ function get_submission_page(url,after,count) {
                     get_submission_page(url,after,count);
                 }, 2000);
             } else {
-                call_blockspring();
+                call_blockspring(true);
             }
         } else {
             // ERROR
@@ -352,16 +356,16 @@ function get_submission_page(url,after,count) {
     });
 }
 
-function call_blockspring() {
+function call_blockspring(local_fetch) {
     $("#go").html("Processing <i class='fa fa-spinner fa-spin'></i>");
-    if(!(g_user_data.comments.length || g_user_data.submissions.length)) {
+    if(local_fetch && !(g_user_data.comments.length || g_user_data.submissions.length)) {
         app_error("NO_DATA", ERROR_MSGS["NO_DATA"])
         return;
     }
     $.ajax({
-            url: "https://sender.blockspring.com/api_v2/blocks/d81ee45151b68b00a2b25f0a464d1f1a?api_key=d1b2e14d5b005465cfe3c83976a9240a",
+            url: "https://sender.blockspring.com/api_v2/blocks/f4b274d18972645330dd85b627ca0bd1?api_key=d1b2e14d5b005465cfe3c83976a9240a",
             type: "POST",
-            data: { username: g_username, json_data: JSON.stringify(g_user_data)},
+            data: { username: g_username, json_data: local_fetch ? JSON.stringify(g_user_data) : null},
             crossDomain: true
     }).done(function(response){
         //Data is here from API
@@ -1143,7 +1147,9 @@ function home_init() {
                 window.location.href = "/u/"+username;
             } else {
                 //No dice, retrieve data from API
-                get_data(username);
+                ////get_data(username);
+                g_username = username;
+                call_blockspring(false);
             }
         });
     });
