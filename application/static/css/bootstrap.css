@@ -1159,10 +1159,10 @@ a.text-success:hover {
   color: #e6e6e6;
 }
 .text-info {
-  color: #ffffff;
+  color: #555555;
 }
 a.text-info:hover {
-  color: #e6e6e6;
+  color: #3c3c3c;
 }
 .text-warning {
   color: #ffffff;
@@ -4115,13 +4115,13 @@ a.label:focus {
 .alert-info {
   background-color: #75caeb;
   border-color: #40b5e3;
-  color: #ffffff;
+  color: #555555;
 }
 .alert-info hr {
   border-top-color: #29ade0;
 }
 .alert-info .alert-link {
-  color: #e6e6e6;
+  color: #3c3c3c;
 }
 .alert-warning {
   background-color: #ff851b;
@@ -4464,7 +4464,7 @@ a.label:focus {
   border-color: transparent;
 }
 .panel-info > .panel-heading {
-  color: #ffffff;
+  color: #555555;
   background-color: #75caeb;
   border-color: transparent;
 }
@@ -4473,7 +4473,7 @@ a.label:focus {
 }
 .panel-info > .panel-heading .badge {
   color: #75caeb;
-  background-color: #ffffff;
+  background-color: #555555;
 }
 .panel-info > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: transparent;

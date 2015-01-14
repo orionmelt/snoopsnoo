@@ -168,6 +168,17 @@ h6 {
 
 /* Custom - Common */
 
+.logo {
+  font-weight: 400;
+  color: #222;
+  text-transform: uppercase;
+}
+
+.logo img {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
 .purple {
   color:#9c27b0;
 }
