@@ -385,7 +385,7 @@
 		<script>
 		var results=JSON.stringify({{ data }});
 		$(function () {
-			g_last_updated = new Date("{{ user.last_updated }}");
+			g_last_updated = new Date('{{ user.last_updated.strftime("%B %d, %Y %H:%M:%S") }}');
 			user_init();
 			$("[data-toggle='tooltip']").tooltip(); 
 		});

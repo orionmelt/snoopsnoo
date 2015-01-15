@@ -942,7 +942,10 @@
         var margin = options.margin;
         var color = options.color || d3.scale.category20();
 
-        if (!data.length) console.log("Error: No data.");
+        if (!data.length) {
+            console.log("Error: No data.");
+            return;
+        }
         min_count = data[data.length-1].size-1;
         max_count = data[0].size;
 
