@@ -5,15 +5,15 @@
         <description>Snoop Snoo Blog - OrionMelt</description>
         <link>blog.snoopsnoo.com</link>
         <link>blog.snoopsnoo.com</link>
-        <lastBuildDate>2015-01-14T22:08:16-07:00</lastBuildDate>
-        <pubDate>2015-01-14T22:08:16-07:00</pubDate>
+        <lastBuildDate>2015-01-14T22:27:23-07:00</lastBuildDate>
+        <pubDate>2015-01-14T22:27:23-07:00</pubDate>
         <ttl>1800</ttl>
 
 
         <item>
                 <title>What's better than version 0.1?</title>
                 <description>
-&lt;p&gt;Version 0.2, of course. Since the public release of &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/static/img/logo_md.png&quot; /&gt; SNOO&lt;/span&gt; ten days ago, I’ve received lots of feedback that helped me make some important changes. I’ve just published v0.2 of the site, and I hope to continue to add features and improve accuracy. Here is the list of new features that went live today:&lt;/p&gt;
+&lt;p&gt;Version 0.2, of course. Since the public release of &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt; ten days ago, I’ve received lots of feedback that helped me make some important changes. I’ve just published v0.2 of the site, and I hope to continue to add features and improve accuracy. Here is the list of new features that went live today:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;You can now refresh data to keep your profile up-to-date.&lt;/li&gt;
@@ -36,7 +36,7 @@
         <item>
                 <title>Hello reddit.</title>
                 <description>
-&lt;p&gt;I had wanted to add several new features to &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/static/img/logo_md.png&quot; /&gt; SNOO&lt;/span&gt; before I released it publicly, such as letting users authenticate via OAuth, profile views and even more charts and analytics. But after realizing that it would never be &lt;em&gt;truly&lt;/em&gt; ready for public release, I bought SnoopSnoo.com, uploaded the current version and posted the link on &lt;a href=&quot;http://www.reddit.com/r/InternetIsBeautiful/comments/2qucap/a_website_that_shows_interesting_information/&quot;&gt;/r/InternetIsBeautiful&lt;/a&gt; and &lt;a href=&quot;http://www.reddit.com/r/dataisbeautiful/comments/2r3jnk/your_reddit_activity_analyzed_and_visualized_oc/&quot;&gt;/r/dataisbeautiful&lt;/a&gt;. Both posts were received quite well, and I got a ton of useful feedback from redditors. &lt;/p&gt;
+&lt;p&gt;I had wanted to add several new features to &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt; before I released it publicly, such as letting users authenticate via OAuth, profile views and even more charts and analytics. But after realizing that it would never be &lt;em&gt;truly&lt;/em&gt; ready for public release, I bought SnoopSnoo.com, uploaded the current version and posted the link on &lt;a href=&quot;http://www.reddit.com/r/InternetIsBeautiful/comments/2qucap/a_website_that_shows_interesting_information/&quot;&gt;/r/InternetIsBeautiful&lt;/a&gt; and &lt;a href=&quot;http://www.reddit.com/r/dataisbeautiful/comments/2r3jnk/your_reddit_activity_analyzed_and_visualized_oc/&quot;&gt;/r/dataisbeautiful&lt;/a&gt;. Both posts were received quite well, and I got a ton of useful feedback from redditors. &lt;/p&gt;
 
 &lt;p&gt;Someone suggested that I crosspost it to &lt;a href=&quot;http://www.reddit.com/r/secretsanta/comments/2r7xhr/website_that_shows_interesting_information_about/&quot;&gt;/r/secretsanta&lt;/a&gt; - I did and the response was excitingly positive. I hadn’t even considered this use case, so it was great to discover new ways people could use the site.&lt;/p&gt;
 
@@ -50,7 +50,7 @@
         <item>
                 <title>Let's begin.</title>
                 <description>
-&lt;p&gt;Hello, and welcome to &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/static/img/logo_md.png&quot; /&gt; SNOO&lt;/span&gt;’s development blog. I’ve been on reddit since its inception way back in 2005 (mostly lurking, though) and have always thought it would be interesting to analyze the massive amounts of data it generates, especially after its huge growth in the past few years – so I built &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/static/img/logo_md.png&quot; /&gt; SNOO&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Hello, and welcome to &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt;’s development blog. I’ve been on reddit since its inception way back in 2005 (mostly lurking, though) and have always thought it would be interesting to analyze the massive amounts of data it generates, especially after its huge growth in the past few years – so I built &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt;.&lt;/p&gt;
 
 &lt;p&gt;As of today, it simply does two things:&lt;/p&gt;
 
