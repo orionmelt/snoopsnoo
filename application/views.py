@@ -51,7 +51,9 @@ def user_profile(username):
 	if not user:
 		user = User.query(User.username == username).get()
 	if not user:
-		abort(404)
+		#abort(404)
+		return render_template('blank_profile.html', username=username)
+
 	if "version" in user.data and user.data["version"] in [2,3]:
 		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
 															  	if user.data["summary"]["comments"]["best"]["text"] else None
