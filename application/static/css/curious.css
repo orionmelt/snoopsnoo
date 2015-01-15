@@ -179,6 +179,10 @@ h6 {
   vertical-align: baseline;
 }
 
+.logo-small img {
+  height:10px;
+}
+
 .purple {
   color:#9c27b0;
 }
