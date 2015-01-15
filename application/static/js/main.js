@@ -1,13 +1,12 @@
 var g_base_results = "";
 var g_username = "";
 var g_last_updated = "";
-var debug = false;
 var g_user_data = {
     "about": null,
     "comments": [],
     "submissions": [],
 };
-
+var g_debug = false;
 var g_user_timezone = jstz.determine().name();
 
 var FULL_WIDTH=860;
@@ -183,7 +182,7 @@ var SUB_CATEGORIES = [
     'World News',
     'Wrestling',
     'Writing'
-]
+];
 
 var ERROR_MSGS = {
     "UNEXPECTED_ERROR": "An unexpected error has occurred. Please try again in a few minutes.",
@@ -191,7 +190,7 @@ var ERROR_MSGS = {
     "NO_DATA": "No data available.",
     "REQUEST_CANCELED": "Server too busy. Please try again in a few minutes.",
     "SERVER_BUSY": "Server too busy. Please try again in a few minutes."
-}
+};
 
 $(function () {
     $(".user-timezone").text(g_user_timezone);
@@ -201,15 +200,16 @@ $(function () {
 });
 
 function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
+    var error_object = {};
     if(jqXHR.status===404) {
-        $("#error-message").text(ERROR_MSGS["USER_NOT_FOUND"]);
-        var error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":error_message};
+        $("#error-message").text(ERROR_MSGS.USER_NOT_FOUND);
+        error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":error_message};
     } else if(jqXHR.status===0 && !jqXHR.responseText) {
-        $("#error-message").text(ERROR_MSGS["REQUEST_CANCELED"]);
-        var error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":error_message};
+        $("#error-message").text(ERROR_MSGS.REQUEST_CANCELED);
+        error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":error_message};
     } else {
-        $("#error-message").text(ERROR_MSGS["UNEXPECTED_ERROR"]);
-        var error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":error_message};
+        $("#error-message").text(ERROR_MSGS.UNEXPECTED_ERROR);
+        error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":error_message};
     }
     $(".loading-progress").hide();
     $(".loading-done").show();
@@ -221,7 +221,7 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
 function app_error(error_type, error_message) {
     $(".loading-progress").hide();
     $(".loading-done").show();
-    $( "#error-message" ).text(ERROR_MSGS[error_type]); 
+    $( "#error-message" ).text(ERROR_MSGS[error_type]);
     $( "#error" ).show();
     var error_object = {"username":g_username, "error_type": error_type, "error_message":error_message};
     log_error(error_object);
@@ -239,7 +239,7 @@ function get_about(username) {
         url: about_url,
         timeout: 30000,
     }).done(function(data) {
-        g_user_data["about"] = data.data;
+        g_user_data.about = data.data;
         setTimeout(function() {
             get_comments(username);
         }, 2000);
@@ -270,7 +270,7 @@ function get_comment_page(url,after,count) {
         $("#go").html("Fetching " + count + " comments <i class='fa fa-spinner fa-spin'></i>");
         if(data.data && data.data.children) {
             data.data.children.forEach(function(d) {
-                g_user_data["comments"].push({
+                g_user_data.comments.push({
                     "id": d.data.id,
                     "subreddit": d.data.subreddit,
                     "text": d.data.body,
@@ -325,7 +325,7 @@ function get_submission_page(url,after,count) {
         $("#go").html("Fetching " + count + " submissions <i class='fa fa-spinner fa-spin'></i>");
         if(data.data && data.data.children) {
             data.data.children.forEach(function(d) {
-                g_user_data["submissions"].push({
+                g_user_data.submissions.push({
                     "id": d.data.id,
                     "subreddit": d.data.subreddit,
                     "text": d.data.selftext,
@@ -359,7 +359,7 @@ function get_submission_page(url,after,count) {
 function call_blockspring(local_fetch) {
     $("#go").html("Processing <i class='fa fa-spinner fa-spin'></i>");
     if(local_fetch && !(g_user_data.comments.length || g_user_data.submissions.length)) {
-        app_error("NO_DATA", ERROR_MSGS["NO_DATA"])
+        app_error("NO_DATA", ERROR_MSGS.NO_DATA);
         return;
     }
     $.ajax({
@@ -370,7 +370,7 @@ function call_blockspring(local_fetch) {
     }).done(function(response){
         //Data is here from API
         if(response._errors && response._errors.length) {
-            app_error("UNEXPECTED_ERROR",response._errors.join("//"));
+            app_error(response._errors[0].title,response._errors[0].message);
         } else if(!response.results) {
             app_error("SERVER_BUSY","");
         } else {
@@ -405,22 +405,10 @@ function convert_to_v2(data) {
         computed_submission_karma = 0,
         average_comment_karma = 0,
         average_submission_karma = 0;
-
-    computed_comment_karma = data.stats.metrics.date.map(function(d) {
-        return d.comment_karma;
-    }).reduce(function(p,c) {
-        return p+c;
-    }, 0);
-
-    computed_submission_karma = data.stats.metrics.date.map(function(d) {
-        return d.submission_karma;
-    }).reduce(function(p,c) {
-        return p+c;
-    }, 0);
-
-    average_comment_karma = +(computed_comment_karma/data.stats.basic.comments.count).toFixed(2);
-    average_submission_karma = +(computed_submission_karma/data.stats.basic.submissions.count).toFixed(2);
-
+    
+    var key=null,
+        s={};
+    
     var v2 = {
         "version": 2,
         "username": data.username,
@@ -471,44 +459,62 @@ function convert_to_v2(data) {
             "topic": data.stats.metrics.topic,
             "common_words": data.stats.common_words
         }
-    }
-    for(var key in data.about) {
+    };
+
+    computed_comment_karma = data.stats.metrics.date.map(function(d) {
+        return d.comment_karma;
+    }).reduce(function(p,c) {
+        return p+c;
+    }, 0);
+
+    computed_submission_karma = data.stats.metrics.date.map(function(d) {
+        return d.submission_karma;
+    }).reduce(function(p,c) {
+        return p+c;
+    }, 0);
+
+    average_comment_karma = +(computed_comment_karma/data.stats.basic.comments.count).toFixed(2);
+    average_submission_karma = +(computed_submission_karma/data.stats.basic.submissions.count).toFixed(2);
+
+    
+
+    for(key in data.about) {
         if(data.about.hasOwnProperty(key)) {
             if(key==="derived_attributes") continue;
-            var s = {};
+            s = {};
             var d_key = ["drugs", "locations", "possessions"].indexOf(key)!=-1 ? key.substring(0, key.length-1) : key;
 
             if(data.about[key]) {
                 if(typeof data.about[key] === "string") {
-                    s["data"] = [{
+                    s.data = [{
                         "value": data.about[key],
                         "count": null,
                         "sources": null
                     }];
                 } else if($.isArray(data.about[key])) {
-                    if(data.about[key].length) s["data"] = data.about[key];
+                    if(data.about[key].length) s.data = data.about[key];
                 } else if(typeof data.about[key] === "object" && data.about[key].core && data.about[key].core.length) {
-                    s["data"] = data.about[key].core;
+                    s.data = data.about[key].core;
                 } else if(typeof data.about[key] === "object" && data.about[key].more && data.about[key].more.length) {
-                    s["data_extra"] = data.about[key].more;
+                    s.data_extra = data.about[key].more;
                 } else if(typeof data.about[key] === "object") {
 
                 } else {
                     //What could this be?
                 }
             }
-            if(data.about["derived_attributes"] && data.about["derived_attributes"][d_key]) {
-                if(typeof data.about["derived_attributes"][d_key] === "string") {
-                    s["data_derived"] = {
-                        "value": data.about["derived_attributes"][d_key],
+            if(data.about.derived_attributes && data.about.derived_attributes[d_key]) {
+                if(typeof data.about.derived_attributes[d_key] === "string") {
+                    s.data_derived = {
+                        "value": data.about.derived_attributes[d_key],
                         "count": null,
                         "sources": null
-                    }
-                } else if($.isArray(data.about["derived_attributes"][d_key])) {
-                    if(data.about["derived_attributes"][d_key].length) {
-                        s["data_derived"] = [];
-                        data.about["derived_attributes"][d_key].forEach(function(d) {
-                             s["data_derived"].push({
+                    };
+                } else if($.isArray(data.about.derived_attributes[d_key])) {
+                    if(data.about.derived_attributes[d_key].length) {
+                        s.data_derived = [];
+                        data.about.derived_attributes[d_key].forEach(function(d) {
+                             s.data_derived.push({
                                 "value": d[0],
                                 "count": d[1],
                                 "sources": null
@@ -526,16 +532,16 @@ function convert_to_v2(data) {
             }
         }
     }
-    for(var key in data.about.derived_attributes) {
+    for(key in data.about.derived_attributes) {
         var o_key = ["drug", "location", "possession"].indexOf(key)!=-1 ? key+"s" : key;
         if(data.about.hasOwnProperty(o_key)) continue;
         if(data.about.derived_attributes.hasOwnProperty(key)) {
-            var s = {};
+            s = {};
             if(data.about.derived_attributes[key]) {
                 if(data.about.derived_attributes[key].length) {
-                    s["data_derived"] = [];
-                    data.about["derived_attributes"][key].forEach(function(d) {
-                         s["data_derived"].push({
+                    s.data_derived = [];
+                    data.about.derived_attributes[key].forEach(function(d) {
+                         s.data_derived.push({
                             "value": d[0],
                             "count": d[1],
                             "sources": null
@@ -562,20 +568,20 @@ function flatten_subreddits_tree(tree, flattened_array) {
         a = [];
     }
     if(tree.hasOwnProperty("children")) {
-        tree["children"].forEach(function(c) {
+        tree.children.forEach(function(c) {
             flatten_subreddits_tree(c,a);
-        })
+        });
     } else {
         a.push({
-            "name": tree["name"], 
-            "submissions": tree["submissions"],
-            "comments": tree["comments"],
-            "submission_karma": tree["submission_karma"],
-            "comment_karma": tree["comment_karma"],
-            "posts": tree["posts"],
-            "karma": tree["karma"],
-            "average_karma_per_comment": +tree["comments"]>0 ? +(+tree["comment_karma"]/+tree["comments"]).toFixed(2) : null,
-            "average_karma_per_submission": +tree["submissions"]>0 ? +(+tree["submission_karma"]/+tree["submissions"]).toFixed(2) : null,
+            "name": tree.name, 
+            "submissions": tree.submissions,
+            "comments": tree.comments,
+            "submission_karma": tree.submission_karma,
+            "comment_karma": tree.comment_karma,
+            "posts": tree.posts,
+            "karma": tree.karma,
+            "average_karma_per_comment": +tree.comments>0 ? +(+tree.comment_karma/+tree.comments).toFixed(2) : null,
+            "average_karma_per_submission": +tree.submissions>0 ? +(+tree.submission_karma/+tree.submissions).toFixed(2) : null,
         });
     }
     return a;
@@ -599,9 +605,11 @@ function log_error(error_object) {
 
 function wrap_data(key, text, sources, confidence) {
     var source_links = "";
-    sources && sources.forEach(function (s) {
-        source_links += " <a href=\""+s+"\" target=\"_blank\">#</i></a> ";
-    });
+    if(sources) {
+        sources.forEach(function (s) {
+            source_links += " <a href=\""+s+"\" target=\"_blank\">#</i></a> ";
+        });
+    }
     var c = "content";
     if(!confidence) c = "likely";
     return  '<span class="data-block">' + 
@@ -632,9 +640,8 @@ function populate_results(results) {
         data = convert_to_v2(_data);
     }
     g_username = data.username;
-    if(location.search.substring(1)==="debug") debug=true;
-    if(debug) {
-        console.log(JSON.parse(results));
+    if(location.search.substring(1)==="debug") g_debug=true;
+    if(g_debug) {
         console.log(data);
     }
 
@@ -651,8 +658,8 @@ function populate_results(results) {
     $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
 
     if(data.summary.submissions.gilded>0) {
-        $("#data-submissions_gilded").html("<a href='http://www.reddit.com/user/" + data.username + "/gilded' target='_blank'>" 
-            + data.summary.submissions.gilded + " times from submissions</a>");
+        $("#data-submissions_gilded").html("<a href='http://www.reddit.com/user/" + data.username + "/gilded' target='_blank'>" + 
+            data.summary.submissions.gilded + " times from submissions</a>");
     } else {
         $("#data-submissions_gilded").text(data.summary.submissions.gilded + " submissions");
     }
@@ -754,7 +761,7 @@ function populate_results(results) {
             min: 0,
             max: 10,
             slide: function( event, ui ) {
-                if(ui.value==0) {
+                if(ui.value===0) {
                     $( "#top-words-count" ).text("Showing all words. Drag slider below to exclude top words.");    
                 } else {
                     $( "#top-words-count" ).text("Excluded top " + ui.value + " words.");
@@ -844,7 +851,7 @@ function populate_results(results) {
 
     // Metrics chart - Hour
     var hour_names = ["Midnight", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", 
-                          "Noon", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
+                          "Noon", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"];
     curious.bar({
         container: "data-activity_hour",
         data: data.metrics.hour.map(function(d) {
@@ -854,7 +861,7 @@ function populate_results(results) {
                 karma:d.comment_karma+d.submission_karma
             };
         }).sort(function(a,b) {
-            return a.hour - b.hour
+            return a.hour - b.hour;
         }),
         width: 430,
         height: 430,
@@ -1063,11 +1070,11 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = Math.floor(Date.now());
-                    data['page_user'] = g_username;
-                    data['subreddit'] = params.pk;
-                    data['level_name'] = params.name;
-                    data['level_value'] = params.value;
+                    data.page_id = Math.floor(Date.now());
+                    data.page_user = g_username;
+                    data.subreddit = params.pk;
+                    data.level_name = params.name;
+                    data.level_value = params.value;
                     return data;
                 },
                 typeahead: {
@@ -1081,11 +1088,11 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = Math.floor(Date.now());
-                    data['page_user'] = g_username;
-                    data['subreddit'] = params.pk;
-                    data['level_name'] = params.name;
-                    data['level_value'] = params.value;
+                    data.page_id = Math.floor(Date.now());
+                    data.page_user = g_username;
+                    data.subreddit = params.pk;
+                    data.level_name = params.name;
+                    data.level_value = params.value;
                     return data;
                 },
                 typeahead: {
@@ -1099,20 +1106,19 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data['page_id'] = Math.floor(Date.now());
-                    data['page_user'] = g_username;
-                    data['subreddit'] = params.pk;
-                    data['level_name'] = params.name;
-                    data['level_value'] = params.value;
+                    data.page_id = Math.floor(Date.now());
+                    data.page_user = g_username;
+                    data.subreddit = params.pk;
+                    data.level_name = params.name;
+                    data.level_value = params.value;
                     return data;
                 },
             });
         } else {
-            $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>')
+            $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>');
         }
         
     }
-
 }
 
 function home_init() {
@@ -1160,7 +1166,8 @@ function user_init() {
         $("#go").button("loading");
         event.preventDefault();
         if(!g_username) return;
-        get_data(g_username);
+        //get_data(g_username);
+        call_blockspring(false);
     });
 }
 

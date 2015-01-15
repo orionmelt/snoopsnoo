@@ -12,7 +12,7 @@
     
     // Draws a timeseries chart. A field named "date" is required and will be used for the x-axis.
     curious.timeseries = function(options) {
-        options = options || {};
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
@@ -205,8 +205,7 @@
     };
 
     curious.bar = function(options) {
-        options = options || {};
-        
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
@@ -366,8 +365,7 @@
     /*
     // Draws a circlepack
     curious.circlepack = function(options) {
-        options = options || {};
-        
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
@@ -501,8 +499,7 @@
 
     // Draws a zoomable treemap
     curious.treemap = function(options) {
-        options = options || {};
-        
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
@@ -657,8 +654,7 @@
 
     //Draws a sunburst char.
     curious.sunburst = function(options) {
-        options = options || {};
-        
+        var options = options || {};
         var container = "#"+options.container;
         var legend_container = "#"+options.legend_container;
         var data = JSON.parse(JSON.stringify(options.data));
@@ -868,7 +864,7 @@
 
     // Draws a heatmap chart.
     curious.heatmap = function(options) {
-        options = options || {};
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
@@ -938,7 +934,7 @@
 
     // Draws a word cloud.
     curious.wordcloud = function(options) {
-        options = options || {};
+        var options = options || {};
         var container = "#"+options.container;
         var data = JSON.parse(JSON.stringify(options.data));
         var width = options.width;
