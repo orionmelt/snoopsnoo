@@ -499,6 +499,7 @@
     };
     */
 
+    // Draws a zoomable treemap
     curious.treemap = function(options) {
         options = options || {};
         
@@ -654,6 +655,7 @@
         }
     };
 
+    //Draws a sunburst char.
     curious.sunburst = function(options) {
         options = options || {};
         
@@ -932,6 +934,51 @@
 
         heatMap.transition().duration(1000)
             .style("fill", function(d) { return color(d.value); });              
+    };
+
+    // Draws a word cloud.
+    curious.wordcloud = function(options) {
+        options = options || {};
+        var container = "#"+options.container;
+        var data = JSON.parse(JSON.stringify(options.data));
+        var width = options.width;
+        var height = options.height;
+        var margin = options.margin;
+        var color = options.color || d3.scale.category20();
+
+        if (!data.length) console.log("Error: No data.");
+        min_count = data[data.length-1].size-1;
+        max_count = data[0].size;
+
+        var cloud = d3.layout.cloud().size([width, height])
+            .words(data)
+            .padding(5)
+            .rotate(function() { return ~~(Math.random() * 2) * 90; })
+            .fontSize(function(d,i) {
+                size = (60*(d.size-min_count))/(max_count-min_count);
+                return size>12 ? size : 12;
+            })
+            .on("end", draw)
+            .start();
+
+        function draw(words) {
+            d3.select(container).append("svg")
+                .attr("width", width+margin.left+margin.right)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + (width+margin.left+margin.right)/2 +"," + height/2 + ")")
+                .selectAll("text")
+                .data(words)
+            .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("fill", function(d, i) { return color(i); })
+                .attr("text-anchor", "middle")
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+
+        }
     };
 
     this.curious = curious;

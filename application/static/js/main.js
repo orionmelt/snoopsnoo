@@ -621,43 +621,6 @@ function wrap_data(key, text, sources, confidence) {
             '</span>';
 }
 
-function word_cloud(words_array) {
-    var data = JSON.parse(JSON.stringify(words_array));
-    var fill = d3.scale.category20();
-    if(!data.length) return;
-    min_count = data[data.length-1].size-1;
-    max_count = data[0].size;
-
-    d3.layout.cloud().size([430, 430])
-        .words(data)
-        .padding(5)
-        .rotate(function() { return ~~(Math.random() * 2) * 90; })
-        .fontSize(function(d,i) {
-            size = (60*(d.size-min_count))/(max_count-min_count);
-            return size>12 ? size : 12;
-        })
-        .on("end", draw)
-        .start();
-
-    function draw(words) {
-        d3.select("#data-common_words").append("svg")
-            .attr("width", 430+40+40)
-            .attr("height", 430)
-            .append("g")
-            .attr("transform", "translate(255,215)")
-            .selectAll("text")
-            .data(words)
-        .enter().append("text")
-            .style("font-size", function(d) { return d.size + "px"; })
-            .style("fill", function(d, i) { return fill(i); })
-            .attr("text-anchor", "middle")
-            .attr("transform", function(d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-            })
-            .text(function(d) { return d.text; });
-    }
-}
-
 function populate_results(results) {
     $("#user-results").empty();
     $("#user-results").html(g_base_results);
@@ -797,7 +760,18 @@ function populate_results(results) {
                     $( "#top-words-count" ).text("Excluded top " + ui.value + " words.");
                 }
                 $("#data-common_words").empty();
-                word_cloud(data.metrics.common_words.slice(ui.value));
+                curious.wordcloud({
+                    container: "data-common_words",
+                    width: 430,
+                    height: 430,
+                    data: data.metrics.common_words.slice(ui.value),
+                    margin: {
+                        top: 0,
+                        right: 40,
+                        bottom: 40,
+                        left: 40
+                    }
+                });
             }
         });
     } else {
@@ -805,7 +779,18 @@ function populate_results(results) {
         $( "#top-words-slider" ).hide();
     }
 
-    word_cloud(data.metrics.common_words);
+    curious.wordcloud({
+        container: "data-common_words",
+        width: 430,
+        height: 430,
+        data: data.metrics.common_words,
+        margin: {
+            top: 0,
+            right: 40,
+            bottom: 40,
+            left: 40
+        }
+    });
 
     // Metrics chart - Date
     curious.timeseries({
