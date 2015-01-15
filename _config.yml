@@ -2,7 +2,7 @@
 # For more see: http://jekyllrb.com/docs/permalinks/
 permalink: /:categories/:year/:month/:day/:title 
 
-exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "application/", "lib/", "*.pyc", "*.py"]
+exclude: [".rvmrc", ".rbenv-version", "README.md", "Rakefile", "changelog.md", "application/", "lib/", "*.pyc", "*.py", "app.yaml", "index.yaml", "LICENSE"]
 highlighter: pygments
 
 # Themes are encouraged to use these universal variables 

@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-Version 0.2, of course. Since the public release of **SNOOP <i class="fa fa-search purple"></i> SNOO** ten days ago, I've received lots of feedback that helped me make some important changes. I've just published v0.2 of the site, and I hope to continue to add features and improve accuracy. Here is the list of new features that went live today:
+Version 0.2, of course. Since the public release of <span class="logo logo-small">SNOOP <img src="/static/img/logo_md.png"> SNOO</span> ten days ago, I've received lots of feedback that helped me make some important changes. I've just published v0.2 of the site, and I hope to continue to add features and improve accuracy. Here is the list of new features that went live today:
 
 * You can now refresh data to keep your profile up-to-date.
 * Client-side fetching of data to prevent "Server too busy" errors.

@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-Hello, and welcome to **SNOOP <i class="fa fa-search purple"></i> SNOO**'s development blog. I've been on reddit since its inception way back in 2005 (mostly lurking, though) and have always thought it would be interesting to analyze the massive amounts of data it generates, especially after its huge growth in the past few years – so I built **SNOOP <i class="fa fa-search purple"></i> SNOO**.
+Hello, and welcome to <span class="logo logo-small">SNOOP <img src="/static/img/logo_md.png"> SNOO</span>'s development blog. I've been on reddit since its inception way back in 2005 (mostly lurking, though) and have always thought it would be interesting to analyze the massive amounts of data it generates, especially after its huge growth in the past few years – so I built <span class="logo logo-small">SNOOP <img src="/static/img/logo_md.png"> SNOO</span>.
 
 As of today, it simply does two things:
 
