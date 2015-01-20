@@ -408,6 +408,21 @@ function convert_to_v2(data) {
     
     var key=null,
         s={};
+
+    computed_comment_karma = data.stats.metrics.date.map(function(d) {
+        return d.comment_karma;
+    }).reduce(function(p,c) {
+        return p+c;
+    }, 0);
+
+    computed_submission_karma = data.stats.metrics.date.map(function(d) {
+        return d.submission_karma;
+    }).reduce(function(p,c) {
+        return p+c;
+    }, 0);
+
+    average_comment_karma = +(computed_comment_karma/data.stats.basic.comments.count).toFixed(2);
+    average_submission_karma = +(computed_submission_karma/data.stats.basic.submissions.count).toFixed(2);
     
     var v2 = {
         "version": 2,
@@ -460,23 +475,6 @@ function convert_to_v2(data) {
             "common_words": data.stats.common_words
         }
     };
-
-    computed_comment_karma = data.stats.metrics.date.map(function(d) {
-        return d.comment_karma;
-    }).reduce(function(p,c) {
-        return p+c;
-    }, 0);
-
-    computed_submission_karma = data.stats.metrics.date.map(function(d) {
-        return d.submission_karma;
-    }).reduce(function(p,c) {
-        return p+c;
-    }, 0);
-
-    average_comment_karma = +(computed_comment_karma/data.stats.basic.comments.count).toFixed(2);
-    average_submission_karma = +(computed_submission_karma/data.stats.basic.submissions.count).toFixed(2);
-
-    
 
     for(key in data.about) {
         if(data.about.hasOwnProperty(key)) {
