@@ -25,7 +25,8 @@ var SYNOPSIS_KEYS = [
     {label: "you have", key:"possessions"}, 
     {label: "your locations of interest", key:"locations"}, // For backward compatibility with v1 data
     {label: "your locations of interest", key:"location"}, 
-    {label: "you like to watch", key:"tv_shows"}, 
+    {label: "you like to watch", key:"tv_shows"}, // For backward compatibility with v1 data
+    {label: "you like to watch", key:"tv shows"}, 
     {label: "you like", key:"interests"}, 
     {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
     {label: "you like playing", key:"gaming"}, 
@@ -1044,6 +1045,8 @@ function populate_results(results) {
         $("#worst-post-sub-reco").hide();
     }
 
+    var page_id = Math.floor(Date.now());
+
     // Subreddit categorization
     if(data.metrics.subreddit.children && data.metrics.subreddit.children.length) {
         var other_subreddits = data.metrics.subreddit.children.filter(function(d) {
@@ -1068,7 +1071,7 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data.page_id = Math.floor(Date.now());
+                    data.page_id = page_id;
                     data.page_user = g_username;
                     data.subreddit = params.pk;
                     data.level_name = params.name;
@@ -1086,7 +1089,7 @@ function populate_results(results) {
                 url: '/categorize',
                 params: function(params) {
                     var data = {};
-                    data.page_id = Math.floor(Date.now());
+                    data.page_id = page_id;
                     data.page_user = g_username;
                     data.subreddit = params.pk;
                     data.level_name = params.name;
