@@ -1074,27 +1074,27 @@ h6 .small,
 }
 h1,
 .h1 {
-  font-size: 36px;
+  font-size: 28px;
 }
 h2,
 .h2 {
-  font-size: 30px;
+  font-size: 20px;
 }
 h3,
 .h3 {
-  font-size: 24px;
+  font-size: 14px;
 }
 h4,
 .h4 {
-  font-size: 18px;
+  font-size: 12px;
 }
 h5,
 .h5 {
-  font-size: 14px;
+  font-size: 10px;
 }
 h6,
 .h6 {
-  font-size: 12px;
+  font-size: 8px;
 }
 p {
   margin: 0 0 10px;
@@ -3832,6 +3832,24 @@ fieldset[disabled] .navbar-inverse .btn-link:hover,
 .navbar-inverse .btn-link[disabled]:focus,
 fieldset[disabled] .navbar-inverse .btn-link:focus {
   color: #eeeeee;
+}
+.breadcrumb {
+  padding: 8px 15px;
+  margin-bottom: 20px;
+  list-style: none;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+.breadcrumb > li {
+  display: inline-block;
+}
+.breadcrumb > li + li:before {
+  content: ">\00a0";
+  padding: 0 5px;
+  color: #999999;
+}
+.breadcrumb > .active {
+  color: #999999;
 }
 .pagination {
   display: inline-block;
