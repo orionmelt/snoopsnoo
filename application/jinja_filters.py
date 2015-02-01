@@ -1,5 +1,6 @@
 from datetime import datetime
 from application import app
+import jinja2, markdown
 
 #Change %e to %d if running on Windows
 def format_date(value, format='%b %d, %Y'):
@@ -11,6 +12,9 @@ def format_month(value, format='%b'):
 def format_day(value, format='%e'):
     return value.strftime(format)
     
+def from_timestamp(value):
+    return datetime.fromtimestamp(int(value))
+
 def time_since(value):
     now = datetime.utcnow()
     diff = now - value
@@ -28,3 +32,5 @@ def time_since(value):
             return "%d %s" % (period, singular if period == 1 else plural)
     return "a few seconds"
 
+def safe_markdown(text):
+    return jinja2.Markup(markdown.markdown(text))
