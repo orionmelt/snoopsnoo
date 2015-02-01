@@ -364,7 +364,7 @@ function call_blockspring(local_fetch) {
         return;
     }
     $.ajax({
-            url: "https://sender.blockspring.com/api_v2/blocks/f4b274d18972645330dd85b627ca0bd1?api_key=d1b2e14d5b005465cfe3c83976a9240a",
+            url: "https://sender.blockspring.com/api_v2/blocks/d03751d846a6a0ff9a6dfd36b9c1c641?api_key=d1b2e14d5b005465cfe3c83976a9240a",
             type: "POST",
             data: { username: g_username, json_data: local_fetch ? JSON.stringify(g_user_data) : null},
             crossDomain: true

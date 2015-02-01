@@ -391,6 +391,9 @@ h4 {
   background-repeat: no-repeat;
 }
 
+.panel-danger .panel-heading a {
+  color:#fff;
+}
 
 
 

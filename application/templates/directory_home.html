@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} - Subreddits{% endblock %}
+{% block nav_dir %}active{% endblock %}
+
+{% import "directory_macro.html" as directory %}
+
+{% block content %}
+	<div id="directory" class="container buffer">
+		<ul class="breadcrumb">
+			<li><a href="{{ url_for("subreddits_directory_home") }}"><i class="fa fa-home"></i></a></li>
+		</ul>
+		<h1>Subreddits Directory</h1>
+		<div class="row buffer">
+			<div class="col-md-8">
+			{% for category in root["children"] %}
+				{% set level = category["id"].split("_")|length - 1 %}
+				<div class="panel {{ "panel-danger" if category["id"]=="reddit_adult" else "panel-default" }}">
+					<div class="panel-heading">
+						<h3 class="big">
+							<a href="{{ url_for('subreddits_directory_category', level1=category["id"].split("_")[1]) }}">
+								{{ category["display_name"] }}
+							</a>
+						</h3>
+					</div>
+					<div class="panel-body">
+						{{ directory.display_category(category, level) }}
+					</div>
+				</div>
+			{% endfor %}
+			</div>
+			<div class="col-md-4">
+				<h2>What is this?</h2>
+				<p>A categorized directory of subreddits to help make subreddit discovery easier.</p>
+				<p class="small">SnoopSnoo has indexed {{ subreddit_count }} subreddits as of {{ last_updated|time_since }} ago.</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -6,6 +6,7 @@ App Engine datastore models
 """
 
 from google.appengine.ext import ndb
+import re
 
 class User(ndb.Model):
 	"""Models an individual user entry.
@@ -48,3 +49,33 @@ class SubredditCategory(ndb.Model):
 	level_name = ndb.StringProperty()
 	level_value = ndb.StringProperty()
 
+
+class Category(ndb.Model):
+	"""Models a category entry. A category could be a top-level category (level 1), subcategory (level 2), or a third-level description (level 3).
+	"""
+	display_name = ndb.StringProperty()
+	pretty_url = ndb.ComputedProperty(lambda self: re.sub(r'([^\s\w]|_)+', '',self.display_name.lower()).replace(" ","-"))
+	size = ndb.IntegerProperty()
+	last_updated = ndb.DateTimeProperty(auto_now=True)
+	parent_id = ndb.StringProperty()
+
+
+class Subreddit(ndb.Model):
+	"""Models a subreddit entry.
+	"""
+	display_name = ndb.StringProperty()
+	display_name_lower = ndb.ComputedProperty(lambda self: self.display_name.lower())
+	title = ndb.StringProperty()
+	public_description = ndb.StringProperty(indexed=False)
+	created_utc = ndb.DateTimeProperty()
+	subscribers = ndb.IntegerProperty()
+	over18 = ndb.BooleanProperty()
+	last_updated = ndb.DateTimeProperty(auto_now=True)
+	parent_id = ndb.StringProperty()
+
+class CategoryTree(ndb.Model):
+	"""Models a category tree entry.
+	"""
+	last_updated = ndb.DateTimeProperty(auto_now=True)
+	subreddit_count = ndb.IntegerProperty()
+	data = ndb.JsonProperty()

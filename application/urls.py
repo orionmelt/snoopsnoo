@@ -21,9 +21,6 @@ app.add_url_rule('/', 'home', view_func=views.home)
 # Random user page
 app.add_url_rule('/random', 'random', view_func=views.random_profile)
 
-# Source page
-#app.add_url_rule('/source', 'source', view_func=views.source)
-
 # User page
 app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
 
@@ -45,8 +42,17 @@ app.add_url_rule('/delete/<username>', 'delete', view_func=views.delete_user)
 # Subreddit Category Update page
 app.add_url_rule('/categorize', 'insert_subreddit_category', view_func=views.insert_subreddit_category, methods=["POST"])
 
-# User profile page
-#app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
+# Subreddits Directory page
+app.add_url_rule('/subreddits/', 'subreddits_directory_home', view_func=views.subreddits_directory_home)
+app.add_url_rule('/subreddits/<level1>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
+app.add_url_rule('/subreddits/<level1>/<level2>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
+app.add_url_rule('/subreddits/<level1>/<level2>/<level3>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
+
+# Subreddit page
+app.add_url_rule('/r/<subreddit_name>', 'subreddit', view_func=views.subreddit)
+
+# Subreddit Front Page
+app.add_url_rule('/front_page', 'front_page', view_func=views.front_page, methods=["POST"])
 
 ## Error handlers
 # Handle 404 errors

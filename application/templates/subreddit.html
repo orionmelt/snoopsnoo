@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %} - /r/{{subreddit.display_name}} {% endblock %}
+{% block nav_dir %}active{% endblock %}
+
+{% block content %}
+	<div id="directory" class="container buffer">
+		<ul class="breadcrumb">
+			<li><a href="{{ url_for("subreddits_directory_home") }}"><i class="fa fa-home"></i></a></li>
+			{% for crumb in breadcrumbs %}
+			<li><a href="/subreddits/{{ "/".join(crumb.key.id().split("_")[1:]) }}/">{{ crumb.display_name }}</a></li>
+			{% endfor %}
+			<li><a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}">/r/{{ subreddit.display_name}}</a></li>
+		</ul>
+
+		<div class="panel panel-default subreddit-listing">
+			<div class="panel-heading">
+				<h3 class="heading"><a target="_blank" href="http://www.reddit.com/r/{{ subreddit.display_name }}">/r/{{ subreddit.display_name }}</a></h3>
+			</div>
+			<div class="panel-body">
+				<div class="title">{{ subreddit.title|markdown }}</div>
+				<div class="text-muted">{{ subreddit.public_description|markdown }}</div>
+				<ul class="list-inline">
+					<li>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers</li> 
+					<li>created {{ subreddit.created_utc | time_since }} ago</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="row buffer">
+			<div class="col-md-12">
+				<h2>Front page preview</h2>
+				<div id="front-page" class="front-page">
+				
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+	$(function () {
+		var sub_url = "http://www.reddit.com/r/{{ subreddit.display_name}}.json";
+	    $.ajax({
+	        url: sub_url,
+	        timeout: 5000,
+	    }).done(function(data) {
+	    	$.ajax({
+		        url: "/front_page",
+		        type: "POST",
+		        contentType: "application/json",
+		        data: JSON.stringify(data),
+		    }).done(function(response) {
+		    	$("#front-page").html(response);
+		        //console.log(response);
+		    });	        
+	    }).fail(function(jqXHR, status_text, error_thrown) {
+	    	//
+	    });
+	});
+	
+	</script>
+{% endblock %}
