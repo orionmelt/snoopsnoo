@@ -156,7 +156,7 @@ def subreddits_directory_category(level1,level2=None,level3=None):
 		'directory_category.html',
 		subreddits=subreddits, 
 		category=category, 
-		cat_tree=cat_tree, 
+		cat_tree=category_tree, 
 		breadcrumbs=breadcrumbs, 
 		prev=prev_bookmark, 
 		next=next_bookmark

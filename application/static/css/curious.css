@@ -311,7 +311,7 @@ h4 {
 }
 
 .front-page .placeholder_thumbnail {
-  background-image: url("http://www.redditstatic.com/sprite-reddit.png");
+  background-image: url("/static/img/sprite-reddit.png");
   width: 70px;
   height: 50px;
   background-position: 0px -491px;
@@ -380,13 +380,13 @@ h4 {
 }
 
 .front-page .vote .up {
-  background-image: url("http://www.redditstatic.com/sprite-reddit.png");
+  background-image: url("/static/img/sprite-reddit.png");
   background-position: -42px -818px;
   background-repeat: no-repeat;
 }
 
 .front-page .vote .down {
-  background-image: url("http://www.redditstatic.com/sprite-reddit.png");
+  background-image: url("/static/img/sprite-reddit.png");
   background-position: 0px -818px;
   background-repeat: no-repeat;
 }
