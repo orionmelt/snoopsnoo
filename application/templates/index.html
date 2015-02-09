@@ -2,8 +2,10 @@
 {% block title %} - Analyze your reddit activity{% endblock %}
 {% block nav_home %}active{% endblock %}
 
+{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+
 {% block content %}
-		<div id="main-container">
+		<div class="bg-container">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-8">
@@ -12,8 +14,8 @@
 								{% set title = ["Analyze this.", "You are what you post."]|random %}
 								<h1 class="purple">{{ title }}</h1>
 								<p>Enter your reddit username below and get insights on your reddit activity.</p>
-								<p><small>Not ready yet? <a href="/random">View a random redditor's profile.</a></small></p>
-								<div class="row buffer">
+								<p><small>Not ready yet? <a href="/random-user">View a random redditor's profile.</a></small></p>
+								<div class="row margin-20">
 									<form id="process_form">
 										<div class="col-md-6 col-s-6 col-xs-6">
 											<input type="text" class="form-control" id="username" name="username" placeholder="reddit username">
@@ -35,14 +37,11 @@
 							</div>
 						</section>
 					</div>
-					<div class="col-md-4">
-						
-					</div>
 				</div>
 			</div>
 		</div>
 
-		<div id="about-container">
+		<div class="margin-20">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-8">
@@ -50,16 +49,17 @@
 							<h2>New Version</h2>
 							<p>Version 0.2 is here! <a href="http://blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01/">Read more about it on the blog</a>.</p>
 						</section>
-						<section id="about">
+						<section id="about" class="margin-20">
 							<h2>About</h2>
-							<p><span class="logo logo-small">SNOOP <img src="/static/img/logo_sm.png"> SNOO</span> is a hobby project by <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a> and an attempt to extract interesting information from your reddit comments and submissions.</p>
+							<p>{{ snoopsnoo_macros.logo_small() }} is a hobby project by <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a> and an attempt to extract interesting information from your reddit comments and submissions.</p>
 							<p class="highlight"><strong>DISCLAIMER:</strong> All data analyzed is public. This website is not affiliated with reddit and cannot access your private reddit data such as your password, subreddit subscriptions, up/downvotes and private subreddit activity.</p>
 							<p>Analysis is limited to the 1000 most recent comments and submissions due to reddit's API restrictions.</p>
 							<p>Feedback, criticism and suggestions are welcome and greatly appreciated - please PM <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a>.</p>
 						</section>
 					</div>
+
 					<div class="col-md-3 col-md-offset-1">
-						<section id="credits">
+						<section id="credits" class="margin-20">
 							<h2>Credits</h2>
 							<ul class="list-unstyled">
 								<li>Natural Language Processing using <a href="https://github.com/sloria/TextBlob">TextBlob</a> and <a href="http://www.nltk.org/">NLTK</a>.</li>

@@ -2,7 +2,7 @@
 {% block title %} - /u/{{ user.username}}{% endblock %}
 
 {% block content %}
-		<div id="user-results-loading" class="container text-center buffer">
+		<div id="user-results-loading" class="container text-center margin-20">
 			<p class="big">loading <i class="fa fa-spinner fa-spin"></i></p>
 		</div>
 
@@ -12,9 +12,6 @@
 				<div class="col-md-4">
 					<h1><a href="http://www.reddit.com/user/{{ user.username }}" target="_blank">/u/{{ user.username }}</a></h1>
 				</div>
-				<div class="col-md-8">
-					
-				</div>
 			</div>
 			<!-- /Username -->
 
@@ -23,30 +20,13 @@
 				<div class="col-md-4">
 					<ul class="list-inline">
 						<li><h3>Last updated {{ user.last_updated|time_since }} ago</h3></li>
-						<li><button id="go" type="button" class="btn btn-primary btn-xs" data-loading-text="Refreshing <i class='fa fa-spinner fa-spin'></i>">Refresh Now</button></li>
+						<li>
+							<button id="go" type="button" class="btn btn-primary btn-xs" data-loading-text="Refreshing <i class='fa fa-spinner fa-spin'></i>">
+								Refresh Now
+							</button>
+						</li>
 					</ul>
-				</div>
-				
-				<!--
-				<div class="col-md-4">
-					<ul class="list-inline share">
-						<li><h5>Share your results</h5></li>
-						<li>
-							<a title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-facebook-square fa-lg"></i></a>
-						</li>
-						<li>
-							<a title="Share on reddit" href="http://www.reddit.com/submit?url=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-reddit fa-lg"></i></a>
-						</li>
-						<li>
-							<a title="Share on Google+" href="https://plus.google.com/share?url=http://snoopsnoo.com/u/{{ user.username }}" target="_blank"><i class="fa fa-google-plus-square fa-lg"></i></a>
-						</li>
-						<li>
-							<a title="Share on Twitter" href="https://twitter.com/intent/tweet?text=Check out my Snoop Snoo results!&url=http://snoopsnoo.com/u/{{ user.username }}&hashtags=reddit,snoopsnoo" target="_blank"><i class="fa fa-twitter fa-lg"></i></a>
-						</li>
-						
-					</ul>
-				</div>
-				-->
+				</div>				
 			</div>
 			<!-- /Toolbar -->
 
@@ -178,18 +158,18 @@
 				<!-- /Synopsis -->
 			</div>
 			
+			<hr>
 
 			<!-- Quick Stats -->
-			<hr>
 	        <div class="row">
-				<div class="col-md-6 text-center bottom-buffer">
+				<div class="col-md-6 text-center">
 					<div id="recommendations">
 						<h2>Recommendations for you <span class="permalink"><a href="#recommendations" title="Permalink">#</a></span></h2>
 						<h3>{{ ["Please earn karma responsibly.", "Friends tell friends where to earn karma.", "To repost, or not to repost, that is the question."]|random }}</h3>
 						<h4>Based on your average karma earnings.</h4>
 
 						<div class="row">
-							<div id="no-recommendations" class="buffer">
+							<div id="no-recommendations" class="margin-20">
 								<div class="col-md-6 col-md-offset-3 alert alert-warning">
 									<p>Not enough data for recommendations.</p>
 								</div>
@@ -198,7 +178,7 @@
 							<div id="best-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-success">
 									<div class="panel-heading">
-										<h3 class="panel-title text-lowercase">best for submissions</h3>
+										<p class="panel-title text-lowercase">best for submissions</p>
 									</div>
 									<div class="panel-body">
 										<p class="big" id="data-best_karma_per_submission"></p>
@@ -210,7 +190,7 @@
 							<div id="best-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-success">
 									<div class="panel-heading">
-										<h3 class="panel-title text-lowercase">best for comments</h3>
+										<p class="panel-title text-lowercase">best for comments</p>
 									</div>
 									<div class="panel-body">
 										<p class="big" id="data-best_karma_per_comment"></p>
@@ -222,7 +202,7 @@
 							<div id="worst-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-warning">
 									<div class="panel-heading">
-										<h3 class="panel-title text-lowercase">Improve submissions on</h3>
+										<p class="panel-title text-lowercase">Improve submissions on</p>
 									</div>
 									<div class="panel-body">
 										<p class="big" id="data-worst_karma_per_submission"></p>
@@ -234,7 +214,7 @@
 							<div id="worst-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-warning">
 									<div class="panel-heading">
-										<h3 class="panel-title text-lowercase">Improve comments on</h3>
+										<p class="panel-title text-lowercase">Improve comments on</p>
 									</div>
 									<div class="panel-body">
 										<p class="big" id="data-worst_karma_per_comment"></p>
@@ -245,7 +225,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-6 text-center bottom-buffer">
+				<div class="col-md-6 text-center">
 					<div id="heatmap">
 						<h2>Activity Over Last 60 Days <span class="permalink"><a href="#heatmap" title="Permalink">#</a></span></h2>
 						<h3>{{ ["Needs more red.", "Make them bleed.", "If not on reddit, what are we?"]|random }}</h3>
@@ -260,7 +240,7 @@
 			<!-- Activity Charts -->
 			<hr>
 			<div class="row">
-	        	<div id="timeline" class="col-md-12 text-center bottom-buffer">
+	        	<div id="timeline" class="col-md-12 text-center margin-btm-20">
 	        		<h2>Activity Timeline <span class="permalink"><a href="#timeline" title="Permalink">#</a></span></h2>
 	        		<h3>{{ ["Further proof that you have no life outside of reddit?", "First they came for the lurkers..."]|random }}</h3>
 	        		<h4>Hover over the circles for more info.</h4>
@@ -268,14 +248,14 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="by-weekday" class="col-md-6 text-center bottom-buffer">
+				<div id="by-weekday" class="col-md-6 text-center margin-btm-20">
 					<h2>Activity by Weekday <span class="permalink"><a href="#by-weekday" title="Permalink">#</a></span></h2>
 					<h3>{{ ["Have you tried /r/outside?", "That's all right, outdoors are overrated anyway.", "Bored on reddit? Let's see what's on reddit."]|random }}</h3>
 					<h4>Hover over the bars for more info.</h4>
 					<div id="data-activity_weekday"></div>
 				</div>
 
-	        	<div id="by-hour" class="col-md-6 text-center bottom-buffer">
+	        	<div id="by-hour" class="col-md-6 text-center margin-btm-20">
 					<h2>Activity by Time of Day <span class="permalink"><a href="#by-hour" title="Permalink">#</a></span></h2>
 					<h3>{{ ["Do you even sleep, bro?", "Insomniacs of reddit, upvote!", "Sleep (noun) - Period right after this one last reddit post."]|random }}</h3>
 					<h4>Hover over the bars for more info. All times in <span class="user-timezone"></span>.</h4>
@@ -283,7 +263,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="topics" class="col-md-6 text-center bottom-buffer">
+				<div id="topics" class="col-md-6 text-center margin-btm-20">
 	        		<h2>Posts Across Topics <span class="permalink"><a href="#topics" title="Permalink">#</a></span></h2>
 	        		<h3>{{ ["Look at you, how versatile!", "Jack of all trades, master of some."]|random }}</h3>
 	        		<h4>Hover over the chart for more info.</h4>
@@ -291,11 +271,11 @@
 					<div id="data-topics_legend"></div>
 	        	</div>
 
-	        	<div id="submissions" class="col-md-6 text-center bottom-buffer">
+	        	<div id="submissions" class="col-md-6 text-center margin-btm-20">
 	        		<h2>Submissions By Type and Domain <span class="permalink"><a href="#submissions" title="Permalink">#</a></span></h2>
 	        		<h3>{{ ["You're still the master of your domains.", "Those who can, submit. Those who can't, lurk."]|random }}</h3>
 	        		<h4>Hover over the chart for more info.</h4>
-	        		<div id="no-submissions" class="buffer">
+	        		<div id="no-submissions" class="margin-20">
 						<div class="col-md-6 col-md-offset-3 alert alert-warning">
 							<p>You have no submissions.</p>
 						</div>
@@ -305,23 +285,25 @@
 	        	</div>
 	        </div>
 	        <div class="row">
-	        	<div id="by-subreddit" class="col-md-12 text-center bottom-buffer">
+	        	<div id="by-subreddit" class="col-md-12 text-center margin-btm-20">
 					<h2>Activity Across Subreddits <span class="permalink"><a href="#by-subreddit" title="Permalink">#</a></span></h2>
 					<h3>{{ ["Only a few hundred thousand left.", "Where might /r/random take you next?"]|random }}</h3>
 					<h4>Click to zoom in. Click again to zoom out. Hover for more info. <a href="#categorize-subreddits">Want to help categorize subreddits?</a></h4>
 					<form id="posts_by_sub_control">
-					  <label><input type="radio" name="mode" value="posts" checked> posts</label>
-					  <label><input type="radio" name="mode" value="karma"> karma</label>
+						<label><input type="radio" name="mode" value="posts" checked> posts</label>
+						<label><input type="radio" name="mode" value="karma"> karma</label>
 					</form>
 					<div id="data-posts_by_subreddit"></div>
 				</div>
 			</div>
 			<!-- /Activity Charts -->
 
-			<!-- Word Charts -->
+			
 			<hr>
+
+			<!-- Word Charts -->
 			<div class="row">
-				<div id="common-words" class="col-md-6 text-center bottom-buffer">
+				<div id="common-words" class="col-md-6 text-center margin-btm-20">
 	        		<h2>Most Common Words <span class="permalink"><a href="#common-words" title="Permalink">#</a></span></h2>
 	        		<h3>{{ ["A word is worth ten imgur links. True story.", "Don't forget to use that new word you learned!"]|random }}</h3>
 	        		<h4>Size of a word is directly proportional to its frequency.</h4>
@@ -330,29 +312,26 @@
 	        		<div id="data-common_words"></div>
 	        	</div>
 
-	        	<div id="corpus-stats" class="col-md-6 text-center bottom-buffer" id="posts_words">
+	        	<div id="corpus-stats" class="col-md-6 text-center margin-btm-20" id="posts_words">
 	        		<h2>Corpus Statistics <span class="permalink"><a href="#corpus-stats" title="Permalink">#</a></span></h2>
 	        		<h3>{{ ["If only you had typed this much for that college essay...", "If you can't convince them, write more and confuse them."]|random }}</h3>
 	        		<h4>Time spent calculated using average of 40 WPM.</h4>
 	        		<h5 class="big">total words in your posts</h5>
-	        		<p class="bigger no-top-margin bottom-buffer text-success" id="data-total_word_count"></p>
+	        		<p class="bigger no-top-margin margin-btm-20 text-success" id="data-total_word_count"></p>
 	        		<h5 class="big" >unique words</h5>
-	        		<p class="bigger no-top-margin bottom-buffer text-success" id="data-unique_word_count"></p>
+	        		<p class="bigger no-top-margin margin-btm-20 text-success" id="data-unique_word_count"></p>
 	        		<h5 class="big" >time spent typing posts</h5>
-	        		<p class="bigger no-top-margin bottom-buffer text-success" id="data-hours_typed"></p>
+	        		<p class="bigger no-top-margin margin-btm-20 text-success" id="data-hours_typed"></p>
 	        		<h5 class="big" >karma per word</h5>
-	        		<p class="bigger no-top-margin bottom-buffer text-success" id="data-karma_per_word"></p>
+	        		<p class="bigger no-top-margin margin-btm-20 text-success" id="data-karma_per_word"></p>
 	        	</div>
 	        </div>
 	        <!-- /Word Charts -->
 
-	        <!-- Experimental -->
-	        <!--
-	        <p class="highlight text-center"><strong>WARNING:</strong> Sections below this line are experimental and may contain more bugs than the rest of the site.</p>
-	    	-->
 	        <hr>
+	        
 			<div class="row">
-				<div id="categorize-subreddits" class="col-md-12 bottom-buffer">
+				<div id="categorize-subreddits" class="col-md-12 margin-btm-20">
 					<h2>Help Categorize Subreddits</h2>
 	        		<h3>So many subreddits. So few categorized.</h3>
 	        		<h4>Click on edit links below to update. Choose from predefined categories or create your own. THANKS A BUNCH!</h4>

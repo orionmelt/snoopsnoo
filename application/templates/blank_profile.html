@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 {% block title %} - /u/{{ username}}{% endblock %}
 
+{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+
 {% block content %}
-		<div class="container">
-			<div class="col-md-6 col-md-offset-3 alert alert-info text-center buffer">
-				<h1 class="buffer"><i class="fa fa-info-circle"></i> This will only take a minute.</h1>
+		<div class="container page-error">
+			<div class="col-md-6 col-md-offset-3 alert alert-info text-center">
+				<h1 class="margin-btm-20"><i class="fa fa-info-circle"></i> This will only take a minute.</h1>
 				<div class="loading-progress">
 					<p><i class="fa fa-refresh fa-spin"></i></p>
-					<p><span class="logo logo-small">SNOOP <img src="/static/img/logo_sm.png"> SNOO</span> is refreshing data for /u/{{ username }}.</p>
+					<p>{{ snoopsnoo_macros.logo_small() }} is refreshing data for /u/{{ username }}.</p>
 				</div>
 				<div class="loading-done">
 				</div>
