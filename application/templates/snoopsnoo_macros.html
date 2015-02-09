@@ -44,7 +44,7 @@
 {%- endmacro %}
 
 
-{% macro subreddit_listing(subreddit, all_categories, external_link=True) -%}
+{% macro subreddit_listing(subreddit, all_subreddit_categories, external_link=True) -%}
 <div class="panel panel-default subreddit-listing">
 	<div class="panel-heading big">
 		{% if external_link %}
@@ -76,7 +76,7 @@
 			<div class="form-group">
 				<div class="col-md-12">
 					<select name="category_id" class="form-control small">
-					{% for c in all_categories %}
+					{% for c in all_subreddit_categories %}
 						<option {{ "selected" if subreddit.parent_id==c["id"] }} value="{{c["id"]}}">{{c["text"]}}</option>
 					{% endfor %}
 					</select>

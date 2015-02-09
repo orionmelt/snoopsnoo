@@ -18,7 +18,7 @@
 			<div class="col-md-8">
 				{% if subreddits %}
 				{% for subreddit in subreddits %}
-					{{ snoopsnoo_macros.subreddit_listing(subreddit, all_categories, external_link=False) }}
+					{{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, external_link=False) }}
 				{% endfor %}
 				<ul class="pager">
 					{% if prev %}

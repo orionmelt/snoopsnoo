@@ -26,6 +26,34 @@ def uniq(seq):
     seen_add = seen.add
     return [ x for x in seq if not (x in seen or seen_add(x))]
 
+def get_all_subreddit_categories():
+	all_subreddit_categories = memcache.get("all_subreddit_categories")
+	
+	if not all_subreddit_categories:
+		all_subreddit_categories = []
+		categories = Category.query().fetch(projection=[Category.display_name])
+		for c in categories:
+			levels = c.key.id().split("_")
+			display_names = []
+			for i,l in enumerate(levels):
+				if not i:
+					continue
+				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
+			all_subreddit_categories.append({
+				"id":c.key.id(),
+				"text":" > ".join(display_names)
+			})
+		memcache.add("all_subreddit_categories", all_subreddit_categories)
+
+	return all_subreddit_categories
+
+def get_subreddits_root():
+	root = memcache.get("subreddits_root")
+	if not root:
+		root = CategoryTree.get_by_id("reddit")
+		memcache.add("subreddits_root", root)
+	return root
+
 def home():
     return render_template('index.html')
 
@@ -134,7 +162,8 @@ def insert_subreddit_category():
 	return ""
 
 def subreddits_home():
-	root = CategoryTree.get_by_id("reddit")
+
+	root = get_subreddits_root()
 	intro_items = [
 		{"id":"reddit_music_metal", "caption": "Discuss metal music.", "icon": "music"},
 		{"id":"reddit_interests_languages", "caption": "Learn a new language.", "icon": "language"},
@@ -165,26 +194,10 @@ def subreddits_category(level1,level2=None,level3=None):
 	
 	category = Category.get_by_id(category_id)
 
-	all_categories = memcache.get("all_categories")
-	
-	if not all_categories:
-		all_categories = []
-		categories = Category.query().fetch()
-		for c in categories:
-			levels = c.key.id().split("_")
-			display_names = []
-			for i,l in enumerate(levels):
-				if not i:
-					continue
-				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
-			all_categories.append({
-				"id":c.key.id(),
-				"text":" > ".join(display_names)
-			})
-		memcache.add("all_categories", all_categories)
-
 	if not category:
 		abort(404)
+
+	all_subreddit_categories = get_all_subreddit_categories()
 
 	category_tree = [x for x in json.loads(CategoryTree.get_by_id(category_id).data)["children"] if "children" in x]
 	breadcrumbs = [Category.get_by_id(x) for x in breadcrumbs_ids]
@@ -203,7 +216,7 @@ def subreddits_category(level1,level2=None,level3=None):
 		breadcrumbs=breadcrumbs, 
 		prev=prev_bookmark, 
 		next=next_bookmark,
-		all_categories=all_categories
+		all_subreddit_categories=all_subreddit_categories
 	)
 
 def subreddit(subreddit_name):
@@ -216,27 +229,21 @@ def subreddit(subreddit_name):
 	for i,c in enumerate(s.parent_id.split("_")):
 		breadcrumbs.append(Category.get_by_id("_".join(s.parent_id.split("_")[:i+1])))
 
-	related_target_ids = [ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
-	related_source_ids = [ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+	related_target_ids = \
+		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+	related_source_ids = \
+		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
 	related_subreddits = ndb.get_multi(uniq(related_source_ids+related_target_ids))
 	
-	all_categories = memcache.get("all_categories")
-	if not all_categories:
-		all_categories = []
-		categories = Category.query().fetch()
-		for c in categories:
-			levels = c.key.id().split("_")
-			display_names = []
-			for i,l in enumerate(levels):
-				if not i:
-					continue
-				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
-			all_categories.append({
-				"id":c.key.id(),
-				"text":" > ".join(display_names)
-			})
-		memcache.add("all_categories", all_categories)
-	return render_template('subreddit.html', subreddit=s, breadcrumbs=breadcrumbs[1:], all_categories=all_categories, related_subreddits=related_subreddits)
+	all_subreddit_categories = get_all_subreddit_categories()
+	
+	return render_template(
+		'subreddit.html', 
+		subreddit=s, 
+		breadcrumbs=breadcrumbs[1:], 
+		all_subreddit_categories=all_subreddit_categories, 
+		related_subreddits=related_subreddits
+	)
 
 def subreddit_frontpage():
 	data=request.get_json()
