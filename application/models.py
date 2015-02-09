@@ -72,6 +72,7 @@ class Subreddit(ndb.Model):
 	over18 = ndb.BooleanProperty()
 	last_updated = ndb.DateTimeProperty(auto_now=True)
 	parent_id = ndb.StringProperty()
+	deleted = ndb.BooleanProperty(default=False)
 
 class CategoryTree(ndb.Model):
 	"""Models a category tree entry.
@@ -79,3 +80,26 @@ class CategoryTree(ndb.Model):
 	last_updated = ndb.DateTimeProperty(auto_now=True)
 	subreddit_count = ndb.IntegerProperty()
 	data = ndb.JsonProperty()
+
+class PredefinedCategorySuggestion(ndb.Model):
+	"""Models a suggested category for a subreddit.
+	"""
+	log_date = ndb.DateTimeProperty(auto_now_add=True)
+	subreddit_id = ndb.StringProperty()
+	category_id = ndb.StringProperty()
+
+class ManualCategorySuggestion(ndb.Model):
+	"""Models a suggested category for a subreddit.
+	"""
+	log_date = ndb.DateTimeProperty(auto_now_add=True)
+	subreddit_id = ndb.StringProperty()
+	category_id = ndb.StringProperty()
+	suggested_category = ndb.StringProperty()
+
+class SubredditRelation(ndb.Model):
+	"""Models related subreddit entries.
+	"""
+	last_updated = ndb.DateTimeProperty(auto_now=True)
+	source = ndb.StringProperty()
+	target = ndb.StringProperty()
+	weight = ndb.FloatProperty()

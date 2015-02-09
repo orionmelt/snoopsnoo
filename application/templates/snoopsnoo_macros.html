@@ -1,0 +1,167 @@
+{%- macro logo_small() -%}
+<span class="logo logo-small">SNOOP <img src="/static/img/logo_sm.png" alt="SnoopSnoo logo"> SNOO</span>
+{%- endmacro -%}
+
+
+{% macro subreddits_category(category, level=1) -%}
+<ul class="list-inline">
+	{% set cat_levels = category["id"].split("_") %}
+	{% if level>1 and category["display_name"] %}
+	<li>
+		<h4 class="category-level{{ level }}-heading">
+			<a href="{{ url_for('subreddits_category', level1=cat_levels[1], level2=cat_levels[2] if cat_levels|length>=3 else None, level3=cat_levels[3] if cat_levels|length>=4 else None) }}">{{ category["display_name"] }}</a>
+		</h4>
+	</li>
+	{% endif %}
+	{% set i = 0 %}
+	{% for child in category["children"] %}
+		{% if "children" not in child %}
+			{% if child["id"] == "more_subs" and child["count"]>0 %}
+				<li>+{{ child["count"] }} more in <a href="{{ url_for('subreddits_category', level1=cat_levels[1], level2=cat_levels[2] if cat_levels|length>=3 else None, level3=cat_levels[3] if cat_levels|length>=4 else None) }}">{{ category["display_name"] }}</a></li>
+			{% elif not child["count"] and child["id"] != "more_subs" %}
+				<li><a href="{{ url_for("subreddit", subreddit_name=child["display_name"]) }}">/r/{{ child["display_name"] }}</a></li>
+			{% endif %}
+		{% else %}
+			{% set i = i + 1 %}
+			{% if child["id"] == "more_cats" and child["count"]>0 %}
+			<li>+{{ child["count"] }} more in <a href="{{ url_for('subreddits_category', level1=cat_levels[1], level2=cat_levels[2] if cat_levels|length>=3 else None, level3=cat_levels[3] if cat_levels|length>=4 else None) }}">{{ category["display_name"] }}</a></li>
+			{% elif not child["count"] and i<=5 %}
+			<li class="category-level{{ level+1 }}">
+				{{ subreddits_category(child,level+1) }}
+			</li>
+			{% elif "display_name" in child %}
+			<li>
+				{% set child_levels = child["id"].split("_") %}
+				<h4 class="category-level{{ level+1 }}-heading">
+					<a href="{{ url_for('subreddits_category', level1=child_levels[1], level2=child_levels[2] if child_levels|length>=3 else None, level3=child_levels[3] if child_levels|length>=4 else None) }}">
+					{{ child["display_name"] }}</a>
+				</h4>
+			</li>
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+</ul>
+{%- endmacro %}
+
+
+{% macro subreddit_listing(subreddit, all_categories, external_link=True) -%}
+<div class="panel panel-default subreddit-listing">
+	<div class="panel-heading big">
+		{% if external_link %}
+		<a target="_blank" href="http://www.reddit.com/r/{{ subreddit.display_name }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
+		{% else %}
+		<a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
+		{% endif %}
+	</div>
+	
+	<div class="panel-body">
+		<div class="title">{{ subreddit.title|markdown }}</div>
+		<div class="text-muted small">{{ subreddit.public_description|markdown }}</div>
+		<ul class="list-inline toolbar small">
+			<li><strong>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers</strong></li> 
+			<li>Created {{ subreddit.created_utc | time_since }} ago</li>
+			<li><a href="#" data-toggle="popover">Suggest category</a></li>
+		</ul>
+	</div>
+
+	<div id="sub-{{subreddit.key.id()}}-popover" style="display:none">
+		<div>
+			<strong>Suggest Category</strong>
+			<button type="button" id="sub-{{subreddit.key.id()}}-popover-close" class="close">×</button>
+		</div>
+		<hr>
+		<p>Pick another category</p>
+		<form id="suggest-category-{{subreddit.key.id()}}-form" class="form-horizontal">
+			<fieldset>
+			<div class="form-group">
+				<div class="col-md-12">
+					<select name="category_id" class="form-control small">
+					{% for c in all_categories %}
+						<option {{ "selected" if subreddit.parent_id==c["id"] }} value="{{c["id"]}}">{{c["text"]}}</option>
+					{% endfor %}
+					</select>
+				</div>
+			</div>
+				
+			<p>Or enter your own</p>
+			<div class="form-group">
+				<div class="col-md-12">
+					<input name="suggested_category" type="text" class="form-control small">
+				</div>
+			</div>
+
+			<input type="hidden" name="subreddit_id" value="{{ subreddit.key.id() }}">
+
+			<button type="submit" class="btn btn-primary">Save</button>
+			<span class="save_done"></span>
+			</fieldset>
+		</form>
+	</div>
+
+	<script>
+	$(function () {
+		$(document).on('submit', '.popover #suggest-category-{{subreddit.key.id()}}-form', function(event) {
+			event.preventDefault();
+			var form = $(this);
+			var done_span = $(this).parent().find(".save_done");
+			var data=$(this).serializeArray();
+			var action="{{ url_for("suggest_subreddit_category") }}";
+			$.ajax({
+				url: action,
+				type: "POST",
+				data: data
+			}).done(function(response) {
+				done_span.html('<i class="fa fa-check text-success"></i>');
+				setTimeout(function() {
+					form.closest(".popover").popover("hide");	
+				}, 500);
+				
+			});
+		});
+
+		$('[data-toggle="popover"]').on('click',function(e) {
+			e.preventDefault();
+		}).popover({
+			html: true,
+			placement: "bottom",
+			content: function() {
+				return $("#sub-{{subreddit.key.id()}}-popover").html();
+			}
+			
+		}).parent().delegate('button#sub-{{subreddit.key.id()}}-popover-close', 'click', function() {
+		    $(this).closest(".popover").popover("hide");
+		});
+	});
+	</script>
+</div>
+{%- endmacro %}
+
+{% macro link_to_subreddits_category(category_id, link_text) -%}
+<a href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">{{ link_text }}</a>
+{%- endmacro %}
+
+{% macro subreddits_breadcrumbs(breadcrumbs) %}
+<div class="row">
+	<div class="col-md-8">
+		<ul class="breadcrumb">
+			<li><a href="{{ url_for("subreddits_home") }}"><i class="fa fa-home"></i></a></li>
+			{% for crumb in breadcrumbs %}
+			<li><a href="/subreddits/{{ "/".join(crumb.key.id().split("_")[1:]) }}/">{{ crumb.display_name }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="col-md-4">
+		<form action="{{ url_for("find_subreddit") }}" method="post">
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">/r/</span>
+					<input type="text" name="subreddit" placeholder="Find subreddits by name" class="form-control">
+					<span class="input-group-btn">
+						<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
+					</span>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endmacro %}

@@ -7,7 +7,7 @@ URL route handlers
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 
-from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup
+from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup, jsonify
 from itsdangerous import URLSafeSerializer
 from decorators import login_required, admin_required
 from math import pow
@@ -15,13 +15,22 @@ from math import pow
 #TODO - flask_cache
 
 from application import app
-from models import User, Feedback, ErrorLog, SubredditCategory, Subreddit, Category, CategoryTree
+from models import 	User, Feedback, ErrorLog, SubredditCategory, Subreddit, Category, CategoryTree, \
+					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation
 
 import sys, logging
 import json, markdown, random
 
+def uniq(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if not (x in seen or seen_add(x))]
+
 def home():
     return render_template('index.html')
+
+def about():
+    return render_template('about.html')
 
 def random_profile():
 	r = ndb.Key("User", random.randrange(pow(2,52)-1))
@@ -124,11 +133,27 @@ def insert_subreddit_category():
 	c.put()
 	return ""
 
-def subreddits_directory_home():
+def subreddits_home():
 	root = CategoryTree.get_by_id("reddit")
-	return render_template('directory_home.html', root=json.loads(root.data), subreddit_count=root.subreddit_count, last_updated=root.last_updated)
+	intro_items = [
+		{"id":"reddit_music_metal", "caption": "Discuss metal music.", "icon": "music"},
+		{"id":"reddit_interests_languages", "caption": "Learn a new language.", "icon": "language"},
+		{"id":"reddit_sports_soccer", "caption": "Connect with soccer fans.", "icon": "soccer"},
+		{"id":"reddit_business_jobs-and-careers", "caption": "Get help with finding a job.", "icon": "jobs"},
+		{"id":"reddit_entertainment_tv-shows", "caption": "Talk about your favorite TV shows.", "icon": "tv"},
+		{"id":"reddit_interests_food_cooking", "caption": "Learn how to cook.", "icon": "cooking"},
+		{"id":"reddit_technology_programming", "caption": "Learn programming.", "icon": "code"},
+		{"id":"reddit_interests_outdoors_cycling", "caption": "Share your love for cycling.", "icon": "cycling"},
+	]
+	return render_template(
+		'subreddits_home.html', 
+		root=json.loads(root.data), 
+		subreddit_count=root.subreddit_count, 
+		last_updated=root.last_updated, 
+		intro_items=random.sample(intro_items,3)
+	)
 
-def subreddits_directory_category(level1,level2=None,level3=None):
+def subreddits_category(level1,level2=None,level3=None):
 	category_id = "reddit_"+level1.lower()
 	breadcrumbs_ids = [category_id]
 	if level2:
@@ -139,6 +164,24 @@ def subreddits_directory_category(level1,level2=None,level3=None):
 		breadcrumbs_ids.append(category_id)
 	
 	category = Category.get_by_id(category_id)
+
+	all_categories = memcache.get("all_categories")
+	
+	if not all_categories:
+		all_categories = []
+		categories = Category.query().fetch()
+		for c in categories:
+			levels = c.key.id().split("_")
+			display_names = []
+			for i,l in enumerate(levels):
+				if not i:
+					continue
+				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
+			all_categories.append({
+				"id":c.key.id(),
+				"text":" > ".join(display_names)
+			})
+		memcache.add("all_categories", all_categories)
 
 	if not category:
 		abort(404)
@@ -153,28 +196,87 @@ def subreddits_directory_category(level1,level2=None,level3=None):
 		return_query_page(query_class=Subreddit, bookmark=cursor, is_prev=is_prev, equality_filters={'parent_id':category_id}, orders={'subscribers':'-'})
 
 	return render_template(
-		'directory_category.html',
+		'subreddits_category.html',
 		subreddits=subreddits, 
 		category=category, 
 		cat_tree=category_tree, 
 		breadcrumbs=breadcrumbs, 
 		prev=prev_bookmark, 
-		next=next_bookmark
+		next=next_bookmark,
+		all_categories=all_categories
 	)
 
 def subreddit(subreddit_name):
 	subreddit_name=subreddit_name.lower()
 	s = Subreddit.query(Subreddit.display_name_lower==subreddit_name).get()
+	if not s:
+		return render_template("subreddit_not_found.html", subreddit=subreddit_name)
+
 	breadcrumbs = []
 	for i,c in enumerate(s.parent_id.split("_")):
 		breadcrumbs.append(Category.get_by_id("_".join(s.parent_id.split("_")[:i+1])))
-	if not s:
-		abort(404)
-	return render_template('subreddit.html', subreddit=s, breadcrumbs=breadcrumbs[1:])
 
-def front_page():
+	related_target_ids = [ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+	related_source_ids = [ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+	related_subreddits = ndb.get_multi(uniq(related_source_ids+related_target_ids))
+	
+	all_categories = memcache.get("all_categories")
+	if not all_categories:
+		all_categories = []
+		categories = Category.query().fetch()
+		for c in categories:
+			levels = c.key.id().split("_")
+			display_names = []
+			for i,l in enumerate(levels):
+				if not i:
+					continue
+				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
+			all_categories.append({
+				"id":c.key.id(),
+				"text":" > ".join(display_names)
+			})
+		memcache.add("all_categories", all_categories)
+	return render_template('subreddit.html', subreddit=s, breadcrumbs=breadcrumbs[1:], all_categories=all_categories, related_subreddits=related_subreddits)
+
+def subreddit_frontpage():
 	data=request.get_json()
-	return render_template('front_page.html', front_page=data)
+	return render_template('subreddit_frontpage.html', front_page=data)
+
+def suggest_subreddit_category():
+	subreddit_id = request.form.get("subreddit_id")
+	category_id = request.form.get("category_id")
+	suggested_category = request.form.get("suggested_category")
+	if not suggested_category:
+		c = PredefinedCategorySuggestion(
+			subreddit_id=subreddit_id,
+			category_id=category_id
+		)
+		c.put()
+	else:
+		c = ManualCategorySuggestion(
+			subreddit_id=subreddit_id,
+			category_id=category_id,
+			suggested_category=suggested_category
+		)
+		c.put()
+	return "OK"
+
+def find_subreddit():
+	input_subreddit = request.form.get("subreddit")
+	subreddit = Subreddit.query(Subreddit.display_name_lower == input_subreddit).get()
+	if subreddit:
+		return redirect("/r/"+subreddit.display_name)
+	else:
+		return render_template("subreddit_not_found.html", subreddit=input_subreddit)
+
+
+def subreddits_graph():
+	return render_template('subreddits_graph.html')
+
+def subreddits_graph_json():
+	root = CategoryTree.get_by_id("reddit")
+	return jsonify(json.loads(root.data))
+
 
 @admin_required
 def delete_user(username):

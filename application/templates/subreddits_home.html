@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %} - Subreddits{% endblock %}
+{% block nav_subreddits %}active{% endblock %}
+
+{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+
+{% block content %}
+	<div class="bg-container">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 margin-40">
+					{% set title = ["Go beyond the defaults.", "There's a subreddit for that."]|random %}
+					<h1 class="purple">{{ title }}</h1>
+					<p class="bigger">reddit is more than just the defaults. Try something new today.</p>
+					<ul class="list-unstyled margin-20 intro-items">
+						{% for intro_item in intro_items %}
+						<li class="bigger">
+							<img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png" width="20">
+							<!--<i class="fa fa-{{intro_item["icon"]}} icon"></i>-->
+							{{ snoopsnoo_macros.link_to_subreddits_category(intro_item["id"], intro_item["caption"]) }}
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="col-md-5 col-md-offset-1 margin-40">
+					
+					<div class="margin-btm-20">
+						<h3 class="bigger margin-btm-15">Find subreddits.</h3>
+						<div class="row">
+							<div class="col-md-8 col-sm-8">
+								<form action="{{ url_for("find_subreddit") }}" method="post">
+									<div class="form-group">
+										<div class="input-group">
+											<span class="input-group-addon">/r/</span>
+											<input type="text" name="subreddit" class="form-control">
+											<span class="input-group-btn">
+												<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> </button>
+											</span>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					
+					<div class="margin-btm-20">
+						<h3 class="bigger margin-btm-15">Explore subreddits by topic.</h3>
+						<ul class="list-inline">
+							{% for category in root["children"] %}
+							<li>
+								<a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
+									{{ category["display_name"] }}
+								</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="margin-40">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 margin-20">
+					{% for category in root["children"] %}
+					{% set level = category["id"].split("_")|length - 1 %}
+					<div class="panel {{ "panel-danger" if category["id"]=="reddit_adult" else "panel-default" }} category-listing">
+						<div class="panel-heading big text-uppercase">
+							<a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
+								<strong>{{ category["display_name"] }}</strong>
+							</a>
+						</div>
+						<div class="panel-body">
+							{{ snoopsnoo_macros.subreddits_category(category, level) }}
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+				<div class="col-md-3 col-md-offset-1">
+					<div class="margin-btm-40">
+						<h2 class="margin-btm-15">About</h2>
+						<p>This is a categorized directory of public subreddits. Subreddits are automatically assigned to topics by {{ snoopsnoo_macros.logo_small() }} using an algorithm. You can help by suggesting more appropriate topics.</p> 
+						<p class="small text-muted">Includes {{subreddit_count}}+ subreddits with at least ~3000 subscribers as of January 2015. Last updated {{last_updated|time_since}} ago.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

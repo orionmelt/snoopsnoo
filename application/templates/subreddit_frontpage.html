@@ -1,4 +1,3 @@
-
 {% for p in front_page["data"]["children"] %}
 	<div class="post row">
 		<div class="col-md-10">
@@ -10,19 +9,17 @@
 			{% if p["data"]["thumbnail"] %}
 			<div class="thumbnail">
 				{% if "thumbs.redditmedia" in p["data"]["thumbnail"] %}
-				<img src="{{ p["data"]["thumbnail"] }}" width="70">
+				<a target="_blank" href="{{ p["data"]["url"] }}"><img src="{{ p["data"]["thumbnail"] }}" width="70"></a>
 				{% else %}
 				<div class="placeholder_thumbnail"></div>
 				{% endif %}
 			</div>
 			{% endif %}
 			<div class="title">
-					<div class="title-text {{ "stickied" if p["data"]["stickied"] }}">
-						<h3><a target="_blank" href="{{ p["data"]["url"] }}">{{ p["data"]["title"] }}</a></h3>
-						<div class="domain">({{ p["data"]["domain"] }})</div>
-					</div>
-					
-				
+				<div class="title-text {{ "stickied" if p["data"]["stickied"] }}">
+					<h3><a target="_blank" href="{{ p["data"]["url"] }}">{{ p["data"]["title"] }}</a></h3>
+					<div class="domain">({{ p["data"]["domain"] }})</div>
+				</div>
 				<p>submitted {{ p["data"]["created_utc"]|from_timestamp|time_since }} ago by <span class="author">{{ p["data"]["author"] }}</span></p>
 				<p class="comments"><a target="_blank" href="http://www.reddit.com/{{ p["data"]["permalink"] }}">{{ p["data"]["num_comments"] }} comments</a></p>
 			</div>

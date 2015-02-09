@@ -26,3 +26,15 @@ indexes:
   - name: parent_id
   - name: subscribers
     direction: desc
+
+- kind: SubredditRelation
+  properties:
+  - name: source
+  - name: weight
+    direction: desc
+
+- kind: SubredditRelation
+  properties:
+  - name: target
+  - name: weight
+    direction: desc

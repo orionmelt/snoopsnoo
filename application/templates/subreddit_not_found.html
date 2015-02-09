@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} - Subreddit not found{% endblock %}
+
+{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+
+{% block content %}
+		<div class="container text-center page-error">
+			<h1><i class="fa fa-exclamation-triangle text-warning"></i> /r/{{ subreddit }} not found.</h1>
+			<p>Either {{ snoopsnoo_macros.logo_small() }} hasn't indexed it yet or the subreddit is private, banned or may not even exist.</p>
+			<p>{{ snoopsnoo_macros.logo_small() }} is working hard to index as many subreddits as possible. Please check back later. <a href="/subreddits/">Go to subreddits directory homepage.</a></p>
+		</div>
+{% endblock %}

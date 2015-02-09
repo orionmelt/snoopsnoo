@@ -18,8 +18,12 @@ app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 # Home page
 app.add_url_rule('/', 'home', view_func=views.home)
 
+# About page
+app.add_url_rule('/about', 'about', view_func=views.about)
+
 # Random user page
-app.add_url_rule('/random', 'random', view_func=views.random_profile)
+app.add_url_rule('/random', 'random_profile', view_func=views.random_profile)
+app.add_url_rule('/random-user', 'random_profile', view_func=views.random_profile)
 
 # User page
 app.add_url_rule('/u/<username>', 'user_profile', view_func=views.user_profile)
@@ -39,20 +43,38 @@ app.add_url_rule('/error-log', 'error_log', view_func=views.error_log)
 # Delete page
 app.add_url_rule('/delete/<username>', 'delete', view_func=views.delete_user)
 
-# Subreddit Category Update page
+# Subreddit Category Suggestion page (Old)
 app.add_url_rule('/categorize', 'insert_subreddit_category', view_func=views.insert_subreddit_category, methods=["POST"])
 
-# Subreddits Directory page
-app.add_url_rule('/subreddits/', 'subreddits_directory_home', view_func=views.subreddits_directory_home)
-app.add_url_rule('/subreddits/<level1>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
-app.add_url_rule('/subreddits/<level1>/<level2>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
-app.add_url_rule('/subreddits/<level1>/<level2>/<level3>/', 'subreddits_directory_category', view_func=views.subreddits_directory_category)
+# Subreddits Home page
+app.add_url_rule('/subreddits/', 'subreddits_home', view_func=views.subreddits_home)
+
+# Subreddits Graph pages
+app.add_url_rule('/subreddits/graph', 'subreddits_graph', view_func=views.subreddits_graph)
+app.add_url_rule('/subreddits/graph/json', 'subreddits_graph_json', view_func=views.subreddits_graph_json)
+
+# Subreddits Category page
+app.add_url_rule('/subreddits/<level1>/', 'subreddits_category', view_func=views.subreddits_category)
+app.add_url_rule('/subreddits/<level1>/<level2>/', 'subreddits_category', view_func=views.subreddits_category)
+app.add_url_rule('/subreddits/<level1>/<level2>/<level3>/', 'subreddits_category', view_func=views.subreddits_category)
 
 # Subreddit page
 app.add_url_rule('/r/<subreddit_name>', 'subreddit', view_func=views.subreddit)
 
-# Subreddit Front Page
-app.add_url_rule('/front_page', 'front_page', view_func=views.front_page, methods=["POST"])
+# Subreddit Frontpage preview
+app.add_url_rule('/subreddit_frontpage', 'subreddit_frontpage', view_func=views.subreddit_frontpage, methods=["POST"])
+
+# Subreddit Category Suggestion page
+app.add_url_rule('/suggest-subreddit-category', 'suggest_subreddit_category', view_func=views.suggest_subreddit_category, methods=["POST"])
+
+# Find Subreddit page
+app.add_url_rule('/find-subreddit', 'find_subreddit', view_func=views.find_subreddit, methods=["POST"])
+
+'''
+# Subreddits Graph
+app.add_url_rule('/subreddits-graph', 'subreddits_graph', view_func=views.subreddits_graph)
+app.add_url_rule('/subreddits-graph-json', 'subreddits_graph_json', view_func=views.subreddits_graph_json)
+'''
 
 ## Error handlers
 # Handle 404 errors
