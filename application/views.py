@@ -16,7 +16,7 @@ from math import pow
 
 from application import app
 from models import 	User, Feedback, ErrorLog, SubredditCategory, Subreddit, Category, CategoryTree, \
-					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation
+					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation, PreprocessedItem
 
 import sys, logging
 import json, markdown, random
@@ -30,20 +30,10 @@ def get_all_subreddit_categories():
 	all_subreddit_categories = memcache.get("all_subreddit_categories")
 	
 	if not all_subreddit_categories:
-		all_subreddit_categories = []
-		categories = Category.query().fetch(projection=[Category.display_name])
-		for c in categories:
-			levels = c.key.id().split("_")
-			display_names = []
-			for i,l in enumerate(levels):
-				if not i:
-					continue
-				display_names.append([x.display_name for x in categories if x.key.id()=="_".join(levels[:i+1])][0])
-			all_subreddit_categories.append({
-				"id":c.key.id(),
-				"text":" > ".join(display_names)
-			})
-		memcache.add("all_subreddit_categories", all_subreddit_categories)
+		p = PreprocessedItem.get_by_id("all_subreddit_categories")
+		if p:
+			all_subreddit_categories = json.loads(p.data)
+			memcache.add("all_subreddit_categories", all_subreddit_categories)
 
 	return all_subreddit_categories
 
@@ -233,7 +223,7 @@ def subreddit(subreddit_name):
 		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
 	related_source_ids = \
 		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
-	related_subreddits = ndb.get_multi(uniq(related_source_ids+related_target_ids))
+	related_subreddits = [x for x in ndb.get_multi(uniq(related_source_ids+related_target_ids)) if x]
 	
 	all_subreddit_categories = get_all_subreddit_categories()
 	

@@ -49,7 +49,6 @@ class SubredditCategory(ndb.Model):
 	level_name = ndb.StringProperty()
 	level_value = ndb.StringProperty()
 
-
 class Category(ndb.Model):
 	"""Models a category entry. A category could be a top-level category (level 1), subcategory (level 2), or a third-level description (level 3).
 	"""
@@ -58,7 +57,6 @@ class Category(ndb.Model):
 	size = ndb.IntegerProperty()
 	last_updated = ndb.DateTimeProperty(auto_now=True)
 	parent_id = ndb.StringProperty()
-
 
 class Subreddit(ndb.Model):
 	"""Models a subreddit entry.
@@ -82,14 +80,14 @@ class CategoryTree(ndb.Model):
 	data = ndb.JsonProperty()
 
 class PredefinedCategorySuggestion(ndb.Model):
-	"""Models a suggested category for a subreddit.
+	"""Models a suggested category (predefined) for a subreddit.
 	"""
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
 	subreddit_id = ndb.StringProperty()
 	category_id = ndb.StringProperty()
 
 class ManualCategorySuggestion(ndb.Model):
-	"""Models a suggested category for a subreddit.
+	"""Models a suggested category (manual) for a subreddit.
 	"""
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
 	subreddit_id = ndb.StringProperty()
@@ -97,9 +95,15 @@ class ManualCategorySuggestion(ndb.Model):
 	suggested_category = ndb.StringProperty()
 
 class SubredditRelation(ndb.Model):
-	"""Models related subreddit entries.
+	"""Models a related subreddit entry.
 	"""
 	last_updated = ndb.DateTimeProperty(auto_now=True)
 	source = ndb.StringProperty()
 	target = ndb.StringProperty()
 	weight = ndb.FloatProperty()
+
+class PreprocessedItem(ndb.Model):
+	"""Models preprocessed item entry (for performance reasons).
+	"""
+	last_updated = ndb.DateTimeProperty(auto_now=True)
+	data = ndb.JsonProperty()
