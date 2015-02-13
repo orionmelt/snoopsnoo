@@ -1,5 +1,5 @@
 {%- macro logo_small() -%}
-<span class="logo logo-small">SNOOP <img src="/static/img/logo_sm.png" alt="SnoopSnoo logo"> SNOO</span>
+<span class="logo logo-small">SNOOP <img src="/static/img/logo_sm.png" alt="(logo)"> SNOO</span>
 {%- endmacro -%}
 
 
@@ -24,7 +24,7 @@
 		{% else %}
 			{% set i = i + 1 %}
 			{% if child["id"] == "more_cats" and child["count"]>0 %}
-			<li>+{{ child["count"] }} more in <a href="{{ url_for('subreddits_category', level1=cat_levels[1], level2=cat_levels[2] if cat_levels|length>=3 else None, level3=cat_levels[3] if cat_levels|length>=4 else None) }}">{{ category["display_name"] }}</a></li>
+			<li><h4 class="category-level{{ level+1 }}-heading"><a href="{{ url_for('subreddits_category', level1=cat_levels[1], level2=cat_levels[2] if cat_levels|length>=3 else None, level3=cat_levels[3] if cat_levels|length>=4 else None) }}">+{{ child["count"] }} more in {{ category["display_name"] }}</a></h4></li>
 			{% elif not child["count"] and i<=5 %}
 			<li class="category-level{{ level+1 }}">
 				{{ subreddits_category(child,level+1) }}
