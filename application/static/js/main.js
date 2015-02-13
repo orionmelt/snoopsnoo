@@ -9,6 +9,8 @@ var g_user_data = {
 var g_debug = false;
 var g_user_timezone = jstz.determine().name();
 
+var g_retry_attempts = 0;
+
 var FULL_WIDTH=860;
 var HALF_WIDTH=430;
 
@@ -397,7 +399,12 @@ function call_blockspring(local_fetch) {
             }
         }        
     }).fail(function(jqXHR, status_text, error_thrown) {
-        jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");
+        if(g_retry_attempts<3) {
+            g_retry_attempts++;
+            call_blockspring(local_fetch);
+        } else {
+            jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring - "+(g_retry_attempts+1)+" retries.");
+        }
     });
 }
 
