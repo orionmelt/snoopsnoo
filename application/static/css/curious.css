@@ -32,6 +32,10 @@ h2 {
   color: #9c27b0;
 }
 
+.list-inline li {
+  margin-bottom: 5px;
+}
+
 /* Custom */
 
 .big {
@@ -74,6 +78,14 @@ h2 {
 
 .margin-btm-40 {
   margin-bottom: 40px;
+}
+
+.margin-lft-10 {
+  margin-left: 5px;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
 }
 
 #error {
@@ -391,9 +403,15 @@ h2 {
   margin-bottom: 5px;
 }
 
+.category-level1 {
+  padding:5px;
+  border:1px solid #75caeb;
+}
+
 .category-level2 {
   display:block !important; 
-  margin-bottom: 20px !important;
+  margin-top:15px !important;
+  margin-bottom: 30px !important;
 }
 
 .category-level2-heading {

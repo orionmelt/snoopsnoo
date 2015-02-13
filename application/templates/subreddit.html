@@ -11,11 +11,9 @@
 		<div class="row">
 			<div class="col-md-8">
 				{{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories) }}
-
-				<div id="subreddit-frontpage" class="subreddit-frontpage">
-				</div>
 			</div>
 			<div class="col-md-4">
+				{% if related_subreddits %}
 				<div class="panel panel-default related-subreddits">
 					<div class="panel-heading big text-lowercase">
 						Related Subreddits
@@ -28,6 +26,12 @@
 						</ul>
 					</div>
 				</div>
+				{% endif %}
+			</div>
+		</div>
+		
+		<div class="row">
+			<div id="subreddit-frontpage" class="subreddit-frontpage">
 			</div>
 		</div>
 	</div>

@@ -52,13 +52,16 @@
 		{% else %}
 		<a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
 		{% endif %}
+		{% if subreddit.over18 %}
+		<span class="margin-lft-10 smaller text-danger">(18+)</span>
+		{% endif %}
 	</div>
 	
 	<div class="panel-body">
 		<div class="title">{{ subreddit.title|markdown }}</div>
 		<div class="text-muted small">{{ subreddit.public_description|markdown }}</div>
 		<ul class="list-inline toolbar small">
-			<li><strong>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers</strong></li> 
+			<li>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers</li> 
 			<li>Created {{ subreddit.created_utc | time_since }} ago</li>
 			<li><a href="#" data-toggle="popover">Suggest category</a></li>
 		</ul>

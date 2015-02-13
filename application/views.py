@@ -156,13 +156,13 @@ def subreddits_home():
 	root = get_subreddits_root()
 	intro_items = [
 		{"id":"reddit_music_metal", "caption": "Discuss metal music.", "icon": "music"},
-		{"id":"reddit_interests_languages", "caption": "Learn a new language.", "icon": "language"},
+		{"id":"reddit_hobbies-and-interests_languages", "caption": "Learn a new language.", "icon": "language"},
 		{"id":"reddit_sports_soccer", "caption": "Connect with soccer fans.", "icon": "soccer"},
 		{"id":"reddit_business_jobs-and-careers", "caption": "Get help with finding a job.", "icon": "jobs"},
-		{"id":"reddit_entertainment_tv-shows", "caption": "Talk about your favorite TV shows.", "icon": "tv"},
-		{"id":"reddit_interests_food_cooking", "caption": "Learn how to cook.", "icon": "cooking"},
+		{"id":"reddit_entertainment_television", "caption": "Talk about your favorite TV shows.", "icon": "tv"},
+		{"id":"reddit_lifestyle_food-and-beverages_cooking", "caption": "Learn how to cook.", "icon": "cooking"},
 		{"id":"reddit_technology_programming", "caption": "Learn programming.", "icon": "code"},
-		{"id":"reddit_interests_outdoors_cycling", "caption": "Share your love for cycling.", "icon": "cycling"},
+		{"id":"reddit_hobbies-and-interests_outdoors_cycling", "caption": "Share your love for cycling.", "icon": "cycling"},
 	]
 	return render_template(
 		'subreddits_home.html', 
@@ -220,9 +220,9 @@ def subreddit(subreddit_name):
 		breadcrumbs.append(Category.get_by_id("_".join(s.parent_id.split("_")[:i+1])))
 
 	related_target_ids = \
-		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(5)]
 	related_source_ids = \
-		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(15)]
+		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(5)]
 	related_subreddits = [x for x in ndb.get_multi(uniq(related_source_ids+related_target_ids)) if x]
 	
 	all_subreddit_categories = get_all_subreddit_categories()
@@ -259,7 +259,7 @@ def suggest_subreddit_category():
 	return "OK"
 
 def find_subreddit():
-	input_subreddit = request.form.get("subreddit")
+	input_subreddit = request.form.get("subreddit").lower()
 	subreddit = Subreddit.query(Subreddit.display_name_lower == input_subreddit).get()
 	if subreddit:
 		return redirect("/r/"+subreddit.display_name)

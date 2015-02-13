@@ -8,22 +8,25 @@
 	<div class="bg-container">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6 margin-40">
-					{% set title = ["Go beyond the defaults.", "There's a subreddit for that."]|random %}
-					<h1 class="purple">{{ title }}</h1>
-					<p class="bigger">reddit is more than just the defaults. Try something new today.</p>
-					<ul class="list-unstyled margin-20 intro-items">
-						{% for intro_item in intro_items %}
-						<li class="bigger">
-							<img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png" width="20">
-							<!--<i class="fa fa-{{intro_item["icon"]}} icon"></i>-->
-							{{ snoopsnoo_macros.link_to_subreddits_category(intro_item["id"], intro_item["caption"]) }}
-						</li>
-						{% endfor %}
-					</ul>
+				<div class="col-md-6">
+					<section id="subreddits-intro">
+						<div class="jumbotron">
+							{% set title = ["Go beyond the defaults.", "There's a subreddit for that."]|random %}
+							<h1 class="purple">{{ title }}</h1>
+							<p>reddit is more than just the defaults. Try something new today.</p>
+							<ul class="list-unstyled margin-20 intro-items">
+								{% for intro_item in intro_items %}
+								<li class="bigger">
+									<img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png" width="20">
+									<!--<i class="fa fa-{{intro_item["icon"]}} icon"></i>-->
+									{{ snoopsnoo_macros.link_to_subreddits_category(intro_item["id"], intro_item["caption"]) }}
+								</li>
+								{% endfor %}
+							</ul>	
+						</div>
+					</section>
 				</div>
-				<div class="col-md-5 col-md-offset-1 margin-40">
-					
+				<div class="col-md-5 col-md-offset-1">
 					<div class="margin-btm-20">
 						<h3 class="bigger margin-btm-15">Find subreddits.</h3>
 						<div class="row">
@@ -42,7 +45,6 @@
 							</div>
 						</div>
 					</div>
-					
 					<div class="margin-btm-20">
 						<h3 class="bigger margin-btm-15">Explore subreddits by topic.</h3>
 						<ul class="list-inline">
@@ -55,7 +57,6 @@
 							{% endfor %}
 						</ul>
 					</div>
-					
 				</div>
 			</div>
 		</div>
@@ -63,19 +64,18 @@
 	<div class="margin-40">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-8 margin-20">
+				<div class="col-md-8">
 					{% for category in root["children"] %}
 					{% set level = category["id"].split("_")|length - 1 %}
-					<div class="panel {{ "panel-danger" if category["id"]=="reddit_adult" else "panel-default" }} category-listing">
-						<div class="panel-heading big text-uppercase">
+					<div class="margin-btm-40">
+						<h2 class="margin-btm-15">
 							<a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
-								<strong>{{ category["display_name"] }}</strong>
+								<span class="category-level1 {{ "text-danger" if category["id"]=="reddit_adult" }}">{{ category["display_name"] }}</span>
 							</a>
-						</div>
-						<div class="panel-body">
-							{{ snoopsnoo_macros.subreddits_category(category, level) }}
-						</div>
+						</h2>
+						{{ snoopsnoo_macros.subreddits_category(category, level) }}
 					</div>
+					<hr class="margin-btm-40">
 					{% endfor %}
 				</div>
 				<div class="col-md-3 col-md-offset-1">
