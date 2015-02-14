@@ -18,7 +18,7 @@ from application import app
 from models import 	User, Feedback, ErrorLog, SubredditCategory, Subreddit, Category, CategoryTree, \
 					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation, PreprocessedItem
 
-import sys, logging
+import sys, logging, re
 import json, markdown, random
 
 def uniq(seq):
@@ -86,7 +86,8 @@ def user_profile(username):
 																  	if user.data["stats"]["basic"]["comments"]["best"]["text"] else None
 		user.data["stats"]["basic"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["worst"]["text"])) \
 																	if user.data["stats"]["basic"]["comments"]["worst"]["text"] else None
-	return render_template('user_profile.html', user=user, data=json.dumps(user.data))
+	all_subreddit_categories = get_all_subreddit_categories()
+	return render_template('user_profile.html', user=user, data=json.dumps(user.data), all_subreddit_categories=all_subreddit_categories)
 
 def update_user():
 	data=request.get_json()
@@ -209,6 +210,15 @@ def subreddits_category(level1,level2=None,level3=None):
 		all_subreddit_categories=all_subreddit_categories
 	)
 
+
+def get_related_subreddits(subreddit_id):
+	related_target_ids = \
+		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==subreddit_id).order(-SubredditRelation.weight).fetch(5)]
+	related_source_ids = \
+		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==subreddit_id).order(-SubredditRelation.weight).fetch(5)]
+	related_subreddits = [x for x in ndb.get_multi(uniq(related_source_ids+related_target_ids)) if x]
+	return related_subreddits
+
 def subreddit(subreddit_name):
 	subreddit_name=subreddit_name.lower()
 	s = Subreddit.query(Subreddit.display_name_lower==subreddit_name).get()
@@ -219,11 +229,14 @@ def subreddit(subreddit_name):
 	for i,c in enumerate(s.parent_id.split("_")):
 		breadcrumbs.append(Category.get_by_id("_".join(s.parent_id.split("_")[:i+1])))
 
+	'''
 	related_target_ids = \
 		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==s.key.id()).order(-SubredditRelation.weight).fetch(5)]
 	related_source_ids = \
 		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==s.key.id()).order(-SubredditRelation.weight).fetch(5)]
 	related_subreddits = [x for x in ndb.get_multi(uniq(related_source_ids+related_target_ids)) if x]
+	'''
+	related_subreddits = get_related_subreddits(s.key.id())
 	
 	all_subreddit_categories = get_all_subreddit_categories()
 	
@@ -240,22 +253,40 @@ def subreddit_frontpage():
 	return render_template('subreddit_frontpage.html', front_page=data)
 
 def suggest_subreddit_category():
-	subreddit_id = request.form.get("subreddit_id")
-	category_id = request.form.get("category_id")
-	suggested_category = request.form.get("suggested_category")
-	if not suggested_category:
-		c = PredefinedCategorySuggestion(
-			subreddit_id=subreddit_id,
-			category_id=category_id
-		)
-		c.put()
-	else:
-		c = ManualCategorySuggestion(
-			subreddit_id=subreddit_id,
-			category_id=category_id,
-			suggested_category=suggested_category
-		)
-		c.put()
+
+	category_ids = request.form.getlist("category_id")
+	subreddit_names = request.form.getlist("subreddit_name")
+	suggested_categories = request.form.getlist("suggested_category")
+
+	predefined_suggestions = []
+	manual_suggestions = []
+
+	for i, category_id in enumerate(category_ids):
+		if not (category_id or suggested_categories[i]):
+			continue
+
+		subreddit_name = subreddit_names[i]
+		suggested_category = suggested_categories[i]
+
+		if not suggested_category:
+			c = PredefinedCategorySuggestion(
+				subreddit_display_name=subreddit_name,
+				category_id=category_id
+			)
+			predefined_suggestions.append(c)
+			#c.put()
+		else:
+			c = ManualCategorySuggestion(
+				subreddit_display_name=subreddit_name,
+				category_id=category_id,
+				suggested_category=suggested_category
+			)
+			manual_suggestions.append(c)
+			#c.put()
+	if predefined_suggestions:
+		ndb.put_multi(predefined_suggestions)
+	if manual_suggestions:
+		ndb.put_multi(manual_suggestions)
 	return "OK"
 
 def find_subreddit():
@@ -266,6 +297,19 @@ def find_subreddit():
 	else:
 		return render_template("subreddit_not_found.html", subreddit=input_subreddit)
 
+def recommended_subreddits(subreddits):
+	input_subreddits = [x for x in subreddits.split(",") if re.match('^[\w]+$', x) is not None]
+	recommended_subreddits = []
+	for s in input_subreddits:
+		s_key = Subreddit.query(Subreddit.display_name_lower==s).get(keys_only=True)
+		if not s_key:
+			continue
+		r = set([x.display_name for x in get_related_subreddits(s_key.id())])
+		recommended_subreddits.append(r)
+	if recommended_subreddits:
+		return str(recommended_subreddits[0].intersection(*recommended_subreddits))
+	else:
+		return str([])
 
 def subreddits_graph():
 	return render_template('subreddits_graph.html')

@@ -49,6 +49,9 @@ app.add_url_rule('/categorize', 'insert_subreddit_category', view_func=views.ins
 # Subreddits Home page
 app.add_url_rule('/subreddits/', 'subreddits_home', view_func=views.subreddits_home)
 
+# Subreddits Home page
+app.add_url_rule('/subreddits/recommended/<subreddits>', 'recommended_subreddits', view_func=views.recommended_subreddits)
+
 # Subreddits Graph pages
 app.add_url_rule('/subreddits/graph', 'subreddits_graph', view_func=views.subreddits_graph)
 app.add_url_rule('/subreddits/graph/json', 'subreddits_graph_json', view_func=views.subreddits_graph_json)

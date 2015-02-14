@@ -332,34 +332,42 @@
 	        
 			<div class="row">
 				<div id="categorize-subreddits" class="col-md-12 margin-btm-20">
-					<h2>Help Categorize Subreddits</h2>
-	        		<h3>So many subreddits. So few categorized.</h3>
-	        		<h4>Click on edit links below to update. Choose from predefined categories or create your own. THANKS A BUNCH!</h4>
-					<div id="sub-categorize-table">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Subreddit</th>
-									<th>Category</th>
-									<th>Subcategory</th>
-									<th>Optional Description</th>
-								</tr>
-							</thead>
-							<tbody id="sub-categorize-table-tbody">
-								<tr>
-									<td><p><a href="http://www.reddit.com/r/Sherlock" target="_blank">/r/Sherlock</a></p><p><i>(Example)</i></p></td>
-									<td>Entertainment</td>
-									<td>TV Shows</td>
-									<td>Sherlock</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<form id="suggest-category-form" class="form-horizontal">
+						<fieldset>
+						<h2>Help Categorize Subreddits</h2>
+		        		<h3>So many subreddits. So few categorized.</h3>
+		        		<h4>Click on edit links below to update. Choose from predefined topics or suggest your own. THANKS A BUNCH!</h4>
+						<div id="sub-categorize-table">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Subreddit</th>
+										<th>Select topic</th>
+										<th>Or enter your own</th>
+									</tr>
+								</thead>
+								<tbody id="sub-categorize-table-tbody">
+									
+								</tbody>
+							</table>
+							<button type="submit" class="btn btn-primary">Save</button>
+							<span class="save_done margin-lft-10"></span>
+						</div>
+						</fieldset>
+					</form>
 				</div>
 			</div>
 
 		</div>
 
+		<div id="all-subreddit-categories-placeholder" style="display:none">
+			<select name="category_id" class="form-control small">
+				<option value="">-- Select topic --</option>
+			{% for c in all_subreddit_categories %}
+				<option value="{{c["id"]}}">{{c["text"]}}</option>
+			{% endfor %}
+			</select>
+		</div>
 		{% autoescape false %}
 		<script>
 		var results=JSON.stringify({{ data }});
@@ -367,6 +375,20 @@
 			g_last_updated = new Date('{{ user.last_updated.strftime("%B %d, %Y %H:%M:%S") }}');
 			user_init();
 			$("[data-toggle='tooltip']").tooltip(); 
+			$(document).on('submit', '#suggest-category-form', function(event) {
+				event.preventDefault();
+				var form = $(this);
+				var done_span = $(this).parent().find(".save_done");
+				var data=$(this).serializeArray();
+				var action="{{ url_for("suggest_subreddit_category") }}";
+				$.ajax({
+					url: action,
+					type: "POST",
+					data: data
+				}).done(function(response) {
+					done_span.html('<i class="fa fa-check text-success"></i>');
+				});
+			});
 		});
 		</script>
 		{% endautoescape %}

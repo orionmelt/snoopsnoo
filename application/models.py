@@ -83,16 +83,18 @@ class PredefinedCategorySuggestion(ndb.Model):
 	"""Models a suggested category (predefined) for a subreddit.
 	"""
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
-	subreddit_id = ndb.StringProperty()
+	subreddit_display_name = ndb.StringProperty()
+	subreddit_display_name_lower = ndb.ComputedProperty(lambda self: self.subreddit_display_name.lower())
 	category_id = ndb.StringProperty()
 
 class ManualCategorySuggestion(ndb.Model):
 	"""Models a suggested category (manual) for a subreddit.
 	"""
 	log_date = ndb.DateTimeProperty(auto_now_add=True)
-	subreddit_id = ndb.StringProperty()
+	subreddit_display_name = ndb.StringProperty()
+	subreddit_display_name_lower = ndb.ComputedProperty(lambda self: self.subreddit_display_name.lower())
 	category_id = ndb.StringProperty()
-	suggested_category = ndb.StringProperty()
+	suggested_category = ndb.StringProperty(indexed=False)
 
 class SubredditRelation(ndb.Model):
 	"""Models a related subreddit entry.

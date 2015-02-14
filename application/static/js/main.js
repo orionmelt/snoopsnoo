@@ -1052,8 +1052,6 @@ function populate_results(results) {
         $("#worst-post-sub-reco").hide();
     }
 
-    var page_id = Math.floor(Date.now());
-
     // Subreddit categorization
     if(data.metrics.subreddit.children && data.metrics.subreddit.children.length) {
         var other_subreddits = data.metrics.subreddit.children.filter(function(d) {
@@ -1062,65 +1060,15 @@ function populate_results(results) {
         if(other_subreddits && other_subreddits.children) {
             other_subreddits.children.forEach(function(c) {
                 $("#sub-categorize-table-tbody").append(
-                    '<tr><td><a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</td>' +
-                    '<td><a href="#" class="input-editable-category" data-type="typeaheadjs" data-placement="right" data-title="Enter category"' +
-                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" title="">Edit category</a></td>' +
-                    '<td><a href="#" class="input-editable-subcategory" data-type="typeaheadjs" data-placement="right" data-title="Enter subcategory"' +
-                        ' class="editable editable-click" data-original-title="" data-pk="' + c.name + '" data-pk="' + c.name + '"title="">Edit subcategory</a></td>' +
-                    '<td><a href="#" class="input-editable-desc" data-type="text" data-pk="' + c.name + '" data-title="Enter description">Edit description</a></td>'
+                    '<tr>' +
+                    '<td class="col-md-2">' + 
+                        '<a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</a>' +
+                        '<input type="hidden" name="subreddit_name" value="' + c.name + '">' + 
+                    '</td>' +
+                    '<td class="col-md-5">' + $("#all-subreddit-categories-placeholder").html() + '</td>' +
+                    '<td class="col-md-5">' + '<input name="suggested_category" type="text" class="form-control small">' + '</td>' +
+                    '</tr>'
                 );
-            });
-            $.fn.editable.defaults.mode = 'inline';
-        
-            $('#sub-categorize-table a.input-editable-category').editable({
-                value: '',
-                name: 'category',
-                url: '/categorize',
-                params: function(params) {
-                    var data = {};
-                    data.page_id = page_id;
-                    data.page_user = g_username;
-                    data.subreddit = params.pk;
-                    data.level_name = params.name;
-                    data.level_value = params.value;
-                    return data;
-                },
-                typeahead: {
-                    name: 'category',
-                    local: CATEGORIES
-                }
-            });
-            $('#sub-categorize-table a.input-editable-subcategory').editable({
-                value: '',
-                name: 'subcategory',
-                url: '/categorize',
-                params: function(params) {
-                    var data = {};
-                    data.page_id = page_id;
-                    data.page_user = g_username;
-                    data.subreddit = params.pk;
-                    data.level_name = params.name;
-                    data.level_value = params.value;
-                    return data;
-                },
-                typeahead: {
-                    name: 'subcategory',
-                    local: SUB_CATEGORIES
-                }
-            });
-            $('#sub-categorize-table a.input-editable-desc').editable({
-                value: '',
-                name: 'description',
-                url: '/categorize',
-                params: function(params) {
-                    var data = {};
-                    data.page_id = Math.floor(Date.now());
-                    data.page_user = g_username;
-                    data.subreddit = params.pk;
-                    data.level_name = params.name;
-                    data.level_value = params.value;
-                    return data;
-                },
             });
         } else {
             $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>');
