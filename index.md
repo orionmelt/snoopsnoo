@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Snoop Snoo Blog
+title: Home
 tagline:
 ---
 {% include JB/setup %}

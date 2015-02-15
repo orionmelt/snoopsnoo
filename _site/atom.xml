@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
  
- <title>Snoop Snoo Blog</title>
+ <title>SnoopSnoo Blog</title>
  <link href="blog.snoopsnoo.com/" rel="self"/>
  <link href="blog.snoopsnoo.com"/>
- <updated>2015-02-15T04:57:55-07:00</updated>
+ <updated>2015-02-15T05:14:31-07:00</updated>
  <id>blog.snoopsnoo.com</id>
  <author>
    <name>OrionMelt</name>
