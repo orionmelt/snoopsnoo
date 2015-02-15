@@ -1,10 +1,10 @@
 		<div class="post">
 			<div class="header">
-				<h4>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h4>
-				<h5>{{ page.date | date_to_long_string }}</h5>
+				<h2>{{ page.title }} {% if page.tagline %}<small>{{page.tagline}}</small>{% endif %}</h2>
+				<h4>{{ page.date | date_to_long_string }}</h4>
 			</div>
 
-			<div class="content">
+			<div class="content margin-btm-40">
 			{{ content }}
 			</div>
 

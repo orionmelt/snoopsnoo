@@ -9,8 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Tags</title>
-    
+    <title>There's a subreddit for that!</title>
+    <meta name="description" content="">
     <meta name="author" content="OrionMelt">
     
     <!-- Styles -->
@@ -90,24 +90,94 @@
         <div id="blog-wrapper" class="row margin-20">
             <div id="blog-content" class="col-md-8">
                 
-    
+		<div class="post">
+			<div class="header">
+				<h2>There's a subreddit for that! </h2>
+				<h4>15 February 2015</h4>
+			</div>
 
-<ul class="tag_box inline">
-    
-  
+			<div class="content margin-btm-40">
+			
+<p>There are over <a href="https://www.reddit.com/about/">9,000 active subreddits</a> on reddit, and according to <a href="http://redditmetrics.com/history">reddit metrics</a>, over 585,000 in total! There’s probably a subreddit for any topic you can think of, no matter how obscure or specific. (If not, you can create one yourself.) So there’s indeed a subreddit for that, for pretty much any value of that. That’s great, but how do you actually find new subreddits?</p>
 
+<p>I think there are two interesting areas where there’s a lot of room for improvement — subreddit discovery and recommendations.</p>
 
-  
-    
-  
+<h3 id="subreddit-discovery">Subreddit Discovery</h3>
 
+<p>There are already a few resources to help you find subreddits:</p>
 
+<ol>
+  <li>reddit’s own <a href="http://www.reddit.com/subreddits">subreddit listing page</a>.</li>
+  <li>Meta subreddits such as <a href="http://www.reddit.com/r/subredditoftheday">/r/SubredditOfTheDay</a> and <a href="http://www.reddit.com/r/findareddit">/r/FindAReddit</a>.</li>
+  <li>Third-party websites such as <a href="http://redditmetrics.com">reddit metrics</a> and <a href="http://redditlist.com/">redditlist</a>.</li>
+</ol>
 
+<p>These are great if you already have a specific keyword in mind, or if you are simply interested in finding new and trending subreddits regardless of topic. But what if you wanted to browse subreddits by topic, like a dmoz-style directory? You could visit <a href="http://subreddits.org/">subreddits.org</a> or <a href="http://metareddit.com/tags/">metareddit.com</a>, but they seem outdated. So I built a <a href="http://snoopsnoo.com/subreddits/">directory of subreddits</a>.</p>
+
+<p><strong>A brief background:</strong> while building <span class="logo logo-small">SNOOP <img src="/assets/themes/snoopsnoo/img/logo_sm.png" /> SNOO</span>, I decided to manually group the top 2,500 subreddits by topics so I would be able to tell, at least at a high level, what subject areas a user was interested in. For example, it was straightforward to presume that a user’s activity in /r/python and /r/java meant that they were interested in “Technology &gt; Programming”. The tedious (<em>and painful</em>) prerequisite was, of course, having to manually file /r/python and /r/java under “Programming” (and do this for each of the 2,500 subreddits). After several frustrating attempts, I managed to categorize most of the top 2,500 subreddits under several topics and continued to build the rest of the site. I then realized that I had already created a mini-directory subreddits grouped by topic!</p>
+
+<p>The next logical step was to expand the directory by adding more subreddits, but doing it manually wasn’t going to scale. So, like any <strike>lazy</strike> good programmer, I automated the process:</p>
+
+<ul>
+  <li>For each of the top ~13,000 subreddits, I gathered a list of its related subreddits. I used sidebar links and crossposts to measure relativity between subreddits. This gave me a list of around 28,000 subreddits.</li>
+  <li>I filtered out subreddits with fewer than 1,000 subscribers to keep things simple, which shortened the list down to around 19,000 subreddits.  </li>
+  <li><span class="logo logo-small">SNOOP <img src="/assets/themes/snoopsnoo/img/logo_sm.png" /> SNOO</span> currently lets users suggest topics for subreddits that have none assigned. Using this helpful data along with the manual list I already had, I wrote a program to automatically assign topics to the remaining subreddits.</li>
+  <li>Subreddits that couldn’t be assigned a topic (such as self-post only subreddits that have no useful crossposts data) were assigned “General” by default. </li>
 </ul>
 
+<p>And that’s how I built a directory of thousands of subreddits categorized by topic. You can <a href="http://snoopsnoo.com/subreddits/">check it out here</a> and I hope you find it useful.</p>
+
+<h3 id="subreddit-recommendations">Subreddit Recommendations</h3>
+
+<p>Another problem that I find interesting is recommending subreddits based on user activity. Currently, reddit doesn’t seem to provide tailored subreddit recommendations to users based on their activity. For instance, if you are already active on /r/Cooking and /r/recipes, perhaps you would also like /r/AskCulinary or /r/budgetfood? </p>
+
+<p>Since I now have enough data about subreddits , I figured it’d be worth adding subreddit recommendations to <span class="logo logo-small">SNOOP <img src="/assets/themes/snoopsnoo/img/logo_sm.png" /> SNOO</span> — it now shows recommendations for subreddits that you may like and also lets you vote on how useful you find them. As always, user feedback is extremely helpful in improving my algorithms and I look forward to all kinds of feedback, suggestions and criticism.</p>
+
+<p><strong>Making it better:</strong> <em>While this recommendation technique (known as content-based filtering) is better than completely random choices, it is still very limited by nature. If I deduce that you are interested in cooking, I can only recommend subreddits related to cooking and food at best. A more useful recommendation system would also do what is known as collaborative filtering, where recommendations are derived using not only the type of content a user already likes, but also from new content liked by similar users. This is a harder problem to solve and requires a lot more data than I currently have, but it’s something that I hope to explore in the near future.</em></p>
+
+
+			</div>
+
+			  
+
+			  
+			
+			<div class="comments">
+				
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'snoopsnoo'; // required: replace example with your forum shortname
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
 
+
+			</div>
+
+			<ul class="pager">
+				
+				<li class="previous"><a href="/2015/01/10/whats-better-than-version-01" title="What's better than version 0.1?"><i class="fa fa-arrow-circle-o-left fa-lg"></i> Previous</a></li>
+				
+				<!--<li><a href="/archive.html">Archive</a></li>-->
+				
+				<li class="next disabled"><a>Next <i class="fa fa-arrow-circle-o-right fa-lg"></i></a></li>
+				
+			</ul>
+		</div>
+
+		
 
             </div>
             <div id="blog-sidebar" class="col-md-3 col-md-offset-1">

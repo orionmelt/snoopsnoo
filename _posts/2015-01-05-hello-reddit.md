@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hello reddit."
+title: "Hello reddit"
 description: ""
 category: 
 tags: []

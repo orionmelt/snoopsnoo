@@ -4,13 +4,59 @@
  <title>Snoop Snoo Blog</title>
  <link href="blog.snoopsnoo.com/" rel="self"/>
  <link href="blog.snoopsnoo.com"/>
- <updated>2015-01-14T22:27:23-07:00</updated>
+ <updated>2015-02-15T04:57:55-07:00</updated>
  <id>blog.snoopsnoo.com</id>
  <author>
    <name>OrionMelt</name>
    <email>orionmelt@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>There's a subreddit for that!</title>
+   <link href="blog.snoopsnoo.com/2015/02/15/theres-a-subreddit-for-that"/>
+   <updated>2015-02-15T00:00:00-07:00</updated>
+   <id>blog.snoopsnoo.com/2015/02/15/theres-a-subreddit-for-that</id>
+   <content type="html">
+&lt;p&gt;There are over &lt;a href=&quot;https://www.reddit.com/about/&quot;&gt;9,000 active subreddits&lt;/a&gt; on reddit, and according to &lt;a href=&quot;http://redditmetrics.com/history&quot;&gt;reddit metrics&lt;/a&gt;, over 585,000 in total! There’s probably a subreddit for any topic you can think of, no matter how obscure or specific. (If not, you can create one yourself.) So there’s indeed a subreddit for that, for pretty much any value of that. That’s great, but how do you actually find new subreddits?&lt;/p&gt;
+
+&lt;p&gt;I think there are two interesting areas where there’s a lot of room for improvement — subreddit discovery and recommendations.&lt;/p&gt;
+
+&lt;h3 id=&quot;subreddit-discovery&quot;&gt;Subreddit Discovery&lt;/h3&gt;
+
+&lt;p&gt;There are already a few resources to help you find subreddits:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;reddit’s own &lt;a href=&quot;http://www.reddit.com/subreddits&quot;&gt;subreddit listing page&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Meta subreddits such as &lt;a href=&quot;http://www.reddit.com/r/subredditoftheday&quot;&gt;/r/SubredditOfTheDay&lt;/a&gt; and &lt;a href=&quot;http://www.reddit.com/r/findareddit&quot;&gt;/r/FindAReddit&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Third-party websites such as &lt;a href=&quot;http://redditmetrics.com&quot;&gt;reddit metrics&lt;/a&gt; and &lt;a href=&quot;http://redditlist.com/&quot;&gt;redditlist&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;These are great if you already have a specific keyword in mind, or if you are simply interested in finding new and trending subreddits regardless of topic. But what if you wanted to browse subreddits by topic, like a dmoz-style directory? You could visit &lt;a href=&quot;http://subreddits.org/&quot;&gt;subreddits.org&lt;/a&gt; or &lt;a href=&quot;http://metareddit.com/tags/&quot;&gt;metareddit.com&lt;/a&gt;, but they seem outdated. So I built a &lt;a href=&quot;http://snoopsnoo.com/subreddits/&quot;&gt;directory of subreddits&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A brief background:&lt;/strong&gt; while building &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt;, I decided to manually group the top 2,500 subreddits by topics so I would be able to tell, at least at a high level, what subject areas a user was interested in. For example, it was straightforward to presume that a user’s activity in /r/python and /r/java meant that they were interested in “Technology &amp;gt; Programming”. The tedious (&lt;em&gt;and painful&lt;/em&gt;) prerequisite was, of course, having to manually file /r/python and /r/java under “Programming” (and do this for each of the 2,500 subreddits). After several frustrating attempts, I managed to categorize most of the top 2,500 subreddits under several topics and continued to build the rest of the site. I then realized that I had already created a mini-directory subreddits grouped by topic!&lt;/p&gt;
+
+&lt;p&gt;The next logical step was to expand the directory by adding more subreddits, but doing it manually wasn’t going to scale. So, like any &lt;strike&gt;lazy&lt;/strike&gt; good programmer, I automated the process:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;For each of the top ~13,000 subreddits, I gathered a list of its related subreddits. I used sidebar links and crossposts to measure relativity between subreddits. This gave me a list of around 28,000 subreddits.&lt;/li&gt;
+  &lt;li&gt;I filtered out subreddits with fewer than 1,000 subscribers to keep things simple, which shortened the list down to around 19,000 subreddits.  &lt;/li&gt;
+  &lt;li&gt;&lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt; currently lets users suggest topics for subreddits that have none assigned. Using this helpful data along with the manual list I already had, I wrote a program to automatically assign topics to the remaining subreddits.&lt;/li&gt;
+  &lt;li&gt;Subreddits that couldn’t be assigned a topic (such as self-post only subreddits that have no useful crossposts data) were assigned “General” by default. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And that’s how I built a directory of thousands of subreddits categorized by topic. You can &lt;a href=&quot;http://snoopsnoo.com/subreddits/&quot;&gt;check it out here&lt;/a&gt; and I hope you find it useful.&lt;/p&gt;
+
+&lt;h3 id=&quot;subreddit-recommendations&quot;&gt;Subreddit Recommendations&lt;/h3&gt;
+
+&lt;p&gt;Another problem that I find interesting is recommending subreddits based on user activity. Currently, reddit doesn’t seem to provide tailored subreddit recommendations to users based on their activity. For instance, if you are already active on /r/Cooking and /r/recipes, perhaps you would also like /r/AskCulinary or /r/budgetfood? &lt;/p&gt;
+
+&lt;p&gt;Since I now have enough data about subreddits , I figured it’d be worth adding subreddit recommendations to &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt; — it now shows recommendations for subreddits that you may like and also lets you vote on how useful you find them. As always, user feedback is extremely helpful in improving my algorithms and I look forward to all kinds of feedback, suggestions and criticism.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Making it better:&lt;/strong&gt; &lt;em&gt;While this recommendation technique (known as content-based filtering) is better than completely random choices, it is still very limited by nature. If I deduce that you are interested in cooking, I can only recommend subreddits related to cooking and food at best. A more useful recommendation system would also do what is known as collaborative filtering, where recommendations are derived using not only the type of content a user already likes, but also from new content liked by similar users. This is a harder problem to solve and requires a lot more data than I currently have, but it’s something that I hope to explore in the near future.&lt;/em&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>What's better than version 0.1?</title>
@@ -36,7 +82,7 @@
  </entry>
  
  <entry>
-   <title>Hello reddit.</title>
+   <title>Hello reddit</title>
    <link href="blog.snoopsnoo.com/2015/01/05/hello-reddit"/>
    <updated>2015-01-05T00:00:00-07:00</updated>
    <id>blog.snoopsnoo.com/2015/01/05/hello-reddit</id>
@@ -50,7 +96,7 @@
  </entry>
  
  <entry>
-   <title>Let's begin.</title>
+   <title>Let's begin</title>
    <link href="blog.snoopsnoo.com/2015/01/01/lets-begin"/>
    <updated>2015-01-01T00:00:00-07:00</updated>
    <id>blog.snoopsnoo.com/2015/01/01/lets-begin</id>

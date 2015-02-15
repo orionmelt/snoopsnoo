@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Let's begin."
+title: "Let's begin"
 description: ""
 category: 
 tags: []

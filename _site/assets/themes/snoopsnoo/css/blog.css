@@ -1,3 +1,7 @@
+body {
+	line-height: 22px;
+}
+
 #blog-wrapper {
 }
 
@@ -24,4 +28,9 @@
 
 .sidebar-section h4 {
 	margin-bottom: 15px;
+}
+
+h3 {
+	font-size: 16px;
+	font-weight: bold;
 }
