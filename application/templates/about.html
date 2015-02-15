@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %} - About{% endblock %}
+{% block nav_about %}active{% endblock %}
+
+{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+
+{% block content %}
+		<div class="margin-20">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8">
+						<section id="about">
+							<h2 class="margin-btm-20">About</h2>
+							<p>{{ snoopsnoo_macros.logo_small() }} provides reddit user and subreddits analytics.</p>
+							<p><strong>User analytics</strong> are computed by analyzing submissions and comments activity. Analysis is limited to the 1,000 most recent comments and submissions due to reddit's API restrictions.</p>
+
+							<p><strong>Subreddits</strong> are automatically assigned topics by an algorithm. Subreddits with fewer than 1,000 subscribers or created within the last 30 days may not have been processed.</p>
+
+							<p>Feedback, criticism and suggestions are welcome and greatly appreciated - please PM <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a>.</p>
+
+							<p class="highlight"><strong>DISCLAIMER:</strong> All data analyzed is public. This website is not affiliated with reddit and cannot access your private reddit data such as your password, subreddit subscriptions, up/downvotes and private subreddit activity.</p>
+							<p></p>
+							
+						</section>
+						<hr class="margin-20">
+						<section id="credits">
+							<h2 class="margin-btm-20">Credits</h2>
+							<ul class="list-unstyled">
+								<li>Natural Language Processing using <a href="https://github.com/sloria/TextBlob">TextBlob</a> and <a href="http://www.nltk.org/">NLTK</a>.</li>
+								<li>Data Visualization using <a href="http://d3js.org/">D3.js</a>.</li>
+								<li>API hosted on <a href="http://blockspring.com/">Blockspring</a>.</li>
+								<li>Bootstrap theme by <a href="http://bootswatch.com/">Bootswatch</a>.</li>
+								<li>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.designmodo.com" title="Designmodo">Designmodo</a>, <a href="http://picol.org" title="Picol">Picol</a>, <a href="http://www.rivolta.es" title="Situ Herrera">Situ Herrera</a>, <a href="http://www.icons8.com" title="Icons8">Icons8</a>, <a href="http://www.google.com" title="Google">Google</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>.</div></li>
+							</ul>
+						</section>
+					</div>
+
+					<div class="col-md-3 col-md-offset-1">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}
