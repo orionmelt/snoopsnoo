@@ -19,7 +19,7 @@ app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 app.add_url_rule('/', 'home', view_func=views.home)
 
 # About page
-app.add_url_rule('/about', 'about', view_func=views.about)
+app.add_url_rule('/about/', 'about', view_func=views.about)
 
 # Random user page
 app.add_url_rule('/random', 'random_profile', view_func=views.random_profile)
@@ -36,6 +36,9 @@ app.add_url_rule('/update', 'update_user', view_func=views.update_user, methods=
 
 # Feedback page
 app.add_url_rule('/feedback', 'feedback', view_func=views.process_feedback)
+
+# Subreddit Recommendation Feedback page
+app.add_url_rule('/sub-reco-feedback', 'subreddit_recommendation_feedback', view_func=views.process_subreddit_recommendation_feedback)
 
 # Error log page
 app.add_url_rule('/error-log', 'error_log', view_func=views.error_log)

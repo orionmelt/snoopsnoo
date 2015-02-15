@@ -53,140 +53,6 @@ var SYNOPSIS_KEYS = [
     {label: "your religious beliefs", key:"religion"}
 ];
 
-var CATEGORIES = [
-    'Anthropology',
-    'Archaeology',
-    'Architecture',
-    'Art',
-    'Business',
-    'Entertainment',
-    'Gaming',
-    'History',
-    'Interests',
-    'Law',
-    'Lifestyle',
-    'Location',
-    'Meta',
-    'Music',
-    'News & Politics',
-    'Organization',
-    'Philosophy',
-    'Psychology',
-    'Science',
-    'Sports',
-    'Technology',
-    'Travel',
-    'General'
-];
-
-var SUB_CATEGORIES = [
-    'Anime',
-    'Astronomy',
-    'Automobiles',
-    'Backpacking',
-    'Baseball',
-    'Basketball',
-    'Biology',
-    'Board/Card Games',
-    'Books',
-    'Botany',
-    'Camping',
-    'Celebrities',
-    'Chemistry',
-    'Chess',
-    'City',
-    'Classical',
-    'Climbing',
-    'Comedy',
-    'Comics',
-    'Computer Science',
-    'Cooking',
-    'Country',
-    'Crafts',
-    'Cycling',
-    'Data Visualization',
-    'Design',
-    'Discussion',
-    'DIY',
-    'Drugs',
-    'Dubstep',
-    'Economics',
-    'Electronic',
-    'Employment',
-    'Engineering',
-    'Entrepreneurship',
-    'Fantasy',
-    'Fashion',
-    'Finance',
-    'Fitness',
-    'Food',
-    'Football',
-    'Gadgets',
-    'Gardening',
-    'General Business',
-    'General Science',
-    'General Technology',
-    'Geology',
-    'Golf',
-    'Graffiti',
-    'Hardware',
-    'Health',
-    'Hiking',
-    'Hip Hop',
-    'Hockey',
-    'Horror',
-    'House',
-    'Humor',
-    'Internet',
-    'Jazz',
-    'Longboarding',
-    'Marketing',
-    'Math',
-    'Medicine',
-    'Memes',
-    'Metal',
-    'MMA',
-    'Mobile',
-    'Motivation',
-    'Motorsports',
-    'Movies',
-    'Music',
-    'Networking',
-    'Other',
-    'Personal Finance',
-    'Photography',
-    'Physics',
-    'Pictures',
-    'Politics',
-    'Pop',
-    'Programming',
-    'Punk',
-    'Rap',
-    'Relationships',
-    'Religion',
-    'Rock',
-    'Rugby',
-    'Science Fiction',
-    'Shopping',
-    'Skateboarding',
-    'Skiing',
-    'Skydiving',
-    'Snowboarding',
-    'Soccer',
-    'Software',
-    'State',
-    'Tennis',
-    'Trance',
-    'TV Shows',
-    'University',
-    'USMC',
-    'Video Games',
-    'Videos',
-    'World News',
-    'Wrestling',
-    'Writing'
-];
-
 var ERROR_MSGS = {
     "UNEXPECTED_ERROR": "An unexpected error has occurred. Please try again in a few minutes.",
     "USER_NOT_FOUND": "User not found.",
@@ -194,6 +60,15 @@ var ERROR_MSGS = {
     "REQUEST_CANCELED": "Server too busy. Please try again in a few minutes.",
     "SERVER_BUSY": "Server too busy. Please try again in a few minutes."
 };
+
+var DEFAULT_SUBS = [
+    "announcements", "art", "askreddit", "askscience", "aww", "blog", "books", "creepy", "dataisbeautiful", "diy", "documentaries",
+    "earthporn", "explainlikeimfive", "fitness", "food", "funny", "futurology", "gadgets", "gaming", "getmotivated", "gifs", "history",
+    "iama", "internetisbeautiful", "jokes", "lifeprotips", "listentothis", "mildlyinteresting", "movies", "music", "news", "nosleep", 
+    "nottheonion", "oldschoolcool", "personalfinance", "philosophy", "photoshopbattles", "pics", "science", "showerthoughts", "space",
+    "sports", "television", "tifu", "todayilearned", "twoxchromosomes", "upliftingnews", "videos", "worldnews", "writingprompts"
+];
+
 
 $(function () {
     $(".user-timezone").text(g_user_timezone);
@@ -601,6 +476,15 @@ function send_feedback(key, value, feedback) {
     });
 }
 
+function send_sub_reco_feedback(i, o, f) {
+    url = "/sub-reco-feedback?u="+g_username+"&i="+i+"&o="+o+"&f="+f;
+    console.log(url);
+    $.ajax({
+        url: url,
+        type: "GET"
+    });
+}
+
 function log_error(error_object) {
     url = "/error-log?u="+error_object.username+"&t="+error_object.error_type+"&m="+error_object.error_message;
     $.ajax({
@@ -661,7 +545,8 @@ function populate_results(results) {
     $("#data-first_post_date_humanized").text(data.summary.first_post_date.humanized);
 
     $("#data-lurk_period_humanized").text(data.summary.lurk_period.days_humanized);
-    $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
+    $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + 
+        " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
 
     if(data.summary.submissions.gilded>0) {
         $("#data-submissions_gilded").html("<a href='http://www.reddit.com/user/" + data.username + "/gilded' target='_blank'>" + 
@@ -931,7 +816,8 @@ function populate_results(results) {
     // Heatmap
     if(data.metrics.recent_activity_heatmap) {
         var heatmap=data.metrics.recent_activity_heatmap;
-        var local_last_updated_hour = offset_hours>0 ? (24 + new Date(g_last_updated).getHours()-offset_hours)%24 : (new Date(g_last_updated).getHours()-offset_hours)%24;
+        var local_last_updated_hour = 
+            offset_hours>0 ? (24 + new Date(g_last_updated).getHours()-offset_hours)%24 : (new Date(g_last_updated).getHours()-offset_hours)%24;
         var hours_to_add = 23 - local_last_updated_hour;
         heatmap += Array(hours_to_add+1).join("0");
         heatmap = heatmap.substring(heatmap.length-(60*24));
@@ -961,7 +847,9 @@ function populate_results(results) {
             }
         });
     } else {
-        $("#data-heatmap").html('<div class="heatmap-sample"><div class="col-md-6 col-md-offset-3 alert alert-info"><p>Refresh data to see this chart.</p></div></div>');
+        $("#data-heatmap").html(
+            '<div class="heatmap-sample"><div class="col-md-6 col-md-offset-3 alert alert-info"><p>Refresh data to see this chart.</p></div></div>'
+        );
 
     }
 
@@ -998,6 +886,56 @@ function populate_results(results) {
 
     // Recommendations
     var subreddits_array = flatten_subreddits_tree(data.metrics.subreddit);
+
+    var reco_qs = subreddits_array.filter(function(d) {
+        return (d.posts>=5) && ($.inArray(d.name.toLowerCase(),DEFAULT_SUBS)===-1);
+    }).sort(function(a,b) {
+        return b.posts - a.posts;
+    }).splice(0,10).map(function(d) {
+        return d.name;
+    }).join(",");
+    
+    $.ajax({
+        url: "/subreddits/recommended/" + reco_qs,
+        type: "GET",
+    }).done(function(response) {
+        if(response.recommended) {
+            var posted_subs = subreddits_array.map(function(d) {
+                return d.name;
+            });
+            var reco_results = response.recommended.filter(function(d) {
+                return $.inArray(d,posted_subs)===-1;
+            }).map(function(d) {
+                return  '<li class="margin-btm-15 margin-rgt-5">' +
+                            '<a href="/r/'+d+'">/r/'+d+'</a>' +
+                            '<span class="margin-lft-5 sub-reco-feedback">' + 
+                                '<a class="correct icon" data-i="' + reco_qs + 
+                                    '" data-o="' + d + '" data-f="1" href="#"><i class="fa fa-check-circle-o"></i></a>' + 
+                                '<a class="incorrect icon" data-i="' + reco_qs + 
+                                    '" data-o="' + d + '" data-f="0" href="#"><i class="fa fa-times-circle-o"></i></a>' +
+                            '</span>' + 
+                        '</li>';
+            });
+            $("#recommended-subs").html('<ul class="list-unstyled">'+reco_results.slice(0,15).join(" ")+'</ul>');
+            $("#recommended-subs").append('<a class="small" href="/subreddits/">Want more? Browse subreddits by topic.</a>');
+
+            $(".sub-reco-feedback .correct, .sub-reco-feedback .incorrect").click(function() {
+                i = $(this).data("i");
+                o = $(this).data("o");
+                f = $(this).data("f");
+                send_sub_reco_feedback(i, o, f);
+                feedback_container = $(this).parent();
+                feedback_container.html("<span class='thanks'>Thanks!</span>");
+                feedback_container.fadeOut(1000,function() {
+                    $(this).html(f?"<i class='fa fa-check correct_done'></i>":"<i class='fa fa-close incorrect_done'></i>");
+                }).fadeIn(200);
+                return false;
+            });
+        } else {
+            $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
+        }
+    });
+    
     var c = subreddits_array.filter(function(a) {
         return a.average_karma_per_comment;
     }).sort(function(a,b) {

@@ -11,15 +11,27 @@ from flask import request, render_template, flash, url_for, redirect, session, g
 from itsdangerous import URLSafeSerializer
 from decorators import login_required, admin_required
 from math import pow
+from collections import Counter
 
 #TODO - flask_cache
 
 from application import app
 from models import 	User, Feedback, ErrorLog, SubredditCategory, Subreddit, Category, CategoryTree, \
-					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation, PreprocessedItem
+					PredefinedCategorySuggestion, ManualCategorySuggestion, SubredditRelation, PreprocessedItem, SubredditRecommendationFeedback
 
 import sys, logging, re
 import json, markdown, random
+
+sample_topics = [
+		{"id":"reddit_music_metal", "caption": "Discuss metal music.", "icon": "reddit_music"},
+		{"id":"reddit_hobbies-and-interests_languages", "caption": "Learn a new language.", "icon": "reddit_hobbies-and-interests_languages"},
+		{"id":"reddit_sports_soccer", "caption": "Connect with soccer fans.", "icon": "reddit_sports_soccer"},
+		{"id":"reddit_business_jobs-and-careers", "caption": "Get help with finding a job.", "icon": "reddit_business"},
+		{"id":"reddit_entertainment_television", "caption": "Talk about your favorite TV shows.", "icon": "reddit_entertainment_television"},
+		{"id":"reddit_lifestyle_food-and-beverages_cooking", "caption": "Learn how to cook.", "icon": "reddit_lifestyle_food-and-beverages_cooking"},
+		{"id":"reddit_technology_programming", "caption": "Learn programming.", "icon": "reddit_technology_programming"},
+		{"id":"reddit_hobbies-and-interests_outdoors_cycling", "caption": "Share your love for cycling.", "icon": "reddit_hobbies-and-interests_outdoors_cycling"},
+	]
 
 def uniq(seq):
     seen = set()
@@ -45,7 +57,7 @@ def get_subreddits_root():
 	return root
 
 def home():
-    return render_template('index.html')
+	return render_template('index.html')
 
 def about():
     return render_template('about.html')
@@ -124,6 +136,20 @@ def process_feedback():
 	f.put()
 	return "OK"
 
+def process_subreddit_recommendation_feedback():
+	username = request.args.get("u")
+	input_subreddits = request.args.get("i")
+	recommended_subreddit = request.args.get("o")
+	feedback = request.args.get("f")=="1"
+	f = SubredditRecommendationFeedback(
+			username=username,
+			input_subreddits=input_subreddits,
+			recommended_subreddit=recommended_subreddit,
+			feedback=feedback
+		)
+	f.put()
+	return "OK"
+
 def error_log():
 	username = request.args.get("u")
 	error_type = request.args.get("t")
@@ -153,27 +179,17 @@ def insert_subreddit_category():
 	return ""
 
 def subreddits_home():
-
 	root = get_subreddits_root()
-	intro_items = [
-		{"id":"reddit_music_metal", "caption": "Discuss metal music.", "icon": "music"},
-		{"id":"reddit_hobbies-and-interests_languages", "caption": "Learn a new language.", "icon": "language"},
-		{"id":"reddit_sports_soccer", "caption": "Connect with soccer fans.", "icon": "soccer"},
-		{"id":"reddit_business_jobs-and-careers", "caption": "Get help with finding a job.", "icon": "jobs"},
-		{"id":"reddit_entertainment_television", "caption": "Talk about your favorite TV shows.", "icon": "tv"},
-		{"id":"reddit_lifestyle_food-and-beverages_cooking", "caption": "Learn how to cook.", "icon": "cooking"},
-		{"id":"reddit_technology_programming", "caption": "Learn programming.", "icon": "code"},
-		{"id":"reddit_hobbies-and-interests_outdoors_cycling", "caption": "Share your love for cycling.", "icon": "cycling"},
-	]
 	return render_template(
 		'subreddits_home.html', 
 		root=json.loads(root.data), 
 		subreddit_count=root.subreddit_count, 
 		last_updated=root.last_updated, 
-		intro_items=random.sample(intro_items,3)
+		intro_items=random.sample(sample_topics,3)
 	)
 
 def subreddits_category(level1,level2=None,level3=None):
+	root = get_subreddits_root()
 	category_id = "reddit_"+level1.lower()
 	breadcrumbs_ids = [category_id]
 	if level2:
@@ -190,7 +206,8 @@ def subreddits_category(level1,level2=None,level3=None):
 
 	all_subreddit_categories = get_all_subreddit_categories()
 
-	category_tree = [x for x in json.loads(CategoryTree.get_by_id(category_id).data)["children"] if "children" in x]
+	ct_object = CategoryTree.get_by_id(category_id)
+	category_tree = [x for x in json.loads(ct_object.data)["children"] if "children" in x]
 	breadcrumbs = [Category.get_by_id(x) for x in breadcrumbs_ids]
 
 	cursor = request.args.get("c")
@@ -207,19 +224,22 @@ def subreddits_category(level1,level2=None,level3=None):
 		breadcrumbs=breadcrumbs, 
 		prev=prev_bookmark, 
 		next=next_bookmark,
-		all_subreddit_categories=all_subreddit_categories
+		all_subreddit_categories=all_subreddit_categories,
+		subreddit_count=ct_object.subreddit_count,
+		root=json.loads(root.data)
 	)
 
 
-def get_related_subreddits(subreddit_id):
+def get_related_subreddits(subreddit_id,limit=5):
 	related_target_ids = \
-		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==subreddit_id).order(-SubredditRelation.weight).fetch(5)]
+		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
 	related_source_ids = \
-		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==subreddit_id).order(-SubredditRelation.weight).fetch(5)]
-	related_subreddits = [x for x in ndb.get_multi(uniq(related_source_ids+related_target_ids)) if x]
+		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
+	related_subreddits = [x for x in ndb.get_multi(uniq(related_target_ids+related_source_ids)) if x]
 	return related_subreddits
 
 def subreddit(subreddit_name):
+	root = get_subreddits_root()
 	subreddit_name=subreddit_name.lower()
 	s = Subreddit.query(Subreddit.display_name_lower==subreddit_name).get()
 	if not s:
@@ -245,7 +265,8 @@ def subreddit(subreddit_name):
 		subreddit=s, 
 		breadcrumbs=breadcrumbs[1:], 
 		all_subreddit_categories=all_subreddit_categories, 
-		related_subreddits=related_subreddits
+		related_subreddits=related_subreddits,
+		root=json.loads(root.data)
 	)
 
 def subreddit_frontpage():
@@ -298,18 +319,21 @@ def find_subreddit():
 		return render_template("subreddit_not_found.html", subreddit=input_subreddit)
 
 def recommended_subreddits(subreddits):
-	input_subreddits = [x for x in subreddits.split(",") if re.match('^[\w]+$', x) is not None]
+	input_subreddits = [x.lower() for x in subreddits.split(",") if re.match('^[\w]+$', x) is not None]
 	recommended_subreddits = []
 	for s in input_subreddits:
 		s_key = Subreddit.query(Subreddit.display_name_lower==s).get(keys_only=True)
 		if not s_key:
 			continue
-		r = set([x.display_name for x in get_related_subreddits(s_key.id())])
+		r = [item for item in [x.display_name for x in get_related_subreddits(s_key.id(),limit=2)] if item.lower() not in input_subreddits]
 		recommended_subreddits.append(r)
 	if recommended_subreddits:
-		return str(recommended_subreddits[0].intersection(*recommended_subreddits))
+		f = [item for sublist in recommended_subreddits for item in sublist]
+		c = Counter(f)
+		l = sorted(c, key=lambda x: (-c[x], f.index(x)))
+		return jsonify(recommended=l)
 	else:
-		return str([])
+		return jsonify(recommended=[])
 
 def subreddits_graph():
 	return render_template('subreddits_graph.html')
@@ -317,7 +341,6 @@ def subreddits_graph():
 def subreddits_graph_json():
 	root = CategoryTree.get_by_id("reddit")
 	return jsonify(json.loads(root.data))
-
 
 @admin_required
 def delete_user(username):

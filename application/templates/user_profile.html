@@ -90,7 +90,7 @@
 		        				<p class="text-muted">submission karma</p>
 		        			</div>
 		        			<div class="col-md-8">
-		        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
+		        				<p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
 		        				<p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
 		        				<p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
 		        			</div>
@@ -101,7 +101,7 @@
 		        				<p class="text-muted">comment karma</p>
 		        			</div>
 		        			<div class="col-md-8">
-		        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
+		        				<p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
 		        				<p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
 		        				<p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
 		        			</div>
@@ -168,59 +168,106 @@
 						<h3>{{ ["Please earn karma responsibly.", "Friends tell friends where to earn karma.", "To repost, or not to repost, that is the question."]|random }}</h3>
 						<h4>Based on your average karma earnings.</h4>
 
-						<div class="row">
+						<div class="row text-left">
 							<div id="no-recommendations" class="margin-20">
 								<div class="col-md-6 col-md-offset-3 alert alert-warning">
 									<p>Not enough data for recommendations.</p>
 								</div>
 			        		</div>
-							
-							<div id="best-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12 text-left">
 								<div class="panel panel-success">
 									<div class="panel-heading">
-										<p class="panel-title text-lowercase">best for submissions</p>
+										<p class="panel-title text-lowercase">Recommended Subreddits</p>
 									</div>
-									<div class="panel-body">
-										<p class="big" id="data-best_karma_per_submission"></p>
-										<div id="data-best_karma_per_submission_subtext"></div>
+									<div id="recommended-subs" class="panel-body">
+										<i class="fa fa-spinner fa-spin"></i>
 									</div>
 								</div>
 							</div>
-
-							<div id="best-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-success">
 									<div class="panel-heading">
-										<p class="panel-title text-lowercase">best for comments</p>
+										<p class="panel-title text-lowercase">Best Average Karma</p>
 									</div>
 									<div class="panel-body">
-										<p class="big" id="data-best_karma_per_comment"></p>
-										<div id="data-best_karma_per_comment_subtext"></div>
+										<div id="best-post-sub-reco">
+											<p class="big" id="data-best_karma_per_submission"></p>
+											<div id="data-best_karma_per_submission_subtext"></div>
+										</div>
+										<div id="best-comment-sub-reco">
+											<p class="big" id="data-best_karma_per_comment"></p>
+											<div id="data-best_karma_per_comment_subtext"></div>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<div id="worst-post-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
 								<div class="panel panel-warning">
 									<div class="panel-heading">
-										<p class="panel-title text-lowercase">Improve submissions on</p>
+										<p class="panel-title text-lowercase">Worst Average Karma</p>
 									</div>
 									<div class="panel-body">
-										<p class="big" id="data-worst_karma_per_submission"></p>
-										<div id="data-worst_karma_per_submission_subtext"></div>
+										<div id="worst-post-sub-reco">
+											<p class="big" id="data-worst_karma_per_submission"></p>
+											<div id="data-worst_karma_per_submission_subtext"></div>
+										</div>
+										<div id="worst-comment-sub-reco">
+											<p class="big" id="data-worst_karma_per_comment"></p>
+											<div id="data-worst_karma_per_comment_subtext"></div>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<div id="worst-comment-sub-reco" class="col-md-6 col-sm-6 col-xs-12">
-								<div class="panel panel-warning">
-									<div class="panel-heading">
-										<p class="panel-title text-lowercase">Improve comments on</p>
-									</div>
-									<div class="panel-body">
-										<p class="big" id="data-worst_karma_per_comment"></p>
-										<div id="data-worst_karma_per_comment_subtext"></div>
+
+
+								<!--
+								<div id="best-post-sub-reco">
+									<div class="panel panel-success">
+										<div class="panel-heading">
+											<p class="panel-title text-lowercase">best for submissions</p>
+										</div>
+										<div class="panel-body">
+											<p class="big" id="data-best_karma_per_submission"></p>
+											<div id="data-best_karma_per_submission_subtext"></div>
+										</div>
 									</div>
 								</div>
+
+								<div id="best-comment-sub-reco">
+									<div class="panel panel-success">
+										<div class="panel-heading">
+											<p class="panel-title text-lowercase">best for comments</p>
+										</div>
+										<div class="panel-body">
+											<p class="big" id="data-best_karma_per_comment"></p>
+											<div id="data-best_karma_per_comment_subtext"></div>
+										</div>
+									</div>
+								</div>
+
+								<div id="worst-post-sub-reco">
+									<div class="panel panel-warning">
+										<div class="panel-heading">
+											<p class="panel-title text-lowercase">Improve submissions on</p>
+										</div>
+										<div class="panel-body">
+											<p class="big" id="data-worst_karma_per_submission"></p>
+											<div id="data-worst_karma_per_submission_subtext"></div>
+										</div>
+									</div>
+								</div>
+
+								<div id="worst-comment-sub-reco">
+									<div class="panel panel-warning">
+										<div class="panel-heading">
+											<p class="panel-title text-lowercase">Improve comments on</p>
+										</div>
+										<div class="panel-body">
+											<p class="big" id="data-worst_karma_per_comment"></p>
+											<div id="data-worst_karma_per_comment_subtext"></div>
+										</div>
+									</div>
+								</div>
+								-->
 							</div>
 						</div>
 					</div>
@@ -336,7 +383,7 @@
 						<fieldset>
 						<h2>Help Categorize Subreddits</h2>
 		        		<h3>So many subreddits. So few categorized.</h3>
-		        		<h4>Click on edit links below to update. Choose from predefined topics or suggest your own. THANKS A BUNCH!</h4>
+		        		<h4>Choose from predefined topics or suggest your own. THANKS A BUNCH!</h4>
 						<div id="sub-categorize-table">
 							<table class="table table-striped">
 								<thead>

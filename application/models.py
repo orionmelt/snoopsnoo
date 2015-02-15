@@ -109,3 +109,13 @@ class PreprocessedItem(ndb.Model):
 	"""
 	last_updated = ndb.DateTimeProperty(auto_now=True)
 	data = ndb.JsonProperty()
+
+class SubredditRecommendationFeedback(ndb.Model):
+	"""Models a feedback entry that records user feedback about subreddit recommendations.
+	"""
+	username = ndb.StringProperty(indexed=False)
+	log_date = ndb.DateTimeProperty(auto_now=True)
+	input_subreddits = ndb.StringProperty(indexed=False)
+	recommended_subreddit = ndb.StringProperty()
+	feedback = ndb.BooleanProperty()
+	
