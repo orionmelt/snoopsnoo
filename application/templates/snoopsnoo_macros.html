@@ -63,42 +63,44 @@
 		<ul class="list-inline toolbar small">
 			<li>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers</li> 
 			<li>Created {{ subreddit.created_utc | time_since }} ago</li>
-			<li><a href="#" data-toggle="popover">Suggest category</a></li>
+			<li><a href="#" data-toggle="popover">Suggest topic</a></li>
 		</ul>
 	</div>
 
 	<div id="sub-{{subreddit.key.id()}}-popover" style="display:none">
-		<div>
-			<strong>Suggest Category</strong>
-			<button type="button" id="sub-{{subreddit.key.id()}}-popover-close" class="close">×</button>
-		</div>
-		<hr>
-		<p>Pick another category</p>
-		<form id="suggest-category-{{subreddit.key.id()}}-form" class="form-horizontal">
-			<fieldset>
-			<div class="form-group">
-				<div class="col-md-12">
-					<select name="category_id" class="form-control small">
-					{% for c in all_subreddit_categories %}
-						<option {{ "selected" if subreddit.parent_id==c["id"] }} value="{{c["id"]}}">{{c["text"]}}</option>
-					{% endfor %}
-					</select>
+			<p>
+				<strong>Suggest Topic</strong>
+				<button type="button" id="sub-{{subreddit.key.id()}}-popover-close" class="close">×</button>
+			</p>
+			<hr>
+			<p>Don't think this is the right topic? Pick another topic:</p>
+			<form id="suggest-category-{{subreddit.key.id()}}-form" class="form-horizontal">
+				<fieldset>
+				<div class="form-group">
+					<div class="col-md-12">
+						<select name="category_id" class="form-control small">
+						{% for c in all_subreddit_categories %}
+							<option {{ "selected" if subreddit.parent_id==c["id"] }} value="{{c["id"]}}">{{c["text"]}}</option>
+						{% endfor %}
+						</select>
+					</div>
 				</div>
-			</div>
-				
-			<p>Or enter your own</p>
-			<div class="form-group">
-				<div class="col-md-12">
-					<input name="suggested_category" type="text" class="form-control small">
+					
+				<p>Or enter your own</p>
+				<div class="form-group">
+					<div class="col-md-12">
+						<input name="suggested_category" type="text" class="form-control small">
+					</div>
 				</div>
-			</div>
 
-			<input type="hidden" name="subreddit_name" value="{{ subreddit.display_name }}">
+				<input type="hidden" name="subreddit_name" value="{{ subreddit.display_name }}">
 
-			<button type="submit" class="btn btn-primary">Save</button>
-			<span class="save_done"></span>
-			</fieldset>
-		</form>
+				<button type="submit" class="btn btn-primary">Save</button>
+				<span class="save_done"></span>
+				</fieldset>
+			</form>
+			
+
 	</div>
 
 	<script>
@@ -139,13 +141,15 @@
 </div>
 {%- endmacro %}
 
-{% macro link_to_subreddits_category(category_id, link_text) -%}
-<a href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">{{ link_text }}</a>
+{% macro link_to_subreddits_category(category_id, link_text, class=None) -%}
+{% autoescape false %}
+<a {% if class %}class="{{class}}"{% endif %} href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">{{ link_text }}</a>
+{% endautoescape %}
 {%- endmacro %}
 
 {% macro subreddits_breadcrumbs(breadcrumbs) %}
 <div class="row">
-	<div class="col-md-8">
+	<div class="col-md-9">
 		<ul class="breadcrumb">
 			<li><a href="{{ url_for("subreddits_home") }}"><i class="fa fa-home"></i></a></li>
 			{% for crumb in breadcrumbs %}
@@ -153,7 +157,7 @@
 			{% endfor %}
 		</ul>
 	</div>
-	<div class="col-md-4">
+	<div class="col-md-3">
 		<form action="{{ url_for("find_subreddit") }}" method="post">
 			<div class="form-group">
 				<div class="input-group">
@@ -166,5 +170,33 @@
 			</div>
 		</form>
 	</div>
+</div>
+{% endmacro %}
+
+{% macro topics_menu(topics_tree) %}
+<div class="list-group" id="topics-menu">
+	{% for t1 in topics_tree %}
+    	{% set t1_sub = [] %}
+		{% for t2 in t1["children"] %}
+			{% if "children" in t2 and t1_sub.append(1) %}{% endif %}
+		{% endfor %}
+		{% if t1_sub %}
+			<a class="list-group-item" data-toggle="collapse" data-parent="#topics-menu" href="#{{t1.id}}">
+				<span class="text-primary">{{t1.display_name}}</span>
+				<i class="fa fa-angle-double-right pull-right"></i>
+			</a>
+
+			<div id="{{t1.id}}" class="collapse">
+			{% for t2 in t1["children"] %}
+				{% if "children" in t2 and t2["children"]|length %}
+					{{ link_to_subreddits_category(t2.id, '<i class="fa fa-chevron-right menu-icon text-info small"></i><span class="text-primary smaller">'+t2.display_name+'</span>', "list-group-item") }}
+				{% endif %}
+			{% endfor %}
+				{{ link_to_subreddits_category(t1.id, '<i class="fa fa-plus menu-icon text-info small"></i><span class="text-primary small">See all in '+t1.display_name+'</span>', "list-group-item") }}
+			</div>
+		{% else %}
+			{{ link_to_subreddits_category(t1.id, '<span class="text-primary">'+t1.display_name+'</span>', "list-group-item") }}
+		{% endif %}
+    {% endfor %}
 </div>
 {% endmacro %}

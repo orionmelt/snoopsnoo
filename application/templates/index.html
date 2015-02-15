@@ -44,31 +44,17 @@
 		<div class="margin-20">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-8">
+					<div class="col-md-6">
 						<section id="announcements" class="bottom-buffer">
-							<h2>New Version</h2>
-							<p>Version 0.2 is here! <a href="http://blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01/">Read more about it on the blog</a>.</p>
-						</section>
-						<section id="about" class="margin-20">
-							<h2>About</h2>
-							<p>{{ snoopsnoo_macros.logo_small() }} is a hobby project by <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a> and an attempt to extract interesting information from your reddit comments and submissions.</p>
-							<p class="highlight"><strong>DISCLAIMER:</strong> All data analyzed is public. This website is not affiliated with reddit and cannot access your private reddit data such as your password, subreddit subscriptions, up/downvotes and private subreddit activity.</p>
-							<p>Analysis is limited to the 1000 most recent comments and submissions due to reddit's API restrictions.</p>
-							<p>Feedback, criticism and suggestions are welcome and greatly appreciated - please PM <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a>.</p>
+							<h2>Explore Subreddits</h2>
+							<p>Introducing the {{ snoopsnoo_macros.logo_small() }} <a href="{{ url_for('subreddits_home') }}">subreddits directory</a> &mdash; a different way to browse and discover new subreddits. Thousands of subreddits categorized by topic to help you find exactly what you are looking for.</p>
+							<p><a href="{{ url_for('subreddits_home') }}">Check it out now!</a></p>
 						</section>
 					</div>
 
-					<div class="col-md-3 col-md-offset-1">
-						<section id="credits" class="margin-20">
-							<h2>Credits</h2>
-							<ul class="list-unstyled">
-								<li>Natural Language Processing using <a href="https://github.com/sloria/TextBlob">TextBlob</a> and <a href="http://www.nltk.org/">NLTK</a>.</li>
-								<li>Data Visualization using <a href="http://d3js.org/">D3.js</a>.</li>
-								<li>API hosted on <a href="http://blockspring.com/">Blockspring</a>.</li>
-								<li>Bootstrap theme by <a href="http://bootswatch.com/">Bootswatch</a>.</li>
-								<li>Please blame all bugs on <a href="http://www.reddit.com/user/abtheerth">/u/abtheerth</a> and <a href="http://www.reddit.com/user/dejo316">/u/dejo316</a>.</li>
-							</ul>
-						</section>
+					<div class="col-md-6">
+						<h2><strong>New</strong>: Subreddit Recommendations</h2>
+						<p>{{ snoopsnoo_macros.logo_small() }} now shows recommended subredits specifically tailored for you based on your activity. Get out of the default zone and try something new. Happy redditing!</p>
 					</div>
 				</div>
 			</div>

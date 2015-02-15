@@ -11,14 +11,13 @@
 				<div class="col-md-6">
 					<section id="subreddits-intro">
 						<div class="jumbotron">
-							{% set title = ["Go beyond the defaults.", "There's a subreddit for that."]|random %}
+							{% set title = "There's a subreddit for that." %}
 							<h1 class="purple">{{ title }}</h1>
 							<p>reddit is more than just the defaults. Try something new today.</p>
-							<ul class="list-unstyled margin-20 intro-items">
+							<ul class="list-unstyled margin-20 intro-items topic-items">
 								{% for intro_item in intro_items %}
 								<li class="bigger">
-									<img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png" width="20">
-									<!--<i class="fa fa-{{intro_item["icon"]}} icon"></i>-->
+									<img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png">
 									{{ snoopsnoo_macros.link_to_subreddits_category(intro_item["id"], intro_item["caption"]) }}
 								</li>
 								{% endfor %}
@@ -67,23 +66,29 @@
 				<div class="col-md-8">
 					{% for category in root["children"] %}
 					{% set level = category["id"].split("_")|length - 1 %}
-					<div class="margin-btm-40">
+					<div class="margin-btm-40 category-bg topic-items">
 						<h2 class="margin-btm-15">
 							<a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
+								<img class="icon" src="/static/icons/topics/{{category["id"]}}.png">
 								<span class="category-level1 {{ "text-danger" if category["id"]=="reddit_adult" }}">{{ category["display_name"] }}</span>
 							</a>
 						</h2>
 						{{ snoopsnoo_macros.subreddits_category(category, level) }}
 					</div>
-					<hr class="margin-btm-40">
 					{% endfor %}
 				</div>
 				<div class="col-md-3 col-md-offset-1">
 					<div class="margin-btm-40">
-						<h2 class="margin-btm-15">About</h2>
-						<p>This is a categorized directory of public subreddits. Subreddits are automatically assigned to topics by {{ snoopsnoo_macros.logo_small() }} using an algorithm. You can help by suggesting more appropriate topics.</p> 
-						<p class="small text-muted">Includes {{subreddit_count}}+ subreddits with at least ~3000 subscribers as of January 2015. Last updated {{last_updated|time_since}} ago.</p>
+						<h2 class="margin-btm-15">All Topics</h2>
+						{{ snoopsnoo_macros.topics_menu(root["children"]) }}
 					</div>
+					<!--
+					<div class="margin-btm-20">
+						<p class="tiny text-uppercase text-right text-muted">
+							{{subreddit_count}} subreddits indexed {{last_updated|time_since}} ago.
+						</p>
+					</div>
+					-->
 				</div>
 			</div>
 		</div>

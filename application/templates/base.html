@@ -12,7 +12,7 @@
     
     <!-- Styles -->
     <!-- Bootstrap -->
-    <link href="/static/css/bootstrap.min.css?v=0.2.21" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css?v=0.3" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- jQuery UI (for slider) -->
@@ -21,7 +21,7 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.css" rel="stylesheet">
     <!-- Snoop Snoo Custom -->
-    <link href="/static/css/curious.min.css?v=0.2.21" rel="stylesheet">
+    <link href="/static/css/curious.min.css?v=0.3" rel="stylesheet">
 
     <!-- Scripts -->
     <!-- jQuery -->
@@ -41,8 +41,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/inputs-ext/typeaheadjs/lib/typeahead.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/inputs-ext/typeaheadjs/typeaheadjs.js"></script>
     <!-- Snoop Snoo Custom -->
-    <script src="/static/js/curious.min.js?v=0.2.21"></script>
-    <script src="/static/js/main.min.js?v=0.2.21"></script>
+    <script src="/static/js/curious.min.js?v=0.3"></script>
+    <script src="/static/js/main.min.js?v=0.3"></script>
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-touch-icon-57x57.png">
@@ -89,14 +89,9 @@
                     <li class="{% block nav_home %}{% endblock %}">
                         <a href="{{ url_for('home') }}">Home</a>
                     </li>
-                    <li><a href="/random">Random</a></li>
-                    <!--
                     <li class="{% block nav_subreddits %}{% endblock %}"><a href="{{ url_for('subreddits_home') }}">Subreddits</a></li>
-                    -->
                     <li><a href="http://blog.snoopsnoo.com">Blog</a></li>
-                    <!--
-                    <li><a href="{{ url_for('about') }}">About</a></li>
-                    -->
+                    <li class="{% block nav_about %}{% endblock %}"><a href="{{ url_for('about') }}">About</a></li>
                 </ul>
             </div>
         </div>
@@ -109,7 +104,7 @@
         <div class="container">
             <footer class="text-right">
                 <ul class="list-inline">
-                    <li>v0.2</li>
+                    <li>v0.3</li>
                     <li>&copy; 2015 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
                 </ul>
             </footer>

@@ -30,8 +30,16 @@
 			</div>
 		</div>
 		
-		<div class="row">
-			<div id="subreddit-frontpage" class="subreddit-frontpage">
+		<div class="row margin-20">
+			<div class="col-md-9">
+				<h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
+				<div id="subreddit-frontpage" class="subreddit-frontpage">
+					<p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-circle-o-notch fa-spin margin-lft-10"></i></p>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<h3 class="big margin-btm-20 no-top-margin"><strong>All Topics</strong></h3>
+				{{ snoopsnoo_macros.topics_menu(root["children"]) }}
 			</div>
 		</div>
 	</div>
@@ -52,6 +60,7 @@
 		    	$("#subreddit-frontpage").html(response);
 		    });	        
 	    }).fail(function(jqXHR, status_text, error_thrown) {
+	    	$("#frontpage-loading").text("Frontpage preview failed. Refresh the page to try again.");
 	    });
 	});
 	</script>

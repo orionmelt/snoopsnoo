@@ -7,15 +7,9 @@
 {% block content %}
 	<div class="container margin-20">
 		{{ snoopsnoo_macros.subreddits_breadcrumbs(breadcrumbs) }}
-		
-		<div class="row">
-			<div class="col-md-8 margin-btm-20">
-				<h2>{{ category.display_name }}</h2>
-			</div>
-		</div>
-
 		<div class="row">
 			<div class="col-md-8">
+				<h2 class="no-top-margin margin-btm-20">{{ category.display_name }}<span class="margin-lft-10 tiny text-muted text-lowercase">({{subreddit_count}} subreddits)</span></h2>
 				{% if subreddits %}
 				{% for subreddit in subreddits %}
 					{{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, external_link=False) }}
@@ -28,18 +22,29 @@
 					<li class="next"><a href="?c={{ next }}">Next <i class="fa fa-arrow-circle-right"></i></a></li>
 					{% endif %}
 				</ul>
-			</div>
-			<div class="col-md-4">
-				{% endif %}
-				{% if cat_tree and subreddits %}
-				<h3 class="big margin-btm-20"><strong>More in {{ category.display_name }}</strong></h3>
-				{% endif %}
+				{% else %}
+				{% if cat_tree|length %}
 				<div class="category-listing">
 				{% for category in cat_tree %}
 						{% set level = category["id"].split("_")|length - 1 %}
 						{{ snoopsnoo_macros.subreddits_category(category,level) }}
 				{% endfor %}
 				</div>
+				{% endif %}
+				{% endif %}
+			</div>
+			<div class="col-md-3 col-md-offset-1">
+				{% if cat_tree and subreddits %}
+				<h3 class="big margin-btm-20"><strong>More in {{ category.display_name }}</strong></h3>
+				<div class="category-listing">
+				{% for category in cat_tree %}
+						{% set level = category["id"].split("_")|length - 1 %}
+						{{ snoopsnoo_macros.subreddits_category(category,level) }}
+				{% endfor %}
+				</div>
+				{% endif %}
+				<h3 class="big margin-btm-20"><strong>All Topics</strong></h3>
+				{{ snoopsnoo_macros.topics_menu(root["children"]) }}
 			</div>
 		</div>
 	</div>
