@@ -252,7 +252,7 @@ def get_related_subreddits(subreddit_id,limit=5):
 def subreddit(subreddit_name):
 	root = get_subreddits_root()
 	subreddit_name=subreddit_name.lower()
-	s = Subreddit.query(Subreddit.display_name_lower==subreddit_name).get()
+	s = get_subreddit(subreddit_name)
 	if not s:
 		return render_template("subreddit_not_found.html", subreddit=subreddit_name)
 
@@ -323,7 +323,7 @@ def suggest_subreddit_category():
 
 def find_subreddit():
 	input_subreddit = request.form.get("subreddit").lower()
-	subreddit = Subreddit.query(Subreddit.display_name_lower == input_subreddit).get()
+	subreddit = get_subreddit(input_subreddit)
 	if subreddit:
 		return redirect("/r/"+subreddit.display_name)
 	else:
