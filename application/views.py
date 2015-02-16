@@ -38,6 +38,17 @@ def uniq(seq):
     seen_add = seen.add
     return [ x for x in seq if not (x in seen or seen_add(x))]
 
+def get_subreddit(display_name_lower):
+	if not display_name_lower:
+		return None
+	subreddit = memcache.get("subreddit_"+display_name_lower)
+	if not subreddit:
+		subreddit = Subreddit.query(Subreddit.display_name_lower==display_name_lower).get()
+		if subreddit:
+			memcache.add("subreddit_"+display_name_lower,subreddit)
+			return subreddit
+	return None
+
 def get_all_subreddit_categories():
 	all_subreddit_categories = memcache.get("all_subreddit_categories")
 	
@@ -325,7 +336,7 @@ def recommended_subreddits(subreddits):
 		s_key = Subreddit.query(Subreddit.display_name_lower==s).get(keys_only=True)
 		if not s_key:
 			continue
-		r = [item for item in [x.display_name for x in get_related_subreddits(s_key.id(),limit=2)] if item.lower() not in input_subreddits]
+		r = [item for item in [x.display_name for x in get_related_subreddits(s_key.id(),limit=5)] if item.lower() not in input_subreddits]
 		recommended_subreddits.append(r)
 	if recommended_subreddits:
 		f = [item for sublist in recommended_subreddits for item in sublist]
@@ -356,7 +367,7 @@ def warmup():
     return ''
 
 # From https://github.com/janscas/ndb-gae-pagination
-def return_query_page(query_class, size=25, bookmark=None, is_prev=None, equality_filters=None, orders=None):
+def return_query_page(query_class, size=10, bookmark=None, is_prev=None, equality_filters=None, orders=None):
     """
     Generate a paginated result on any class
     Param query_class: The ndb model class to query
