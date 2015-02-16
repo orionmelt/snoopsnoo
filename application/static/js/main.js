@@ -895,46 +895,52 @@ function populate_results(results) {
         return d.name;
     }).join(",");
     
-    $.ajax({
-        url: "/subreddits/recommended/" + reco_qs,
-        type: "GET",
-    }).done(function(response) {
-        if(response.recommended) {
-            var posted_subs = subreddits_array.map(function(d) {
-                return d.name;
-            });
-            var reco_results = response.recommended.filter(function(d) {
-                return $.inArray(d,posted_subs)===-1;
-            }).map(function(d) {
-                return  '<li class="margin-btm-15 margin-rgt-5">' +
-                            '<a href="/r/'+d+'">/r/'+d+'</a>' +
-                            '<span class="margin-lft-5 sub-reco-feedback">' + 
-                                '<a class="correct icon" data-i="' + reco_qs + 
-                                    '" data-o="' + d + '" data-f="1" href="#"><i class="fa fa-check-circle-o"></i></a>' + 
-                                '<a class="incorrect icon" data-i="' + reco_qs + 
-                                    '" data-o="' + d + '" data-f="0" href="#"><i class="fa fa-times-circle-o"></i></a>' +
-                            '</span>' + 
-                        '</li>';
-            });
-            $("#recommended-subs").html('<ul class="list-unstyled">'+reco_results.slice(0,15).join(" ")+'</ul>');
-            $("#recommended-subs").append('<a class="small" href="/subreddits/">Want more? Browse subreddits by topic.</a>');
+    if(reco_qs) {
+        $.ajax({
+            url: "/subreddits/recommended/" + reco_qs,
+            type: "GET",
+        }).done(function(response) {
+            if(response.recommended) {
+                var posted_subs = subreddits_array.map(function(d) {
+                    return d.name;
+                });
+                var reco_results = response.recommended.filter(function(d) {
+                    return $.inArray(d,posted_subs)===-1;
+                }).map(function(d) {
+                    return  '<li class="margin-btm-15 margin-rgt-5">' +
+                                '<a href="/r/'+d+'">/r/'+d+'</a>' +
+                                '<span class="margin-lft-5 sub-reco-feedback">' + 
+                                    '<a class="correct icon" data-i="' + reco_qs + 
+                                        '" data-o="' + d + '" data-f="1" href="#"><i class="fa fa-check-circle-o"></i></a>' + 
+                                    '<a class="incorrect icon" data-i="' + reco_qs + 
+                                        '" data-o="' + d + '" data-f="0" href="#"><i class="fa fa-times-circle-o"></i></a>' +
+                                '</span>' + 
+                            '</li>';
+                });
+                $("#recommended-subs").html('<ul class="list-unstyled">'+reco_results.slice(0,15).join(" ")+'</ul>');
+                $("#recommended-subs").append('<a class="small" href="/subreddits/">Want more? Browse subreddits by topic.</a>');
 
-            $(".sub-reco-feedback .correct, .sub-reco-feedback .incorrect").click(function() {
-                i = $(this).data("i");
-                o = $(this).data("o");
-                f = $(this).data("f");
-                send_sub_reco_feedback(i, o, f);
-                feedback_container = $(this).parent();
-                feedback_container.html("<span class='thanks'>Thanks!</span>");
-                feedback_container.fadeOut(1000,function() {
-                    $(this).html(f?"<i class='fa fa-check correct_done'></i>":"<i class='fa fa-close incorrect_done'></i>");
-                }).fadeIn(200);
-                return false;
-            });
-        } else {
-            $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
-        }
-    });
+                $(".sub-reco-feedback .correct, .sub-reco-feedback .incorrect").click(function() {
+                    i = $(this).data("i");
+                    o = $(this).data("o");
+                    f = $(this).data("f");
+                    send_sub_reco_feedback(i, o, f);
+                    feedback_container = $(this).parent();
+                    feedback_container.html("<span class='thanks'>Thanks!</span>");
+                    feedback_container.fadeOut(1000,function() {
+                        $(this).html(f?"<i class='fa fa-check correct_done'></i>":"<i class='fa fa-close incorrect_done'></i>");
+                    }).fadeIn(200);
+                    return false;
+                });
+            } else {
+                $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
+            }
+        });
+
+    } else {
+        $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
+    }
+    
     
     var c = subreddits_array.filter(function(a) {
         return a.average_karma_per_comment;
