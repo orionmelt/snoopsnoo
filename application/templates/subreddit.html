@@ -60,7 +60,11 @@
 		    	$("#subreddit-frontpage").html(response);
 		    });	        
 	    }).fail(function(jqXHR, status_text, error_thrown) {
-	    	$("#frontpage-loading").text("Frontpage preview failed. Refresh the page to try again.");
+	    	if(jqXHR.status===404) {
+	    		$("#frontpage-loading").html('<span class="text-danger"><strong>Subreddit not found. It may have been deleted or banned.</strong></span>');
+	    	} else {
+	    		$("#frontpage-loading").text("Frontpage preview failed &mdash; reddit may be too busy right now. Refresh the page after a few seconds to try again.");
+	    	}
 	    });
 	});
 	</script>

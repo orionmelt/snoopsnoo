@@ -1023,12 +1023,12 @@ function populate_results(results) {
 
 function home_init() {
     $( "#process_form" ).submit(function( event ) {
-        $( "#go" ).button("loading");
         event.preventDefault();
         var $form = $( this ),
         username = $form.find( "input[name='username']" ).val().trim();
-        if(!username) return;
+        if(!username || !username.length) return;
         g_username = username;
+        $( "#go" ).button("loading");
         $.ajax({
             url: "/check/" + username,
             type: "GET",
