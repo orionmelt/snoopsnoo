@@ -259,7 +259,7 @@ def subreddit(subreddit_name):
 	subreddit_name=subreddit_name.lower()
 	s = get_subreddit(subreddit_name)
 	if not s:
-		return render_template("subreddit_not_found.html", subreddit=subreddit_name)
+		return render_template("subreddit_not_found.html", subreddit=subreddit_name), 404
 
 	breadcrumbs = []
 	for i,c in enumerate(s.parent_id.split("_")):

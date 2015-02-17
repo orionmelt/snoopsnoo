@@ -123,10 +123,11 @@ h2 {
 .logo img {
   display: inline-block;
   vertical-align: baseline;
+  margin:0px 5px;
 }
 
 .logo-small img {
-  height:10px;
+  margin:0px 5px;
 }
 
 .purple {
