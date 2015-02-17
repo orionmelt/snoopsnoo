@@ -41,8 +41,10 @@ def uniq(seq):
 def get_subreddit(display_name_lower):
 	if not display_name_lower:
 		return None
-	subreddit = memcache.get("subreddit_"+display_name_lower)
-	if not subreddit:
+	subreddit = memcache.get("subreddit_"+display_name_lower)	
+	if subreddit:
+		return subreddit
+	else:
 		subreddit = Subreddit.query(Subreddit.display_name_lower==display_name_lower).get()
 		if subreddit:
 			memcache.add("subreddit_"+display_name_lower,subreddit)
@@ -97,7 +99,7 @@ def user_profile(username):
 	if not user:
 		user = User.query(User.username == username).get()
 	if not user:
-		return render_template('blank_profile.html', username=username)
+		return render_template('blank_profile.html', username=username), 404
 
 	if "version" in user.data and user.data["version"] in [2,3]:
 		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
@@ -242,11 +244,14 @@ def subreddits_category(level1,level2=None,level3=None):
 
 
 def get_related_subreddits(subreddit_id,limit=5):
-	related_target_ids = \
-		[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
-	related_source_ids = \
-		[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
-	related_subreddits = [x for x in ndb.get_multi(uniq(related_target_ids+related_source_ids)) if x]
+	related_subreddits = memcache.get("related_"+subreddit_id)
+	if not related_subreddits:
+		related_target_ids = \
+			[ndb.Key("Subreddit", r.target) for r in SubredditRelation.query(SubredditRelation.source==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
+		related_source_ids = \
+			[ndb.Key("Subreddit", r.source) for r in SubredditRelation.query(SubredditRelation.target==subreddit_id).order(-SubredditRelation.weight).fetch(limit)]
+		related_subreddits = [x for x in ndb.get_multi(uniq(related_target_ids+related_source_ids)) if x]
+		memcache.add("related_"+subreddit_id, related_subreddits)
 	return related_subreddits
 
 def subreddit(subreddit_name):
@@ -327,15 +332,15 @@ def find_subreddit():
 	if subreddit:
 		return redirect("/r/"+subreddit.display_name)
 	else:
-		return render_template("subreddit_not_found.html", subreddit=input_subreddit)
+		return render_template("subreddit_not_found.html", subreddit=input_subreddit), 404
 
 def recommended_subreddits(subreddits):
 	input_subreddits = [x.lower() for x in subreddits.split(",") if re.match('^[\w]+$', x) is not None]
+	if not input_subreddits:
+		return jsonify(recommended=[])
 	recommended_subreddits = []
-	for s in input_subreddits:
-		s_key = Subreddit.query(Subreddit.display_name_lower==s).get(keys_only=True)
-		if not s_key:
-			continue
+	s_keys = Subreddit.query(Subreddit.display_name_lower.IN(input_subreddits)).fetch(keys_only=True)
+	for s_key in s_keys:
 		r = [item for item in [x.display_name for x in get_related_subreddits(s_key.id(),limit=5)] if item.lower() not in input_subreddits]
 		recommended_subreddits.append(r)
 	if recommended_subreddits:
