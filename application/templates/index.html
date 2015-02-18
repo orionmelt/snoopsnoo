@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} - User and Subreddit Analytics{% endblock %}
+{% block title %} - reddit user and subreddit analytics{% endblock %}
 {% block nav_home %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
@@ -13,7 +13,7 @@
 							<div class="jumbotron">
 								{% set title = ["Analyze this.", "You are what you post."]|random %}
 								<h1 class="purple">{{ title }}</h1>
-								<p>Enter your reddit username below and get insights on your reddit activity.</p>
+								<p>Enter your username below and get insights on your reddit activity.</p>
 								<p><small>Not ready yet? <a href="/random-user">View a random redditor's profile.</a></small></p>
 								<div class="row margin-20">
 									<form id="process_form">
