@@ -287,7 +287,7 @@ h2 {
   font-weight: bold;
 }
 
-.subreddit-frontpage .vote, .subreddit-frontpage .thumbnail, .subreddit-frontpage .title {
+.subreddit-frontpage .vote, .subreddit-frontpage .r_thumbnail, .subreddit-frontpage .title {
   display: table-cell;
   margin-bottom: 10px;
   vertical-align: top;
@@ -297,7 +297,7 @@ h2 {
   color: #888;
 }
 
-.subreddit-frontpage .thumbnail {
+.subreddit-frontpage .r_thumbnail {
   width: 70px;
 }
 
@@ -449,6 +449,11 @@ h2 {
   padding:0px 20px;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
+}
+
+.category-heading {
+  font-weight: bold;
+  padding-bottom: 5px;
 }
 
 .intro-items li {

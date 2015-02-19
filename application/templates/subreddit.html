@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} - /r/{{subreddit.display_name}} | Subreddit statistics and related subreddits{% endblock %}
+{% block title %} - /r/{{subreddit.display_name}} in {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} | Subreddit statistics and related subreddits{% endblock %}
 {% block nav_subreddits %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
@@ -57,6 +57,10 @@
 	        url: sub_url,
 	        timeout: 30000,
 	    }).done(function(data) {
+	    	if(!(data.data && data.data.children && data.data.children.length)) {
+	    		$("#frontpage-loading").html('<span class="text-danger"><strong>No posts to show.</strong></span>');
+	    		return;
+	    	}
 	    	var last_post_date = +data.data.children.slice().sort(function(a,b) {
 	    		return b.data.created_utc - a.data.created_utc;	
 	    	})[0].data.created_utc*1000;
@@ -88,7 +92,6 @@
 	        timeout: 30000,
 	    }).done(function(data) {
 	    	var accounts_active = data.data.accounts_active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
-	    	console.log(data,accounts_active);
 	    	$("#sub_accounts_active").removeClass("hide");
 	    	$("#sub_accounts_active").html('<i class="fa fa-users text-muted"></i>' + accounts_active + ' users there now');
 	    }).fail(function(jqXHR, status_text, error_thrown) {

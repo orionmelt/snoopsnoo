@@ -70,7 +70,7 @@
 						<h2 class="margin-btm-15">
 							<a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
 								<img class="icon" src="/static/icons/topics/{{category["id"]}}.png">
-								<span class="category-level1 {{ "text-danger" if category["id"]=="reddit_adult" }}">{{ category["display_name"] }}</span>
+								<span class="category-heading {{ "text-danger" if category["id"]=="reddit_adult" }}">{{ category["display_name"] }}</span>
 							</a>
 						</h2>
 						{{ snoopsnoo_macros.subreddits_category(category, level) }}
@@ -92,12 +92,4 @@
 			</div>
 		</div>
 	</div>
-
-	<script>
-	$(function () {
-		$('.cat_collapse i').parent().click(function() {
-			$(this).find("i").toggleClass("fa-minus-square");
-		});
-	});
-	</script>
 {% endblock %}

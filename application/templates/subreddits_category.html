@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% block title %} - {{category.display_name}} subreddits | {{subreddit_count}} subreddits in {{category.display_name}}{% endblock %}
+{% block title %} - {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits | {{subreddit_count}} subreddits in {{category.display_name}}{% endblock %}
+
+
 {% block nav_subreddits %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
@@ -11,7 +13,7 @@
 			<div class="col-md-9">
 				<h2 class="no-top-margin margin-btm-20">
 					<a href=".">
-						<span class="category-level1 ">{{ category.display_name }}</span>
+						<span class="category-heading">{{ category.display_name }}</span>
 					</a>
 					<span class="margin-lft-10 tiny text-muted text-lowercase">({{subreddit_count}} subreddits)</span>
 				</h2>

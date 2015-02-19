@@ -96,6 +96,14 @@
 
     {% block content %}
     {% endblock %}
+
+    <script>
+    $(function () {
+        $('.cat_collapse i').parent().click(function() {
+            $(this).find("i").toggleClass("fa-minus-square");
+        });
+    });
+    </script>
     
     <div id="footer">
         <div class="container">

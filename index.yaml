@@ -38,3 +38,8 @@ indexes:
   - name: target
   - name: weight
     direction: desc
+
+- kind: User
+  properties:
+  - name: data_version
+  - name: username
