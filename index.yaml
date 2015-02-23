@@ -43,3 +43,8 @@ indexes:
   properties:
   - name: data_version
   - name: username
+
+- kind: User
+  properties:
+  - name: data_version
+  - name: last_updated
