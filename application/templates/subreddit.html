@@ -72,7 +72,7 @@
 	    	$("#sub_last_post_date").removeClass("hide");
 	    	$("#sub_last_post_date").html('<i class="fa fa-clock-o text-muted"></i>'+"Last active "+(d===0?"today":((d===1?"yesterday":(d<=7?"this week":d+" days ago")))));
 	    	$.ajax({
-		        url: "/subreddit_frontpage",
+		        url: "/subreddit_frontpage?over18={{subreddit.over18}}",
 		        type: "POST",
 		        contentType: "application/json",
 		        data: JSON.stringify(data),
