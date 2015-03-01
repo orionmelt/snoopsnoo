@@ -101,16 +101,10 @@ def user_profile(username):
 	if not user:
 		return render_template('blank_profile.html', username=username), 404
 
-	if "version" in user.data and user.data["version"] in [2,3]:
-		user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
-															  	if user.data["summary"]["comments"]["best"]["text"] else None
-		user.data["summary"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["worst"]["text"])) \
-																	if user.data["summary"]["comments"]["worst"]["text"] else None
-	else:
-		user.data["stats"]["basic"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["best"]["text"])) \
-																  	if user.data["stats"]["basic"]["comments"]["best"]["text"] else None
-		user.data["stats"]["basic"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["stats"]["basic"]["comments"]["worst"]["text"])) \
-																	if user.data["stats"]["basic"]["comments"]["worst"]["text"] else None
+	user.data["summary"]["comments"]["best"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["best"]["text"])) \
+														  	if user.data["summary"]["comments"]["best"]["text"] else None
+	user.data["summary"]["comments"]["worst"]["text"] = 	Markup(markdown.markdown(user.data["summary"]["comments"]["worst"]["text"])) \
+																if user.data["summary"]["comments"]["worst"]["text"] else None
 	all_subreddit_categories = get_all_subreddit_categories()
 	return render_template('user_profile.html', user=user, data=json.dumps(user.data), all_subreddit_categories=all_subreddit_categories)
 

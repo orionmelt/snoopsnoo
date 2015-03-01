@@ -81,13 +81,13 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
     var error_object = {};
     if(jqXHR.status===404) {
         $("#error-message").text(ERROR_MSGS.USER_NOT_FOUND);
-        error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":error_message};
+        error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":status_text+"--"+error_thrown+"--"+error_message};
     } else if(jqXHR.status===0 && !jqXHR.responseText) {
         $("#error-message").text(ERROR_MSGS.REQUEST_CANCELED);
-        error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":error_message};
+        error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":status_text+"--"+error_thrown+"--"+error_message};
     } else {
         $("#error-message").text(ERROR_MSGS.UNEXPECTED_ERROR);
-        error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":error_message};
+        error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":status_text+"--"+error_thrown+"--"+error_message};
     }
     $(".loading-progress").hide();
     $(".loading-done").show();
@@ -283,6 +283,7 @@ function call_blockspring(local_fetch) {
     });
 }
 
+/*
 function convert_to_v2(data) {
     var computed_comment_karma = 0,
         computed_submission_karma = 0,
@@ -442,6 +443,7 @@ function convert_to_v2(data) {
     }
     return v2;
 }
+*/
 
 function flatten_subreddits_tree(tree, flattened_array) {
     var a = flattened_array;
@@ -522,6 +524,9 @@ function wrap_data(key, text, sources, confidence) {
 function populate_results(results) {
     $("#user-results").empty();
     $("#user-results").html(g_base_results);
+    var data = JSON.parse(results);
+    
+    /*
     var _data = JSON.parse(results);
     var data;
     if(_data.version) { // Check if version in [2,3]?
@@ -529,6 +534,8 @@ function populate_results(results) {
     } else {
         data = convert_to_v2(_data);
     }
+    */
+
     g_username = data.username;
     if(location.search.substring(1)==="debug") g_debug=true;
     if(g_debug) {
