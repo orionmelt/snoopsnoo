@@ -55,7 +55,7 @@ var SYNOPSIS_KEYS = [
 
 var ERROR_MSGS = {
     "UNEXPECTED_ERROR": "An unexpected error has occurred. Please try again in a few minutes.",
-    "USER_NOT_FOUND": "User not found.",
+    "USER_NOT_FOUND": "User not found. If you're sure the username is correct, you may have been shadowbanned - go to /r/ShadowBan/ to find out!",
     "NO_DATA": "No data available.",
     "REQUEST_CANCELED": "Server too busy. Please try again in a few minutes.",
     "SERVER_BUSY": "Server too busy. Please try again in a few minutes."
@@ -274,7 +274,7 @@ function call_blockspring(local_fetch) {
             }
         }        
     }).fail(function(jqXHR, status_text, error_thrown) {
-        if(g_retry_attempts<3) {
+        if(g_retry_attempts<0) {
             g_retry_attempts++;
             call_blockspring(local_fetch);
         } else {
@@ -1038,8 +1038,8 @@ function home_init() {
                 window.location.href = "/u/"+username;
             } else {
                 //No dice, retrieve data from API
-                ////get_data(username);
                 g_username = username;
+                ////get_data(username);
                 call_blockspring(false);
             }
         });
@@ -1066,7 +1066,7 @@ function user_init() {
         $("#go").button("loading");
         event.preventDefault();
         if(!g_username) return;
-        //get_data(g_username);
+        ////get_data(g_username);
         call_blockspring(false);
     });
 }
