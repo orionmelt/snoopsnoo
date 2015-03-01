@@ -42,9 +42,9 @@ indexes:
 - kind: User
   properties:
   - name: data_version
-  - name: username
+  - name: last_updated
 
 - kind: User
   properties:
   - name: data_version
-  - name: last_updated
+  - name: username
