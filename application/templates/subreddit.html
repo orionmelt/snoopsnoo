@@ -37,7 +37,7 @@
 					<div class="col-md-12">
 						<h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
 						{% if subreddit.over18 %}
-						<button id="show-thumbnail" class="btn btn-primary btn-xs">I'm over 18 - Show Thumbnails</button>
+						<button id="show-thumbnail" class="btn btn-primary btn-xs hide">I'm over 18 - Show Thumbnails</button>
 						{% endif %}
 						<div id="subreddit-frontpage" class="subreddit-frontpage">
 							<p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-spinner fa-spin margin-lft-10"></i></p>
@@ -74,6 +74,8 @@
 	    	var d = Math.floor((new Date().getTime() - new Date(last_post_date).getTime())/(1000*60*60*24));
 	    	$("#sub_last_post_date").removeClass("hide");
 	    	$("#sub_last_post_date").html('<i class="fa fa-clock-o text-muted"></i>'+"Last active "+(d===0?"today":((d===1?"yesterday":(d<=7?"this week":d+" days ago")))));
+	    	var thumbnails_enabled = data.data.children && data.data.children.length && data.data.children[0].data.thumbnail;
+
 	    	$.ajax({
 		        url: "/subreddit_frontpage?over18=" + over18 + "&age_confirmed=" + age_confirmed,
 		        type: "POST",
@@ -81,6 +83,9 @@
 		        data: JSON.stringify(data),
 		    }).done(function(response) {
 		    	$("#subreddit-frontpage").html(response);
+		    	if(thumbnails_enabled) {
+		    		$("#show-thumbnail").removeClass("hide");
+		    	}
 		    });	        
 	    }).fail(function(jqXHR, status_text, error_thrown) {
 	    	if(jqXHR.status===404) {
