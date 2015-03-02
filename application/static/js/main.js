@@ -81,13 +81,13 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
     var error_object = {};
     if(jqXHR.status===404) {
         $("#error-message").text(ERROR_MSGS.USER_NOT_FOUND);
-        error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":status_text+"--"+error_thrown+"--"+error_message};
+        error_object = {"username":g_username, "error_type": "USER_NOT_FOUND", "error_message":jqXHR.status+"--"+status_text+"--"+error_thrown+"--"+error_message};
     } else if(jqXHR.status===0 && !jqXHR.responseText) {
         $("#error-message").text(ERROR_MSGS.REQUEST_CANCELED);
-        error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":status_text+"--"+error_thrown+"--"+error_message};
+        error_object = {"username":g_username, "error_type": "REQUEST_CANCELED", "error_message":jqXHR.status+"--"+status_text+"--"+error_thrown+"--"+error_message};
     } else {
         $("#error-message").text(ERROR_MSGS.UNEXPECTED_ERROR);
-        error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":status_text+"--"+error_thrown+"--"+error_message};
+        error_object = {"username":g_username, "error_type": "UNEXPECTED_ERROR", "error_message":jqXHR.status+"--"+status_text+"--"+error_thrown+"--"+error_message};
     }
     $(".loading-progress").hide();
     $(".loading-done").show();
@@ -240,6 +240,7 @@ function call_blockspring(local_fetch) {
         app_error("NO_DATA", ERROR_MSGS.NO_DATA);
         return;
     }
+    $.support.cors = true;
     $.ajax({
             url: "https://sender.blockspring.com/api_v2/blocks/d03751d846a6a0ff9a6dfd36b9c1c641?api_key=d1b2e14d5b005465cfe3c83976a9240a",
             type: "POST",
@@ -274,7 +275,7 @@ function call_blockspring(local_fetch) {
             }
         }        
     }).fail(function(jqXHR, status_text, error_thrown) {
-        if(g_retry_attempts<0) {
+        if(g_retry_attempts<4) {
             g_retry_attempts++;
             call_blockspring(local_fetch);
         } else {
