@@ -280,9 +280,10 @@ def subreddit(subreddit_name):
 	)
 
 def subreddit_frontpage():
-	over18=request.args.get("over18")
-	data=request.get_json()
-	return render_template('subreddit_frontpage.html', front_page=data, over18=over18)
+	over18 = int(request.args.get("over18"))
+	age_confirmed = int(request.args.get("age_confirmed"))
+	data = request.get_json()
+	return render_template('subreddit_frontpage.html', front_page=data, over18=over18, age_confirmed=age_confirmed)
 
 def suggest_subreddit_category():
 

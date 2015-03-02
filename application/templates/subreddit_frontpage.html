@@ -6,7 +6,7 @@
 				<div class="score">{{ p["data"]["score"] }}</div>
 				<div class="arrow down"></div>
 			</div>
-			{% if p["data"]["thumbnail"] and not over18 %}
+			{% if p["data"]["thumbnail"] and (over18 == age_confirmed) %}
 			<div class="r_thumbnail">
 				{% if "thumbs.redditmedia" in p["data"]["thumbnail"] %}
 				<a target="_blank" href="{{ p["data"]["url"] }}"><img src="{{ p["data"]["thumbnail"] }}" width="70"></a>

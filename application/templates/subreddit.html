@@ -36,6 +36,9 @@
 				<div class="row margin-20">
 					<div class="col-md-12">
 						<h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
+						{% if subreddit.over18 %}
+						<button id="show-thumbnail" class="btn btn-primary btn-xs">I'm over 18 - Show Thumbnails</button>
+						{% endif %}
 						<div id="subreddit-frontpage" class="subreddit-frontpage">
 							<p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-spinner fa-spin margin-lft-10"></i></p>
 						</div>
@@ -50,7 +53,7 @@
 	</div>
 
 	<script>
-	$(function () {
+	function load_frontpage_preview(over18, age_confirmed) {
 		var sub_url = "http://www.reddit.com/r/{{subreddit.display_name}}.json?sort=hot";
 		var sub_about_url = "http://www.reddit.com/r/{{subreddit.display_name}}/about.json";
 	    $.ajax({
@@ -72,7 +75,7 @@
 	    	$("#sub_last_post_date").removeClass("hide");
 	    	$("#sub_last_post_date").html('<i class="fa fa-clock-o text-muted"></i>'+"Last active "+(d===0?"today":((d===1?"yesterday":(d<=7?"this week":d+" days ago")))));
 	    	$.ajax({
-		        url: "/subreddit_frontpage?over18={{subreddit.over18}}",
+		        url: "/subreddit_frontpage?over18=" + over18 + "&age_confirmed=" + age_confirmed,
 		        type: "POST",
 		        contentType: "application/json",
 		        data: JSON.stringify(data),
@@ -87,6 +90,7 @@
 	    	}
 	    });
 
+	    // Get about page and update statistics
 	    $.ajax({
 	        url: sub_about_url,
 	        timeout: 30000,
@@ -95,8 +99,14 @@
 	    	$("#sub_accounts_active").removeClass("hide");
 	    	$("#sub_accounts_active").html('<i class="fa fa-users text-muted"></i>' + accounts_active + ' users there now');
 	    }).fail(function(jqXHR, status_text, error_thrown) {
-
 	    });
+	}
+
+	$(function () {
+		load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
+		$("#show-thumbnail").click(function() {
+			load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 1);
+		});
 	});
 	</script>
 {% endblock %}
