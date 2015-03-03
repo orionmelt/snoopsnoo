@@ -486,6 +486,14 @@ h2 {
   margin-bottom: 10px;
 }
 
+#snoovatar {
+  width:64px;
+  height:64px;
+  float: left;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+
 
 /* D3 */
 

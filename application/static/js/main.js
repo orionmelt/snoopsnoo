@@ -99,8 +99,8 @@ function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
 function app_error(error_type, error_message) {
     $(".loading-progress").hide();
     $(".loading-done").show();
-    $( "#error-message" ).text(ERROR_MSGS[error_type]);
-    $( "#error" ).show();
+    $("#error-message").text(ERROR_MSGS[error_type]);
+    $("#error").show();
     var error_object = {"username":g_username, "error_type": error_type, "error_message":error_message};
     log_error(error_object);
     $("#go").button("reset");
@@ -174,7 +174,6 @@ function get_comment_page(url,after,count) {
             // ERROR
         }
     }).fail(function(jqXHR, status_text, error_thrown) {
-        console.log(jqXHR);
         jqXHR_error(jqXHR, status_text, error_thrown, "Error getting comments.json");
     });
 }
@@ -481,7 +480,6 @@ function send_feedback(key, value, feedback) {
 
 function send_sub_reco_feedback(i, o, f) {
     url = "/sub-reco-feedback?u="+g_username+"&i="+i+"&o="+o+"&f="+f;
-    console.log(url);
     $.ajax({
         url: url,
         type: "GET"
@@ -538,6 +536,7 @@ function populate_results(results) {
     */
 
     g_username = data.username;
+    load_snoovatar();
     if(location.search.substring(1)==="debug") g_debug=true;
     if(g_debug) {
         console.log(data);
@@ -818,9 +817,6 @@ function populate_results(results) {
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
     $("#data-karma_per_word").text(data.summary.comments.karma_per_word);
 
-    $("#user-results-loading").hide();
-    $("#user-results").css({opacity:1});
-
     // Heatmap
     if(data.metrics.recent_activity_heatmap) {
         var heatmap=data.metrics.recent_activity_heatmap;
@@ -1025,8 +1021,28 @@ function populate_results(results) {
         } else {
             $("#sub-categorize-table").html('<div class="col-md-6 alert alert-success"><p>All your subreddits have been categorized. You\'re all set!</p></div>');
         }
-        
     }
+    $("#user-results-loading").hide();
+    $("#user-results").css({opacity:1});
+}
+
+function load_snoovatar() {
+    blockspring.runParsed("99cd0d8656e4608468d6b1c7e18ce4de", {
+        "username": g_username
+    },
+    {
+        "cache": true,
+        "expiry": 3600,
+        "api_key":"d1b2e14d5b005465cfe3c83976a9240a"
+    },
+    function(response){
+        if(response._errors && response._errors.length) {
+            // You pleb!
+        } else if(response.params.snoovatar) {
+            $("#snoovatar img").attr("src", "data:image/png;base64,"+response.params.snoovatar.data);
+            $("#snoovatar").removeClass("hide");
+        }
+    });
 }
 
 function home_init() {
@@ -1056,7 +1072,7 @@ function home_init() {
 
 function user_init() {
     g_base_results = $("#user-results").html();
-    populate_results(results);
+    populate_results(results);    
     $(".feedback .correct, .feedback .incorrect").click(function() {
         key = $(this).data("key");
         value = $(this).data("value");
@@ -1069,13 +1085,12 @@ function user_init() {
         }).fadeIn(200);
         return false;
     });
-
     $("#go").click(function(event) {
         $("#go").button("loading");
         event.preventDefault();
         if(!g_username) return;
         ////get_data(g_username);
         call_blockspring(false);
-    });
+    });    
 }
 
