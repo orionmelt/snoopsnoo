@@ -410,11 +410,9 @@
 		<div id="all-subreddit-categories-placeholder" style="display:none">
 			<select name="category_id" class="form-control small">
 				<option value="">-- Select topic --</option>
-			{# 
 			{% for c in all_subreddit_categories %}
 				<option value="{{c["id"]}}">{{c["text"]}}</option>
 			{% endfor %}
-			#}
 			</select>
 		</div>
 		{% autoescape false %}
