@@ -8,6 +8,7 @@ blog.snoopsnoo.com/rss.xml
 blog.snoopsnoo.com/sitemap.txt
 blog.snoopsnoo.com/tags.html
 
+blog.snoopsnoo.com/2015/03/01/show-off-your-snoovatar
 blog.snoopsnoo.com/2015/02/15/theres-a-subreddit-for-that
 blog.snoopsnoo.com/2015/01/10/whats-better-than-version-01
 blog.snoopsnoo.com/2015/01/05/hello-reddit

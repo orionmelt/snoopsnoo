@@ -5,10 +5,26 @@
         <description>SnoopSnoo Blog - OrionMelt</description>
         <link>blog.snoopsnoo.com</link>
         <link>blog.snoopsnoo.com</link>
-        <lastBuildDate>2015-02-15T05:17:24-07:00</lastBuildDate>
-        <pubDate>2015-02-15T05:17:24-07:00</pubDate>
+        <lastBuildDate>2015-03-02T20:45:08-07:00</lastBuildDate>
+        <pubDate>2015-03-02T20:45:08-07:00</pubDate>
         <ttl>1800</ttl>
 
+
+        <item>
+                <title>Show off your snoovatar</title>
+                <description>
+&lt;p&gt;In the latest edition of “Features Nobody Requested”, I am happy to announce that &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP &lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; /&gt; SNOO&lt;/span&gt; now displays your snoovatar (if you have gold and have set one up)! It looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/OL5bvL1.png&quot; alt=&quot;SnoopSnoo now shows snoovatars!&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As far as I know, &lt;a href=&quot;http://www.reddit.com/r/blog/comments/2rnf1z/create_your_own_reddit_alien_avatar_with_reddit/cnhgy57&quot;&gt;reddit doesn’t give you access to snoovatars via the API&lt;/a&gt; and it’s not a matter of simply scraping a static image from your snoovatar page either, because it’s dynamically constructed using JavaScript and Canvas. So I wrote some simple code to generate it myself using the &lt;a href=&quot;http://en.wikipedia.org/wiki/Python_Imaging_Library&quot;&gt;Python Imaging Library&lt;/a&gt;. If you come across any issues, please let me know.&lt;/p&gt;
+
+&lt;p&gt;The code is available as a &lt;a href=&quot;https://api.blockspring.com/orionmelt/99cd0d8656e4608468d6b1c7e18ce4de&quot;&gt;Blockspring function&lt;/a&gt; if you’re interested — just enter your username and run the function to generate your snoovatar in PNG format. To use it in your own app, sign up for Blockspring and use your API key to call the function — they make it ridiculously simple to integrate APIs like these in your apps, &lt;a href=&quot;https://www.blockspring.com/&quot;&gt;check them out&lt;/a&gt;!&lt;/p&gt;
+</description>
+                <link>blog.snoopsnoo.com/2015/03/01/show-off-your-snoovatar</link>
+                <guid>blog.snoopsnoo.com/2015/03/01/show-off-your-snoovatar</guid>
+                <pubDate>2015-03-01T00:00:00-07:00</pubDate>
+        </item>
 
         <item>
                 <title>There's a subreddit for that!</title>
