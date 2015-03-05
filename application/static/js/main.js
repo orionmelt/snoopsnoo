@@ -75,6 +75,7 @@ $(function () {
     $("[data-hide]").on("click", function(){
         $(this).closest("#error").hide();
     });
+    $('button[type="submit"]').prop("disabled", false)
 });
 
 function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
