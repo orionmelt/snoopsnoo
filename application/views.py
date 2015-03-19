@@ -7,7 +7,7 @@ URL route handlers
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 
-from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup, jsonify
+from flask import request, render_template, flash, url_for, redirect, session, g, abort, Markup, jsonify, url_for
 from itsdangerous import URLSafeSerializer
 from decorators import login_required, admin_required
 from math import pow
@@ -324,6 +324,8 @@ def suggest_subreddit_category():
 
 def find_subreddit():
 	input_subreddit = request.form.get("subreddit").lower()
+	if not input_subreddit:
+		return redirect(url_for('subreddits_home'))
 	subreddit = get_subreddit(input_subreddit)
 	if subreddit:
 		return redirect("/r/"+subreddit.display_name)
