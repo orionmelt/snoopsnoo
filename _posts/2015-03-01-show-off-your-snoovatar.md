@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-In the latest edition of "Features Nobody Requested", I am happy to announce that <span class="logo logo-small">SNOOP <img src="/assets/themes/snoopsnoo/img/logo_sm.png"> SNOO</span> now displays your snoovatar (if you have gold and have set one up)! It looks like this:
+In the latest edition of "Features Nobody Requested", I am happy to announce that <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> now displays your snoovatar (if you have gold and have set one up)! It looks like this:
 
 ![SnoopSnoo now shows snoovatars!](http://i.imgur.com/OL5bvL1.png)
 
