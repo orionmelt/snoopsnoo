@@ -25,10 +25,11 @@ var SYNOPSIS_KEYS = [
     {label: "things you've said you like", key:"favorites"}, 
     {label: "you are", key:"attributes"},
     {label: "you have", key:"possessions"}, 
-    {label: "your locations of interest", key:"locations"}, // For backward compatibility with v1 data
-    {label: "your locations of interest", key:"location"}, 
+    {label: "your locations of interest", key:"locations"}, 
+    {label: "your locations of interest", key:"location"}, // For backward compatibility with v3 data
     {label: "you like to watch", key:"tv_shows"}, // For backward compatibility with v1 data
-    {label: "you like to watch", key:"tv shows"}, 
+    {label: "you like to watch", key:"tv shows"}, // For backward compatibility with v3 data
+    {label: "you like to watch", key:"television"},
     {label: "you like", key:"interests"}, 
     {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
     {label: "you like playing", key:"gaming"}, 
@@ -50,7 +51,8 @@ var SYNOPSIS_KEYS = [
     {label: "you have", key:"gadget"}, 
     {label: "you are", key:"political_view"}, 
     {label: "you are", key:"physical_characteristics"}, 
-    {label: "your religious beliefs", key:"religion"}
+    {label: "your religious beliefs", key:"religion"}, // For backward compatibility with v3 data
+    {label: "your religious beliefs", key:"religion and spirituality"}
 ];
 
 var ERROR_MSGS = {
