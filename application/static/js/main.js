@@ -902,7 +902,7 @@ function populate_results(results) {
         return d.name;
     }).join(",");
     
-    if(reco_qs) {
+    if(reco_qs && subreddits_array.length>=2) {
         $.ajax({
             url: "/subreddits/recommended/" + reco_qs,
             type: "GET",
@@ -943,7 +943,6 @@ function populate_results(results) {
                 $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
             }
         });
-
     } else {
         $("#recommended-subs").html('<p>No recommendations available.</p><p><a href="/subreddits/">Try browsing subreddits by topic.</a></p>');
     }
@@ -1001,6 +1000,11 @@ function populate_results(results) {
     } else {
         $("#best-post-sub-reco").hide();
         $("#worst-post-sub-reco").hide();
+    }
+
+    if(c.length<=1 && s.length<=1) {
+        $("#average-karma-reco").hide();
+        $("#subreddits-reco").hide();
     }
 
     // Subreddit categorization
