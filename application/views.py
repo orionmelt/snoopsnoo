@@ -197,6 +197,11 @@ def subreddits_home():
 
 def subreddits_category(level1,level2=None,level3=None):
 	root = get_subreddits_root()
+	if level1 == "adult":
+		url = url_for('subreddits_category',level1="adult-and-nsfw",level2=level2,level3=level3)
+		if request.query_string:
+			url += "?" + request.query_string
+		return redirect(url)
 	category_id = "reddit_"+level1.lower()
 	breadcrumbs_ids = [category_id]
 	if level2:
