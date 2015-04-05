@@ -91,7 +91,7 @@
 	    	if(jqXHR.status===404) {
 	    		$("#frontpage-loading").html('<span class="text-danger"><strong>Subreddit not found. It may have been deleted or banned.</strong></span>');
 	    	} else {
-	    		$("#frontpage-loading").html('Frontpage preview failed - reddit may be too busy right now. <a href=".">Refresh the page</a> after a few seconds to try again.');
+	    		$("#frontpage-loading").html('Frontpage preview failed - reddit may be too busy right now. <a href="/r/{{subreddit.display_name}}">Refresh the page</a> after a few seconds to try again.');
 	    	}
 	    });
 
