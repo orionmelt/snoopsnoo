@@ -48,6 +48,8 @@ var SYNOPSIS_KEYS = [
     {label: "you like to discuss", key:"others"}, // For backward compatibility with v1 data
     {label: "you like to discuss", key:"other"}, 
     {label: "you like to discuss", key:"news & politics"}, 
+    {label: "you like to discuss", key:"news and politics"}, 
+    {label: "you like to discuss", key:"social science and humanities"}, 
     {label: "you have", key:"gadget"}, 
     {label: "you are", key:"political_view"}, 
     {label: "you are", key:"physical_characteristics"}, 
