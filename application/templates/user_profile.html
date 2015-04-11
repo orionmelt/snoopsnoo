@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %} - /u/{{ user.username}} | reddit user statistics and analysis{% endblock %}
+{% block title %} - {{ user.username}} | reddit user statistics and analysis{% endblock %}
+{% block meta_description %}SnoopSnoo user analytics for /u/{{ user.username}}. See {{ user.username}}'s reddit account summary, comments and submissions statistics and more.{% endblock %}
 
 {% block content %}
     <div id="user-results-loading" class="container text-center margin-20">

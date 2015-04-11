@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %} - /r/{{subreddit.display_name}} in {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} | Subreddit statistics and related subreddits{% endblock %}
+{% block title %} - /r/{{subreddit.display_name}} {{"("+subreddit.title+")" if subreddit.title}} in {{ breadcrumbs[-1].display_name }} | Subreddit statistics and related subreddits{% endblock %}
+{% block meta_description %}Subreddit analytics for /r/{{subreddit.display_name}}{{" - " + subreddit.title + "." if subreddit.title}} {{subreddit.public_description or "No subreddit description available."}}{% endblock %}
 {% block nav_subreddits %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
