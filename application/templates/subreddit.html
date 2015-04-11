@@ -5,113 +5,113 @@
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
 
 {% block content %}
-	<div class="container margin-20">
-		{{ snoopsnoo_macros.subreddits_breadcrumbs(breadcrumbs) }}
+    <div class="container margin-20">
+        {{ snoopsnoo_macros.subreddits_breadcrumbs(breadcrumbs) }}
 
-		<div class="row">
-			<div class="col-md-9">
-				<div class="row">
-					<div class="col-md-9">
-					{{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=True) }}
-					</div>
-					<div class="col-md-3">
-						{% if related_subreddits %}
-						<div class="panel panel-default related-subreddits">
-							<div class="panel-heading text-lowercase">
-								<strong>Related Subreddits</strong>
-							</div>
-							<div class="panel-body">
-								<ul class="list-inline small">
-								{% for r in related_subreddits %}
-									<li><a href="{{ url_for("subreddit", subreddit_name=r.display_name) }}">/r/{{ r.display_name }}</a></li>
-								{% endfor %}
-								</ul>
-							</div>
-						</div>
-						{% endif %}
-					</div>
-				</div>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-9">
+                    {{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=True) }}
+                    </div>
+                    <div class="col-md-3">
+                        {% if related_subreddits %}
+                        <div class="panel panel-default related-subreddits">
+                            <div class="panel-heading text-lowercase">
+                                <strong>Related Subreddits</strong>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-inline small">
+                                {% for r in related_subreddits %}
+                                    <li><a href="{{ url_for("subreddit", subreddit_name=r.display_name) }}">/r/{{ r.display_name }}</a></li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
 
 
-				<div class="row margin-20">
-					<div class="col-md-12">
-						<h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
-						{% if subreddit.over18 %}
-						<button id="show-thumbnail" class="btn btn-primary btn-xs hide">I'm over 18 - Show Thumbnails</button>
-						{% endif %}
-						<div id="subreddit-frontpage" class="subreddit-frontpage">
-							<p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-spinner fa-spin margin-lft-10"></i></p>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-			<div class="col-md-3">
-				{{ snoopsnoo_macros.topics_menu(root["children"]) }}
-			</div>
-		</div>
-	</div>
+                <div class="row margin-20">
+                    <div class="col-md-12">
+                        <h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
+                        {% if subreddit.over18 %}
+                        <button id="show-thumbnail" class="btn btn-primary btn-xs hide">I'm over 18 - Show Thumbnails</button>
+                        {% endif %}
+                        <div id="subreddit-frontpage" class="subreddit-frontpage">
+                            <p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-spinner fa-spin margin-lft-10"></i></p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-md-3">
+                {{ snoopsnoo_macros.topics_menu(root["children"]) }}
+            </div>
+        </div>
+    </div>
 
-	<script>
-	function load_frontpage_preview(over18, age_confirmed) {
-		var sub_url = "http://www.reddit.com/r/{{subreddit.display_name}}.json?sort=hot";
-		var sub_about_url = "http://www.reddit.com/r/{{subreddit.display_name}}/about.json";
-	    $.ajax({
-	        url: sub_url,
-	        timeout: 30000,
-	    }).done(function(data) {
-	    	if(!(data.data && data.data.children && data.data.children.length)) {
-	    		$("#frontpage-loading").html('<span class="text-danger"><strong>No posts to show.</strong></span>');
-	    		return;
-	    	}
-	    	var last_post_date = +data.data.children.slice().sort(function(a,b) {
-	    		return b.data.created_utc - a.data.created_utc;	
-	    	})[0].data.created_utc*1000;
-	    	var offset_hours = Math.floor(new Date().getTimezoneOffset()/60);
-	    	var last_posted = 
-            	offset_hours>0 ? (24 + new Date(last_post_date).getHours()-offset_hours)%24 : (new Date(last_post_date).getHours()-offset_hours)%24;
+    <script>
+    function load_frontpage_preview(over18, age_confirmed) {
+        var sub_url = "http://www.reddit.com/r/{{subreddit.display_name}}.json?sort=hot";
+        var sub_about_url = "http://www.reddit.com/r/{{subreddit.display_name}}/about.json";
+        $.ajax({
+            url: sub_url,
+            timeout: 30000,
+        }).done(function(data) {
+            if(!(data.data && data.data.children && data.data.children.length)) {
+                $("#frontpage-loading").html('<span class="text-danger"><strong>No posts to show.</strong></span>');
+                return;
+            }
+            var last_post_date = +data.data.children.slice().sort(function(a,b) {
+                return b.data.created_utc - a.data.created_utc; 
+            })[0].data.created_utc*1000;
+            var offset_hours = Math.floor(new Date().getTimezoneOffset()/60);
+            var last_posted = 
+                offset_hours>0 ? (24 + new Date(last_post_date).getHours()-offset_hours)%24 : (new Date(last_post_date).getHours()-offset_hours)%24;
 
-	    	var d = Math.floor((new Date().getTime() - new Date(last_post_date).getTime())/(1000*60*60*24));
-	    	$("#sub_last_post_date").removeClass("hide");
-	    	$("#sub_last_post_date").html('<i class="fa fa-clock-o text-muted"></i>'+"Last active "+(d===0?"today":((d===1?"yesterday":(d<=7?"this week":d+" days ago")))));
-	    	var thumbnails_enabled = data.data.children && data.data.children.length && data.data.children[0].data.thumbnail;
+            var d = Math.floor((new Date().getTime() - new Date(last_post_date).getTime())/(1000*60*60*24));
+            $("#sub_last_post_date").removeClass("hide");
+            $("#sub_last_post_date").html('<i class="fa fa-clock-o text-muted"></i>'+"Last active "+(d===0?"today":((d===1?"yesterday":(d<=7?"this week":d+" days ago")))));
+            var thumbnails_enabled = data.data.children && data.data.children.length && data.data.children[0].data.thumbnail;
 
-	    	$.ajax({
-		        url: "/subreddit_frontpage?over18=" + over18 + "&age_confirmed=" + age_confirmed,
-		        type: "POST",
-		        contentType: "application/json",
-		        data: JSON.stringify(data),
-		    }).done(function(response) {
-		    	$("#subreddit-frontpage").html(response);
-		    	if(thumbnails_enabled) {
-		    		$("#show-thumbnail").removeClass("hide");
-		    	}
-		    });	        
-	    }).fail(function(jqXHR, status_text, error_thrown) {
-	    	if(jqXHR.status===404) {
-	    		$("#frontpage-loading").html('<span class="text-danger"><strong>Subreddit not found. It may have been deleted or banned.</strong></span>');
-	    	} else {
-	    		$("#frontpage-loading").html('Frontpage preview failed - reddit may be too busy right now. <a href="/r/{{subreddit.display_name}}">Refresh the page</a> after a few seconds to try again.');
-	    	}
-	    });
+            $.ajax({
+                url: "/subreddit_frontpage?over18=" + over18 + "&age_confirmed=" + age_confirmed,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+            }).done(function(response) {
+                $("#subreddit-frontpage").html(response);
+                if(thumbnails_enabled) {
+                    $("#show-thumbnail").removeClass("hide");
+                }
+            });         
+        }).fail(function(jqXHR, status_text, error_thrown) {
+            if(jqXHR.status===404) {
+                $("#frontpage-loading").html('<span class="text-danger"><strong>Subreddit not found. It may have been deleted or banned.</strong></span>');
+            } else {
+                $("#frontpage-loading").html('Frontpage preview failed - reddit may be too busy right now. <a href="/r/{{subreddit.display_name}}">Refresh the page</a> after a few seconds to try again.');
+            }
+        });
 
-	    // Get about page and update statistics
-	    $.ajax({
-	        url: sub_about_url,
-	        timeout: 30000,
-	    }).done(function(data) {
-	    	var accounts_active = data.data.accounts_active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
-	    	$("#sub_accounts_active").removeClass("hide");
-	    	$("#sub_accounts_active").html('<i class="fa fa-users text-muted"></i>' + accounts_active + ' users there now');
-	    }).fail(function(jqXHR, status_text, error_thrown) {
-	    });
-	}
+        // Get about page and update statistics
+        $.ajax({
+            url: sub_about_url,
+            timeout: 30000,
+        }).done(function(data) {
+            var accounts_active = data.data.accounts_active.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+            $("#sub_accounts_active").removeClass("hide");
+            $("#sub_accounts_active").html('<i class="fa fa-users text-muted"></i>' + accounts_active + ' users there now');
+        }).fail(function(jqXHR, status_text, error_thrown) {
+        });
+    }
 
-	$(function () {
-		load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
-		$("#show-thumbnail").click(function() {
-			load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 1);
-		});
-	});
-	</script>
+    $(function () {
+        load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
+        $("#show-thumbnail").click(function() {
+            load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 1);
+        });
+    });
+    </script>
 {% endblock %}

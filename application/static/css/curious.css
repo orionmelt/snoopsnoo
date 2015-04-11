@@ -185,7 +185,8 @@ h2 {
   overflow: hidden;
 }
 
-#summary .row, #synopsis .row {
+#summary .row, 
+#synopsis .row {
   margin-bottom:15px;
 }
 
@@ -202,20 +203,32 @@ h2 {
   margin-right: 5px;
 }
 
-.sub-reco-feedback a, .feedback a, .share a, .permalink a {
+.sub-reco-feedback a, 
+.feedback a, 
+.share a, 
+.permalink a {
   color: #999;
   text-decoration: none;
 }
 
-.sub-reco-feedback a:hover, .feedback a:hover, .share a:hover, .permalink a:hover {
+.sub-reco-feedback a:hover, 
+.feedback a:hover, 
+.share a:hover, 
+.permalink a:hover {
   color: #333;
 }
 
-.feedback .correct:hover, .feedback .correct_done, .sub-reco-feedback .correct:hover, .sub-reco-feedback .correct_done {
+.feedback .correct:hover, 
+.feedback .correct_done, 
+.sub-reco-feedback .correct:hover, 
+.sub-reco-feedback .correct_done {
   color:#28b62c;
 }
 
-.feedback .incorrect:hover, .feedback .incorrect_done, .sub-reco-feedback .incorrect:hover, .sub-reco-feedback .incorrect_done {
+.feedback .incorrect:hover, 
+.feedback .incorrect_done, 
+.sub-reco-feedback .incorrect:hover, 
+.sub-reco-feedback .incorrect_done {
   color:#ff4136;
 }
 
@@ -228,7 +241,8 @@ h2 {
   font-weight: bold;
 }
 
-.data-block .content, .likely {
+.data-block .content, 
+.likely {
   background:#158cba;
   font-weight: 500;
   color:#fff;
@@ -275,7 +289,7 @@ h2 {
 
 .subreddit-frontpage {
   margin-top:30px;
-  font: normal x-small verdana,arial,helvetica,sans-serif;
+  font: normal x-small Verdana, Arial, Helvetica, sans-serif;
 }
 
 .subreddit-frontpage a {
@@ -287,7 +301,9 @@ h2 {
   font-weight: bold;
 }
 
-.subreddit-frontpage .vote, .subreddit-frontpage .r_thumbnail, .subreddit-frontpage .title {
+.subreddit-frontpage .vote, 
+.subreddit-frontpage .r_thumbnail, 
+.subreddit-frontpage .title {
   display: table-cell;
   margin-bottom: 10px;
   vertical-align: top;
@@ -322,7 +338,8 @@ h2 {
   clear: both;
 }
 
-.subreddit-frontpage .comments, .subreddit-frontpage .comments a  {
+.subreddit-frontpage .comments, 
+.subreddit-frontpage .comments a  {
   color:#888;
   font-weight: bold;
 }
@@ -391,7 +408,11 @@ h2 {
   margin-right: 10px;
 }
 
-.subreddit-listing h1, .subreddit-listing h2, .subreddit-listing h3, .subreddit-listing h4, .subreddit-listing h5 {
+.subreddit-listing h1, 
+.subreddit-listing h2, 
+.subreddit-listing h3, 
+.subreddit-listing h4, 
+.subreddit-listing h5 {
   text-transform: none;
   color: #666;
   font-size: 14px;
@@ -422,25 +443,34 @@ h2 {
   margin-bottom: 20px;
 }
 
-.l2_tree, .l3_tree {
+.l2_tree, 
+.l3_tree {
   padding-left: 20px;
   margin-bottom: 20px;
 }
 
-.l1_cat, .l2_cat, .l3_cat {
+.l1_cat, 
+.l2_cat, 
+.l3_cat {
   margin-top: 10px;
 }
 
-.l1_sub, .l2_sub, .l3_sub {
+.l1_sub, 
+.l2_sub, 
+.l3_sub {
   display: inline-block;
   padding-right: 10px;
 }
 
-.l1_more_subs, .l2_more_subs, .l3_more_subs {
+.l1_more_subs, 
+.l2_more_subs, 
+.l3_more_subs {
   margin-top: 5px;
 }
 
-.l1_cat_heading, .l2_cat_heading, .l3_cat_heading {
+.l1_cat_heading, 
+.l2_cat_heading, 
+.l3_cat_heading {
   margin-bottom: 10px; 
 }
 
@@ -474,11 +504,13 @@ h2 {
   margin-bottom: 5px;
 }
 
-.panel-danger .panel-heading a, .panel-primary .panel-heading a {
+.panel-danger .panel-heading a, 
+.panel-primary .panel-heading a {
   color:#fff;
 }
 
-.menu-icon, .icon {
+.menu-icon, 
+.icon {
   margin-right: 5px;
 }
 
