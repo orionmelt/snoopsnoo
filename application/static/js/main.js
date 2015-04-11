@@ -819,6 +819,9 @@ function populate_results(results) {
     // Corpus Statistics
     $("#data-total_word_count").text(data.summary.comments.total_word_count);
     $("#data-unique_word_count").text(data.summary.comments.unique_word_count);
+    $("#data-unique_word_percent").text(
+        (+data.summary.comments.unique_word_count/+data.summary.comments.total_word_count*100).toPrecision(4)
+    );
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
     $("#data-karma_per_word").text(data.summary.comments.karma_per_word);
 
