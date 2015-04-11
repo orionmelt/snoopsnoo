@@ -21,3 +21,6 @@ analytics.html
 
 # Jekyll generated files (Blog)
 _site/
+
+# Third-party libs
+lib/
