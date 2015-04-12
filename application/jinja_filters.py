@@ -40,4 +40,8 @@ def safe_markdown(text):
     return jinja2.Markup(markdown.markdown(text))
 
 def strip_links(text):
-    return re.sub(r"\[(.+?)\]\s*\(.+?\)", r"\1", text, re.I)
+    return re.sub(
+        r"\[(.+?)\]\s*\(.+?\)", r"\1", 
+        text, 
+        re.IGNORECASE|re.MULTILINE
+    )
