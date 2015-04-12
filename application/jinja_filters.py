@@ -1,6 +1,10 @@
 from datetime import datetime
+import re
+
+import jinja2
+import markdown
+
 from application import app
-import jinja2, markdown
 
 #Change %e to %d if running on Windows
 def format_date(value, format='%b %d, %Y'):
@@ -34,3 +38,6 @@ def time_since(value):
 
 def safe_markdown(text):
     return jinja2.Markup(markdown.markdown(text))
+
+def strip_links(text):
+    return re.sub(r"\[(.+?)\]\s*\(.+?\)", r"\1", text, re.I)
