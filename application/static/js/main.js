@@ -855,7 +855,7 @@ function populate_results(results) {
             },
             tooltips:true,
             tooltips_msg: function(d) {
-                return "<p>" + new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-d.x))).toLocaleDateString() + "</p>" + hour_names[d.y];
+                return "<p>" + new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-d.x-1))).toLocaleDateString() + "</p>" + hour_names[d.y];
             }
         });
     } else {
@@ -870,7 +870,7 @@ function populate_results(results) {
     if(data.metrics.recent_karma && data.metrics.recent_posts && data.metrics.recent_karma.length===data.metrics.recent_posts.length) {
         var recent_activity = data.metrics.recent_karma.slice(1).map(function(d,i) {
             return {
-                date: new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-i-1))).toLocaleDateString(),
+                date: new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-i-1))).toLocaleDateString(),
                 posts: data.metrics.recent_posts[i],
                 karma: d
             };
