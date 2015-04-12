@@ -5,10 +5,24 @@
         <description>SnoopSnoo Blog - OrionMelt</description>
         <link>blog.snoopsnoo.com</link>
         <link>blog.snoopsnoo.com</link>
-        <lastBuildDate>2015-03-20T21:49:37-07:00</lastBuildDate>
-        <pubDate>2015-03-20T21:49:37-07:00</pubDate>
+        <lastBuildDate>2015-04-12T01:02:17-07:00</lastBuildDate>
+        <pubDate>2015-04-12T01:02:17-07:00</pubDate>
         <ttl>1800</ttl>
 
+
+        <item>
+                <title>Your stats compared to the rest of us</title>
+                <description>
+&lt;p&gt;As I’d written in my &lt;a href=&quot;/2015/03/20/a-hundred-thousand-users-in-80-days&quot;&gt;previous blog post&lt;/a&gt;, &lt;span class=&quot;logo logo-small&quot;&gt;SNOOP&lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; alt=&quot;(SnoopSnoo Logo)&quot; width=&quot;21&quot; height=&quot;10&quot; /&gt;SNOO&lt;/span&gt; had recently analyzed over 100,000 users. Since then, more than 10,000 new users have analyzed their profiles, and hundreds of users are discovering the site every day. Thanks to this amazing growth, it is now possible to see how you compare to the average user.&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&quot;logo logo-small&quot;&gt;SNOOP&lt;img src=&quot;/assets/themes/snoopsnoo/img/logo_sm.png&quot; alt=&quot;(SnoopSnoo Logo)&quot; width=&quot;21&quot; height=&quot;10&quot; /&gt;SNOO&lt;/span&gt; now shows how better (or worse) your stats are than the average user’s. The average values will only get more accurate as the user base grows. The comparison is currently limited to average karma and unique words usage — if you’d like to see other kinds of comparisons, let me know!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/qSny9R1.png&quot; alt=&quot;SnoopSnoo stats comparison&quot; /&gt;&lt;/p&gt;
+</description>
+                <link>blog.snoopsnoo.com/2015/04/10/your-stats-compared-to-the-rest-of-us</link>
+                <guid>blog.snoopsnoo.com/2015/04/10/your-stats-compared-to-the-rest-of-us</guid>
+                <pubDate>2015-04-10T00:00:00-07:00</pubDate>
+        </item>
 
         <item>
                 <title>A hundred thousand users in 80 days</title>

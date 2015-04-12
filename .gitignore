@@ -11,3 +11,6 @@ venv
 
 # App specific ignores
 application/
+
+# Third-party libs
+lib/
