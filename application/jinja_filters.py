@@ -41,7 +41,7 @@ def safe_markdown(text):
 
 def strip_links(text):
     return re.sub(
-        r"\[(.+?)\]\s*\(.+?\)", r"\1", 
+        r"\[(.*?)\]\s*\(.+?\)", r"\1", 
         text, 
         re.IGNORECASE|re.MULTILINE
     )
