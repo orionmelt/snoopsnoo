@@ -579,16 +579,28 @@ function populate_results(results) {
     $("#data-reddit_submission_karma").text(data.summary.submissions.all_time_karma);
 
     if(data.summary.submissions.count>0) {
-        $("#data-average_submission_karma").text((+data.summary.submissions.computed_karma/+data.summary.submissions.count).toFixed(2));
+        var average_submission_karma = (+data.summary.submissions.computed_karma/+data.summary.submissions.count).toFixed(2);
+        var compare_submission_karma = (average_submission_karma - g_user_averages.average_submission_karma).toFixed(2);
+        var compare_submission_karma_text = (compare_submission_karma > 0) ? (compare_submission_karma + " more ") : (Math.abs(compare_submission_karma) + " less ");
+        $("#data-average_submission_karma").text(average_submission_karma);
+        $("#data-compare_submission_karma").text(compare_submission_karma_text);
+        $("#data-compare_submission_karma").addClass(compare_submission_karma >= 0 ? "text-success" : "text-warning");
     } else {
+        $("#submission-compare-stats").hide();
         $("#data-average_submission_karma").text("0");
     }
     $("#data-comment_karma").text(data.summary.comments.computed_karma);
     $("#data-total_comments").text(data.summary.comments.count);
     $("#data-reddit_comment_karma").text(data.summary.comments.all_time_karma);
     if(data.summary.comments.count>0) {
-        $("#data-average_comment_karma").text((+data.summary.comments.computed_karma/+data.summary.comments.count).toFixed(2));
+        var average_comment_karma = (+data.summary.comments.computed_karma/+data.summary.comments.count).toFixed(2);
+        var compare_comment_karma = (average_comment_karma - g_user_averages.average_comment_karma).toFixed(2);
+        var compare_comment_karma_text = (compare_comment_karma > 0) ? (compare_comment_karma + " more ") : (Math.abs(compare_comment_karma) + " less ");
+        $("#data-average_comment_karma").text(average_comment_karma);
+        $("#data-compare_comment_karma").text(compare_comment_karma_text);
+        $("#data-compare_comment_karma").addClass(compare_comment_karma >= 0 ? "text-success" : "text-warning");
     } else {
+        $("#comment-compare-stats").hide();
         $("#data-average_comment_karma").text("0");
     }
 
@@ -819,9 +831,15 @@ function populate_results(results) {
     // Corpus Statistics
     $("#data-total_word_count").text(data.summary.comments.total_word_count);
     $("#data-unique_word_count").text(data.summary.comments.unique_word_count);
-    $("#data-unique_word_percent").text(
-        (+data.summary.comments.unique_word_count/+data.summary.comments.total_word_count*100).toPrecision(4)
-    );
+    
+    var unique_word_percent = (+data.summary.comments.unique_word_count/+data.summary.comments.total_word_count*100).toFixed(2);
+    $("#data-unique_word_percent").text(unique_word_percent);
+
+    var compare_unique_word_percent = (unique_word_percent - g_user_averages.average_unique_word_percent).toFixed(2);
+    var compare_unique_word_percent_text = (compare_unique_word_percent > 0) ? (compare_unique_word_percent + " more ") : (Math.abs(compare_unique_word_percent) + " less ");
+    $("#data-compare_unique_word_percent").text(compare_unique_word_percent_text);
+    $("#data-compare_unique_word_percent").addClass(compare_unique_word_percent >= 0 ? "text-success" : "text-warning");
+    
     $("#data-hours_typed").text(data.summary.comments.hours_typed + " hours");
     $("#data-karma_per_word").text(data.summary.comments.karma_per_word);
 
@@ -855,7 +873,7 @@ function populate_results(results) {
             },
             tooltips:true,
             tooltips_msg: function(d) {
-                return "<p>" + new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-d.x))).toLocaleDateString() + "</p>" + hour_names[d.y];
+                return "<p>" + new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-d.x-1))).toLocaleDateString() + "</p>" + hour_names[d.y];
             }
         });
     } else {
@@ -870,7 +888,7 @@ function populate_results(results) {
     if(data.metrics.recent_karma && data.metrics.recent_posts && data.metrics.recent_karma.length===data.metrics.recent_posts.length) {
         var recent_activity = data.metrics.recent_karma.slice(1).map(function(d,i) {
             return {
-                date: new Date(new Date().setDate(new Date(g_last_updated).getDate()-(60-i-1))).toLocaleDateString(),
+                date: new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-i-1))).toLocaleDateString(),
                 posts: data.metrics.recent_posts[i],
                 karma: d
             };

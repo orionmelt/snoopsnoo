@@ -2,7 +2,7 @@ application: curiousdognightapp
 version: 2
 runtime: python27
 api_version: 1
-threadsafe: true
+threadsafe: yes
 
 default_expiration: "5d"
 
@@ -34,14 +34,8 @@ handlers:
   static_files: application/static/robots.txt
   upload: application/static/robots.txt
 
-- url: /gae_mini_profiler/static
-  static_dir: lib/gae_mini_profiler/static
-
-- url: /gae_mini_profiler/.*
-  script: lib.gae_mini_profiler.main.application
-
 - url: /static
   static_dir: application/static
 
 - url: .*
-  script: run.application.app
+  script: application.app

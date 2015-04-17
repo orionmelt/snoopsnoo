@@ -5,88 +5,88 @@
 
 {% macro subreddits_category(category, level=1) -%}
 <div id="d_{{category["id"]}}" class="l{{level}}_tree {% if level>1 %}collapse{% endif %}">
-	{% for child in category["children"] %}
-		{% if "children" in child %}
-			{% if child["id"]=="more_cats" %}
-				{% if child["count"]> 0%}
-					<div class="l{{level}}_more_cats text-muted">+{{ child["count"] }} more topics in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
-				{% endif %}	
-			{% else %}
-			<div class="l{{level}}_cat">
-				<div class="l{{level}}_cat_heading">
-					<a class="cat_collapse" data-toggle="collapse" href="#d_{{child["id"]}}"><i class="fa fa-plus-square"></i>{{ child["display_name"] }}</a>
-				</div>
-				{{ subreddits_category(child, level+1) }}
-			</div>
-			{% endif %}
-		{% else %}
-			{% if child["id"]=="more_subs" %}
-				{% if child["count"]> 0%}
-					<div class="l{{level}}_more_subs text-muted">+{{ child["count"] }} more subreddits in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
-				{% else %}
-					<div class="l{{level}}_more_subs text-muted">
-						See all in {{link_to_subreddits_category(category["id"], category["display_name"])}}
-					</div>
-				{% endif %}
-			{% else %}
-				<div class="l{{level}}_sub">
-					<a href="/r/{{ child["display_name"] }}">/r/{{ child["display_name"] }}</a>
-				</div>
-			{% endif %}
-		{% endif %}
-	{% endfor %}
+    {% for child in category["children"] %}
+        {% if "children" in child %}
+            {% if child["id"]=="more_cats" %}
+                {% if child["count"]> 0%}
+                    <div class="l{{level}}_more_cats text-muted">+{{ child["count"] }} more topics in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
+                {% endif %} 
+            {% else %}
+            <div class="l{{level}}_cat">
+                <div class="l{{level}}_cat_heading">
+                    <a class="cat_collapse" data-toggle="collapse" href="#d_{{child["id"]}}"><i class="fa fa-plus-square"></i>{{ child["display_name"] }}</a>
+                </div>
+                {{ subreddits_category(child, level+1) }}
+            </div>
+            {% endif %}
+        {% else %}
+            {% if child["id"]=="more_subs" %}
+                {% if child["count"]> 0%}
+                    <div class="l{{level}}_more_subs text-muted">+{{ child["count"] }} more subreddits in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
+                {% else %}
+                    <div class="l{{level}}_more_subs text-muted">
+                        See all in {{link_to_subreddits_category(category["id"], category["display_name"])}}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="l{{level}}_sub">
+                    <a href="/r/{{ child["display_name"] }}">/r/{{ child["display_name"] }}</a>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
 </div>
 {%- endmacro %}
 
 
 {% macro subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=False) -%}
 <div class="panel panel-default subreddit-listing">
-	<div class="panel-heading big">
-		{% if subreddit_page %}
-		<a target="_blank" href="http://www.reddit.com/r/{{ subreddit.display_name }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
-		{% else %}
-		<a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
-		{% endif %}
-		{% if subreddit.over18 %}
-		<span class="margin-lft-5 smaller text-danger">(18+)</span>
-		{% endif %}
-	</div>
-	
-	<div class="panel-body">
-		<div class="row">
-			<div class="{{'col-md-8 col-sm-8' if subreddit_page else 'col-md-6 col-sm-6'}}">
-				<div class="title">{{ subreddit.title|markdown }}</div>
-				<div class="text-muted small">{{ (subreddit.public_description or "No description available.")|markdown }}</div>
-			</div>
-			<div class="{{'col-md-4 col-sm-4' if subreddit_page else 'col-md-3 col-sm-3'}}">
-				<ul class="list-unstyled small">
-					<li class="margin-btm-10">
-						<i class="fa fa-user-times text-muted"></i>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers
-					</li>
-					<li class="margin-btm-10">
-						<i class="fa fa-calendar text-muted"></i>A community for {{ subreddit.created_utc | time_since }}
-					</li>
-					<li class="margin-btm-10 hide" id="sub_accounts_active"></li>
-					<li class="margin-btm-10 hide" id="sub_last_post_date"></li>
-					<!--
-					<li class="margin-top-15">
-						<i class="fa fa-tags text-muted"></i><a href="#" data-toggle="popover">Suggest topic</a>
-					</li>
-					-->
-					
-				</ul>
-			</div>
-			{% if not subreddit_page %}
-			<div class="col-md-3 col-sm-3">
-				<ul class="list-unstyled small">
-					<li class="margin-btm-5">
-						<i class="fa fa-bars text-muted"></i><a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}">Related subreddits and more</a>
-					</li>
-				</ul>
-			</div>
-			{% endif %}
-		</div>
-	</div>
+    <div class="panel-heading big">
+        {% if subreddit_page %}
+        <a target="_blank" href="http://www.reddit.com/r/{{ subreddit.display_name }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
+        {% else %}
+        <a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
+        {% endif %}
+        {% if subreddit.over18 %}
+        <span class="margin-lft-5 smaller text-danger">(18+)</span>
+        {% endif %}
+    </div>
+    
+    <div class="panel-body">
+        <div class="row">
+            <div class="{{'col-md-8 col-sm-8' if subreddit_page else 'col-md-6 col-sm-6'}}">
+                <div class="title">{{ subreddit.title|markdown }}</div>
+                <div class="text-muted small">{{ (subreddit.public_description or "No description available.")|strip_links|markdown }}</div>
+            </div>
+            <div class="{{'col-md-4 col-sm-4' if subreddit_page else 'col-md-3 col-sm-3'}}">
+                <ul class="list-unstyled small">
+                    <li class="margin-btm-10">
+                        <i class="fa fa-user-times text-muted"></i>{{ '{0:,}'.format(subreddit.subscribers | int) }} subscribers
+                    </li>
+                    <li class="margin-btm-10">
+                        <i class="fa fa-calendar text-muted"></i>A community for {{ subreddit.created_utc | time_since }}
+                    </li>
+                    <li class="margin-btm-10 hide" id="sub_accounts_active"></li>
+                    <li class="margin-btm-10 hide" id="sub_last_post_date"></li>
+                    <!--
+                    <li class="margin-top-15">
+                        <i class="fa fa-tags text-muted"></i><a href="#" data-toggle="popover">Suggest topic</a>
+                    </li>
+                    -->
+                    
+                </ul>
+            </div>
+            {% if not subreddit_page %}
+            <div class="col-md-3 col-sm-3">
+                <ul class="list-unstyled small">
+                    <li class="margin-btm-5">
+                        <i class="fa fa-bars text-muted"></i><a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}">Related subreddits and more</a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {%- endmacro %}
 
@@ -100,57 +100,57 @@
 
 {% macro subreddits_breadcrumbs(breadcrumbs) %}
 <div class="row">
-	<div class="col-md-9">
-		<ul class="breadcrumb">
-			<li><a href="{{ url_for("subreddits_home") }}"><i class="fa fa-home"></i></a></li>
-			{% for crumb in breadcrumbs %}
-			<li><a href="/subreddits/{{ "/".join(crumb.key.id().split("_")[1:]) }}/">{{ crumb.display_name }}</a></li>
-			{% endfor %}
-		</ul>
-	</div>
-	<div class="col-md-3">
-		<form action="{{ url_for("find_subreddit") }}" method="post">
-			<div class="form-group">
-				<div class="input-group">
-					<span class="input-group-addon">/r/</span>
-					<input type="text" name="subreddit" placeholder="Find subreddits by name" class="form-control">
-					<span class="input-group-btn">
-						<button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
-					</span>
-				</div>
-			</div>
-		</form>
-	</div>
+    <div class="col-md-9">
+        <ul class="breadcrumb">
+            <li><a href="{{ url_for("subreddits_home") }}"><i class="fa fa-home"></i></a></li>
+            {% for crumb in breadcrumbs %}
+            <li><a href="/subreddits/{{ "/".join(crumb.key.id().split("_")[1:]) }}/">{{ crumb.display_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <form action="{{ url_for("find_subreddit") }}" method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">/r/</span>
+                    <input type="text" name="subreddit" placeholder="Find subreddits by name" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 {% endmacro %}
 
 {% macro topics_menu(topics_tree) %}
 <div class="list-group" id="topics-menu">
-	<div class="list-group-item active">
-		All Topics
-	</div>
-	{% for t1 in topics_tree %}
-    	{% set t1_sub = [] %}
-		{% for t2 in t1["children"] %}
-			{% if "children" in t2 and t1_sub.append(1) %}{% endif %}
-		{% endfor %}
-		{% if t1_sub %}
-			<a class="list-group-item cat_collapse" data-toggle="collapse" data-parent="#topics-menu" href="#{{t1.id}}">
-				<span class="text-primary">{{t1.display_name}}</span>
-				<i class="fa fa-plus-square text-info pull-right"></i>
-			</a>
+    <div class="list-group-item active">
+        All Topics
+    </div>
+    {% for t1 in topics_tree %}
+        {% set t1_sub = [] %}
+        {% for t2 in t1["children"] %}
+            {% if "children" in t2 and t1_sub.append(1) %}{% endif %}
+        {% endfor %}
+        {% if t1_sub %}
+            <a class="list-group-item cat_collapse" data-toggle="collapse" data-parent="#topics-menu" href="#{{t1.id}}">
+                <span class="text-primary">{{t1.display_name}}</span>
+                <i class="fa fa-plus-square text-info pull-right"></i>
+            </a>
 
-			<div id="{{t1.id}}" class="collapse">
-			{% for t2 in t1["children"] %}
-				{% if "children" in t2 and t2["children"]|length %}
-					{{ link_to_subreddits_category(t2.id, '<i class="fa fa-chevron-right menu-icon text-info small"></i><span class="text-primary smaller">'+t2.display_name+'</span>', "list-group-item") }}
-				{% endif %}
-			{% endfor %}
-				{{ link_to_subreddits_category(t1.id, '<i class="fa fa-chevron-circle-right menu-icon text-info small"></i><span class="text-primary small">See all in '+t1.display_name+'</span>', "list-group-item") }}
-			</div>
-		{% else %}
-			{{ link_to_subreddits_category(t1.id, '<span class="text-primary">'+t1.display_name+'</span>', "list-group-item") }}
-		{% endif %}
+            <div id="{{t1.id}}" class="collapse">
+            {% for t2 in t1["children"] %}
+                {% if "children" in t2 and t2["children"]|length %}
+                    {{ link_to_subreddits_category(t2.id, '<i class="fa fa-chevron-right menu-icon text-info small"></i><span class="text-primary smaller">'+t2.display_name+'</span>', "list-group-item") }}
+                {% endif %}
+            {% endfor %}
+                {{ link_to_subreddits_category(t1.id, '<i class="fa fa-chevron-circle-right menu-icon text-info small"></i><span class="text-primary small">See all in '+t1.display_name+'</span>', "list-group-item") }}
+            </div>
+        {% else %}
+            {{ link_to_subreddits_category(t1.id, '<span class="text-primary">'+t1.display_name+'</span>', "list-group-item") }}
+        {% endif %}
     {% endfor %}
 </div>
 {% endmacro %}

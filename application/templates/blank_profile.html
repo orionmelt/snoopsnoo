@@ -4,32 +4,33 @@
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
 
 {% block content %}
-		<div class="container page-error">
-			<div class="col-md-6 col-md-offset-3 alert alert-info text-center">
-				<h1 class="margin-btm-20"><i class="fa fa-info-circle"></i> This will only take a minute.</h1>
-				<div class="loading-progress">
-					<p><i class="fa fa-refresh fa-spin"></i></p>
-					<p>{{ snoopsnoo_macros.logo_small() }} is refreshing data for /u/{{ username }}.</p>
-				</div>
-				<div class="loading-done">
-				</div>
-			</div>
-			<div id="error" class="row">
-				<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3 col-sm-offset-3">
-					<div class="alert alert-dismissable alert-danger">
-						<button type="button" class="close" data-hide="alert">×</button>
-						<span id="error-message"></span>
-					</div>
-				</div>
-			</div>	
-		</div>
+    <div class="container page-error">
+        <div class="col-md-6 col-md-offset-3 alert alert-info text-center">
+            <h1 class="margin-btm-20"><i class="fa fa-info-circle"></i> This will only take a minute.</h1>
+            <div class="loading-progress">
+                <p><i class="fa fa-refresh fa-spin"></i></p>
+                <p>{{ snoopsnoo_macros.logo_small() }} is refreshing data for /u/{{ username }}.</p>
+            </div>
+            <div class="loading-done">
+            </div>
+        </div>
+        <div id="error" class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3 col-sm-offset-3">
+                <div class="alert alert-dismissable alert-danger">
+                    <button type="button" class="close" data-hide="alert">×</button>
+                    <span id="error-message"></span>
+                </div>
+            </div>
+        </div>  
+    </div>
 
-		{% autoescape false %}
-		<script>
-		$(function () {
-			g_username = "{{ username }}";
-			call_blockspring(false);
-		});
-		</script>
-		{% endautoescape %}
+    {% autoescape false %}
+    <script>
+        $(function () {
+            g_username = "{{ username }}";
+            call_blockspring(false);
+        });
+    </script>
+    {% endautoescape %}
+    
 {% endblock %}

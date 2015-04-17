@@ -3,34 +3,22 @@ settings.py
 
 Configuration for Flask app
 
-Important: Place your keys in the secret_keys.py module, 
-           which should be kept out of version control.
+Important: Place your secret keys and other private settings 
+in the private_settings.py module, which should be kept out of version control.
 
 """
 
-import os
-
-from secret_keys import CSRF_SECRET_KEY, SESSION_KEY
+import private_settings
 
 class Config(object):
-    # Set secret keys for CSRF protection
-    SECRET_KEY = CSRF_SECRET_KEY
-    CSRF_SESSION_KEY = SESSION_KEY
-    # Flask-Cache settings
-    CACHE_TYPE = 'gaememcached'
+    GOOGLE_CLOUD_PROJECT_ID = private_settings.GOOGLE_CLOUD_PROJECT_ID
+    BIGDATA_QUERIES = private_settings.BIGDATA_QUERIES
 
 class Development(Config):
-    DEBUG = True
-    # Flask-DebugToolbar settings
-    DEBUG_TB_PROFILER_ENABLED = True
-    DEBUG_TB_INTERCEPT_REDIRECTS = False
-    CSRF_ENABLED = True
+    ENV = "DEV"
 
 class Testing(Config):
-    TESTING = True
-    DEBUG = True
-    CSRF_ENABLED = True
+    ENV = "TEST"
 
 class Production(Config):
-    DEBUG = False
-    CSRF_ENABLED = True
+    ENV = "PROD"
