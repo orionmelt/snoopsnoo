@@ -12,11 +12,14 @@ from math import pow
 from collections import Counter
 
 import markdown
+import httplib2
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from flask import (
     request, render_template, url_for, redirect, abort, Markup, jsonify
 )
+from apiclient.discovery import build
+from oauth2client.appengine import AppAssertionCredentials
 
 from decorators import login_required, admin_required
 from application import app
@@ -73,6 +76,39 @@ def uniq(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
+
+def get_bq_service():
+    app_credentials = AppAssertionCredentials(
+        scope="https://www.googleapis.com/auth/bigquery"
+    )
+    http = app_credentials.authorize(httplib2.Http())
+    return build("bigquery", "v2", http=http)
+
+def get_user_averages():
+    user_averages = memcache.get("user_averages")
+    if not user_averages:
+        bigquery_service = get_bq_service()
+        query_data = {
+            "query": app.config["BIGDATA_QUERIES"]["user_averages"]
+        }
+        query_request = bigquery_service.jobs()
+        query_response = query_request.query(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body=query_data
+        ).execute()
+
+        results = query_response["rows"][0]
+        avg_comment_karma = results["f"][0]["v"]
+        avg_submission_karma = results["f"][1]["v"]
+        avg_unique_word_percent = results["f"][2]["v"]
+        
+        user_averages = {
+            "average_comment_karma": float(avg_comment_karma),
+            "average_submission_karma": float(avg_submission_karma),
+            "average_unique_word_percent": float(avg_unique_word_percent)
+        }
+        memcache.add("user_averages", user_averages)
+    return user_averages
 
 def get_subreddit(display_name_lower):
     if not display_name_lower:
@@ -156,7 +192,8 @@ def user_profile(username):
         "user_profile.html", 
         user=user, 
         data=json.dumps(user.data), 
-        all_subreddit_categories=all_subreddit_categories
+        all_subreddit_categories=all_subreddit_categories,
+        user_averages=json.dumps(get_user_averages())
     )
 
 def update_user():

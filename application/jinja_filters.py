@@ -4,8 +4,6 @@ import re
 import jinja2
 import markdown
 
-from application import app
-
 #Change %e to %d if running on Windows
 def format_date(value, format='%b %d, %Y'):
     return value.strftime(format)

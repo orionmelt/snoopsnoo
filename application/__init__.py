@@ -1,12 +1,21 @@
+import os
+
 from flask import Flask
-app = Flask(__name__)
 
 from jinja_filters import (
     format_date, time_since, format_month, format_day, 
     safe_markdown, from_timestamp, strip_links
 )
 
-# Enable jinja2 loop controls extension
+app = Flask(__name__)
+
+if os.getenv('FLASK_CONF') == 'TEST':
+    app.config.from_object('application.settings.Testing')
+elif 'SERVER_SOFTWARE' in os.environ and os.environ['SERVER_SOFTWARE'].startswith('Dev'):
+    app.config.from_object('application.settings.Development')
+else:
+    app.config.from_object('application.settings.Production')
+
 app.jinja_env.add_extension("jinja2.ext.loopcontrols")
 app.jinja_env.add_extension("jinja2.ext.autoescape")
 

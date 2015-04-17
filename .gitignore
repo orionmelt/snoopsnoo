@@ -9,8 +9,8 @@
 *.kpf
 venv
 
-# Don't store secret keys and OS local settings in version control
-secret_keys.py
+# Don't store secret keys and private settings in version control
+private_settings.py
 
 # Minified resources
 *.min.js

@@ -46,7 +46,7 @@
                 <div id="summary">
                     <h2>Summary <span class="permalink"><a href="#summary" title="Permalink">#</a></span></h2>
                     <h3>Your best, your worst and the basics.</h3>
-                    <h4>Limited to the most recent 1000 submissions and comments.</h4>
+                    <h4>Limited to the 1000 most recent submissions and comments.</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <p class="text-muted">redditor since</p>
@@ -93,7 +93,8 @@
                         <div class="col-md-8">
                             <p><strong><span id="data-submission_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="Total karma for up to 1000 submissions. Karma reported by reddit may be different."></i> from <strong><span id="data-total_submissions"></span></strong> submissions</p>
                             <p><strong><span id="data-average_submission_karma"></span></strong> average karma per submission</p>
-                            <p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit.</p>
+                            <p id="submission-compare-stats"><strong><span id="data-compare_submission_karma"></span></strong> than the average user</p>
+                            <p><strong><span id="data-reddit_submission_karma"></span></strong> total submission karma reported by reddit</p>
                         </div>
                     </div>
 
@@ -104,7 +105,8 @@
                         <div class="col-md-8">
                             <p><strong><span id="data-comment_karma"></span></strong> <i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="" data-original-title="Total karma for up to 1000 comments. Karma reported by reddit may be different."></i> from <strong><span id="data-total_comments"></span></strong> comments</p>
                             <p><strong><span id="data-average_comment_karma"></span></strong> average karma per comment</p>
-                            <p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit.</p>
+                            <p id="comment-compare-stats"><strong><span id="data-compare_comment_karma"></span></strong> than the average user</p>
+                            <p><strong><span id="data-reddit_comment_karma"></span></strong> total comment karma reported by reddit</p>
                         </div>
                     </div>
                     <div class="row">
@@ -366,7 +368,8 @@
                 <p class="bigger no-top-margin margin-btm-20 text-success" id="data-total_word_count"></p>
                 <h5 class="big" >unique words</h5>
                 <p class="bigger no-top-margin text-success" id="data-unique_word_count"></p>
-                <p class="big margin-btm-20 no-top-margin text-muted">(<span id="data-unique_word_percent"></span>% of total words)</p>
+                <p class="big no-top-margin text-muted"><span id="data-unique_word_percent"></span>% of total words</p>
+                <p class="margin-btm-20 no-top-margin text-muted"><span id="data-compare_unique_word_percent"></span> than the average user</p>
                 <h5 class="big" >time spent typing posts</h5>
                 <p class="bigger no-top-margin margin-btm-20 text-success" id="data-hours_typed"></p>
                 <h5 class="big" >karma per word</h5>
@@ -417,9 +420,10 @@
 
     {% autoescape false %}
     <script>
-        var results=JSON.stringify({{ data }});
+        var results = JSON.stringify({{ data }});
+        var g_user_averages = {{ user_averages }};
         $(function () {
-            g_last_updated = new Date('{{ user.last_updated.strftime("%Y-%m-%d %H:%M:%S UTC") }}');
+            g_last_updated = new Date('{{ user.last_updated.strftime("%Y-%m-%dT%H:%M:%SZ") }}');
             user_init();
             $("[data-toggle='tooltip']").tooltip(); 
             $(document).on('submit', '#suggest-category-form', function(event) {
