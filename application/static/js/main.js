@@ -30,21 +30,22 @@ var SYNOPSIS_KEYS = [
     {label: "you like to watch", key:"tv_shows"}, // For backward compatibility with v1 data
     {label: "you like to watch", key:"tv shows"}, // For backward compatibility with v3 data
     {label: "you like to watch", key:"television"},
-    {label: "you like", key:"interests"}, 
-    {label: "you like playing", key:"games"}, // For backward compatibility with v1 data
-    {label: "you like playing", key:"gaming"}, 
+    {label: "your hobbies and interests", key:"interests"}, 
+    {label: "your hobbies and interests", key:"hobbies and interests"}, 
+    {label: "you like to play", key:"games"}, // For backward compatibility with v1 data
+    {label: "you like to play", key:"gaming"}, 
     {label: "sports and teams you like:", key:"sports"}, 
-    {label: "you like listening to", key:"music"}, 
+    {label: "you like to listen to", key:"music"}, 
     //{label: "you use", key:"drugs"}, 
     {label: "you like to read", key:"books"},
     {label: "you like", key:"celebs"}, // For backward compatibility with v1 data
     {label: "you like", key:"celebrities"},
-    {label: "you are interested in", key:"business"}, 
     {label: "you like", key:"entertainment"},
-    {label: "you are interested in", key:"science"}, 
-    {label: "you are interested in", key:"tech"}, // For backward compatibility with v1 data
-    {label: "you are interested in", key:"technology"},
-    {label: "you are interested in", key:"lifestyle"}, 
+    {label: "you like to discuss", key:"business"}, 
+    {label: "you like to discuss", key:"science"}, 
+    {label: "you like to discuss", key:"tech"}, // For backward compatibility with v1 data
+    {label: "you like to discuss", key:"technology"},
+    {label: "you like to discuss", key:"lifestyle"}, 
     {label: "you like to discuss", key:"others"}, // For backward compatibility with v1 data
     {label: "you like to discuss", key:"other"}, 
     {label: "you like to discuss", key:"news & politics"}, 
