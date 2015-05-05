@@ -312,6 +312,9 @@ def subreddits_category(level1, level2=None, level3=None):
         orders={"subscribers": "-"}
     )
 
+    if cursor and not subreddits:
+        abort(404)
+
     return render_template(
         "subreddits_category.html",
         subreddits=subreddits, 
@@ -388,7 +391,6 @@ def subreddit_frontpage():
     )
 
 def suggest_subreddit_category():
-
     category_ids = request.form.getlist("category_id")
     subreddit_names = request.form.getlist("subreddit_name")
     suggested_categories = request.form.getlist("suggested_category")

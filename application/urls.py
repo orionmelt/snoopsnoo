@@ -60,7 +60,7 @@ app.add_url_rule(
     "/subreddits/", "subreddits_home", view_func=views.subreddits_home
 )
 
-# Subreddits Home page
+# Subreddit Recommendations
 app.add_url_rule(
     "/subreddits/recommended/<subreddits>", 
     "recommended_subreddits", 
