@@ -117,6 +117,14 @@ app.add_url_rule(
     methods=["POST"]
 )
 
+# Subreddit Search Results page
+app.add_url_rule(
+    "/subreddits/search", 
+    "search_subreddits", 
+    view_func=views.search_subreddits, 
+    methods=["GET"]
+)
+
 ## Error handlers
 # Handle 404 errors
 @app.errorhandler(404)

@@ -8,6 +8,7 @@ URL route handlers
 import re
 import json
 import random
+import logging
 from math import pow
 from collections import Counter
 
@@ -15,6 +16,7 @@ import markdown
 import httplib2
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
+from google.appengine.api import search
 from flask import (
     request, render_template, url_for, redirect, abort, Markup, jsonify
 )
@@ -28,6 +30,10 @@ from models import  (
     PredefinedCategorySuggestion, ManualCategorySuggestion, 
     SubredditRelation, PreprocessedItem, SubredditRecommendationFeedback
 )
+
+class Bunch:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
 
 sample_topics = [
     {
@@ -465,6 +471,151 @@ def recommended_subreddits(subreddits):
         return jsonify(recommended=l)
     else:
         return jsonify(recommended=[])
+
+def search_subreddits():
+    MAX_RESULTS_PER_PAGE = 20
+    OPER_CHARACTERS = [":", "<", ">"]
+    STOP_WORDS = [
+        "a", "all", "am", "an", "and", "any", "are", "as", "at", "be", "but", 
+        "can", "did", "do", "does", "for", "from", "had", "has", "have", 
+        "here", "how", "i", "if", "in", "is", "it", "no", "not", "of", "on", 
+        "or", "so", "that", "the", "then", "there", "this", "to", "too", "up", 
+        "use", "you"
+    ]
+    search_query = request.args.get("q")
+    if not search_query:
+        return redirect(url_for("subreddits_home"))
+
+    search_query = re.sub(r"~", "", search_query)
+    search_query = re.sub(r"\s*([\:\<\>])\s*", r"\1", search_query)
+
+    query_string = " ".join(
+        [x for x in search_query.split(" ") \
+            if not any(o in x for o in OPER_CHARACTERS)]
+    )
+
+    query_string = " ".join(
+        [x for x in query_string.split(" ") if x.lower() not in STOP_WORDS]
+    )
+
+    query_filters = " " + " ".join(
+        [x for x in search_query.split(" ") \
+            if any(o in x for o in OPER_CHARACTERS)]
+    )
+
+
+    page_number = request.args.get("page")
+    if page_number and page_number.isnumeric():
+        page_number = int(page_number)
+    else:
+        page_number = 1
+
+    try:    
+        sort_opts = search.SortOptions(
+            expressions=[
+                search.SortExpression(
+                    expression='_score',
+                    direction=search.SortExpression.DESCENDING, 
+                    default_value=0 
+                ),
+                search.SortExpression(
+                    expression='subscribers',
+                    direction=search.SortExpression.DESCENDING, 
+                    default_value=0
+                )
+            ],
+            match_scorer=search.RescoringMatchScorer()
+        )
+
+        results = []
+        subreddits = []
+        index = search.Index(name="subreddit_search")
+
+        if not page_number or page_number == 1:
+            name_result = index.search(search.Query(
+                query_string="display_name:(%s)" % " ".join(
+                    ["~"+x for x in query_string.split(" ") if x]
+                ) + query_filters,
+                options=search.QueryOptions(sort_options=sort_opts, limit=5)
+            ))
+            results += name_result.results
+
+            title_result = index.search(search.Query(
+                query_string="title:(%s)" % " ".join(
+                    ["~"+x for x in query_string.split(" ") if x]
+                ) + query_filters,
+                options=search.QueryOptions(sort_options=sort_opts, limit=5)
+            ))
+            results += title_result.results
+        
+        if not page_number or page_number == 1:
+            offset = 0
+        else:
+            offset = (page_number-1) * MAX_RESULTS_PER_PAGE
+
+        other_result = index.search(search.Query(
+            query_string=" ".join(
+                ["~"+x for x in query_string.split(" ") if x]
+            ) + query_filters,
+            options=search.QueryOptions(sort_options=sort_opts, offset=offset)
+        ))
+        results += other_result.results
+        
+        for item in results:
+            display_name = [
+                x.value for x in item.fields if x.name=="display_name"
+            ][0]
+            if display_name in [x.display_name for x in subreddits]:
+                continue
+            title = [
+                x.value for x in item.fields if x.name=="title"
+            ][0]
+            public_description = [
+                x.value for x in item.fields if x.name=="description"
+            ][0]
+            subscribers = [
+                x.value for x in item.fields if x.name=="subscribers"
+            ][0]
+            created_utc = [
+                x.value for x in item.fields if x.name=="created"
+            ][0]
+            over18 = True if [
+                x.value for x in item.fields if x.name=="over18"
+            ][0] == "true" else False
+            subreddits.append(
+                Bunch(
+                    display_name=display_name,
+                    title=title,
+                    public_description=public_description,
+                    subscribers=subscribers,
+                    created_utc=created_utc,
+                    over18=over18
+                )
+            )
+
+        return render_template(
+            "subreddit_search_results.html",
+            search_query=search_query,
+            result=Bunch(
+                subreddits=subreddits,
+                page_number=page_number,
+                prev_page=(page_number-1) if page_number > 1 else None,
+                next_page=(page_number+1) if \
+                    len(other_result.results)==20 else None
+            )
+        )
+    except search.Error:
+        logging.exception("Search error")
+        return render_template(
+            "subreddit_search_results.html",
+            search_query=search_query,
+            result=Bunch(
+                subreddits=[],
+                page_number=1,
+                prev_page=None,
+                next_page=None
+            )
+        )
 
 @admin_required
 def delete_user(username):

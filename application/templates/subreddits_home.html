@@ -28,14 +28,13 @@
                 </div>
                 <div class="col-md-5 col-md-offset-1">
                     <div class="margin-btm-20">
-                        <h3 class="bigger margin-btm-15">Find subreddits.</h3>
+                        <h3 class="bigger margin-btm-15">Search for subreddits or topics.</h3>
                         <div class="row">
                             <div class="col-md-8 col-sm-8">
-                                <form action="{{ url_for("find_subreddit") }}" method="post">
+                                <form action="{{ url_for("search_subreddits") }}" method="get">
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <span class="input-group-addon">/r/</span>
-                                            <input type="text" name="subreddit" class="form-control">
+                                            <input type="text" name="q" class="form-control">
                                             <span class="input-group-btn">
                                                 <button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
                                             </span>
