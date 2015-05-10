@@ -1,5 +1,22 @@
 /* Bootstrap overrides */
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 40px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  font-size:12px;
+}
+
 .navbar {
   text-transform: uppercase;
 }
@@ -150,12 +167,6 @@ h2 {
 
 .no-top-margin {
   margin-top: 0px;
-}
-
-#footer {
-  font-size:12px;
-  margin-top: 40px;
-  padding-top: 10px
 }
 
 .page-error {
