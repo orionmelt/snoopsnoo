@@ -27,8 +27,8 @@ The search also supports a small number of filters and operators that I hope you
 * ["music created>2013-05-10"](http://snoopsnoo.com/subreddits/search?q=music+created%3E2013-05-10) returns subreddits about music that were created within the past two years.
 * ["hardcore over18:false"](http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse) excludes 18+ subreddits from the results. Use "over18:true" if you want only 18+ subreddits returned &mdash; the search does not judge.
 * Common search operators:
-	* ["modeling -3d"](http://snoopsnoo.com/subreddits/search?q=modeling+-3d) returns search results that match "modeling" but not "3d"
-	* ["cats OR dogs"](http://snoopsnoo.com/subreddits/search?q=cats+OR+dogs) returns search results that match either "cats" or "dogs"
+	* ["modeling -3d"](http://snoopsnoo.com/subreddits/search?q=modeling+-3d) returns subreddits that match "modeling" but not "3d"
+	* ["cats OR dogs"](http://snoopsnoo.com/subreddits/search?q=cats+OR+dogs) returns subreddits that match either "cats" or "dogs"
 
 It's exciting to release this new feature, but it does have its limitations &mdash; it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I'm working hard on adding more and more subreddits.
 
