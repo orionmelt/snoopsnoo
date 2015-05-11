@@ -8,6 +8,7 @@ blog.snoopsnoo.com/rss.xml
 blog.snoopsnoo.com/sitemap.txt
 blog.snoopsnoo.com/tags.html
 
+blog.snoopsnoo.com/2015/05/10/searching-for-subreddits
 blog.snoopsnoo.com/2015/04/10/your-stats-compared-to-the-rest-of-us
 blog.snoopsnoo.com/2015/03/20/a-hundred-thousand-users-in-80-days
 blog.snoopsnoo.com/2015/03/01/show-off-your-snoovatar

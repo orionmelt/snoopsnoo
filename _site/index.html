@@ -93,6 +93,48 @@
     
 <div class="post">
 	<div class="header">
+		<h2><a href="/2015/05/10/searching-for-subreddits">Searching for subreddits</a></h2>
+		
+		<h4 class="no-top-margin">10 May 2015</h4>
+	</div>
+	<div class="content margin-btm-20">
+		
+<p>reddit announced last week that they’re bringing back the reddit.com beta testing program, and one of the interesting new features is the <a href="http://www.reddit.com/r/beta/comments/35762a/welcome_to_rbeta/">improved subreddit search</a>. As the admins themselves admit, searching for subreddits has always been a major pain point, and the new search vastly improves the quality of results. I had been working on a subreddit search feature for <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span> as well, and right now seems like a good time to release it!</p>
+
+<p>Let’s compare reddit’s old and new search algorithms — searching for <a href="https://www.reddit.com/subreddits/search?q=robots&amp;sort=activity">“robots” using the old search</a> gives us results with /r/DaftPunk and /r/plotholes pretty high up in the list, presumably because both these subreddits include the word “robots” in their descriptions. The <a href="https://beta.reddit.com/subreddits/search?q=robots">new search for “robots”</a> returns results that are a lot more relevant — /r/DaftPunk and /r/plotholes still appear, but they are preceded by subreddits that are actually about robots. Great!</p>
+
+<p>Now, how can <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span> improve search results? One advantage it has is that it <em>knows</em> /r/DaftPunk is about music and /r/plotholes is about movies, thanks to the categorization of subreddits that I had <a href="http://blog.snoopsnoo.com/2015/02/15/theres-a-subreddit-for-that">written about earlier</a>. And this comes in handy when searching for subreddits. </p>
+
+<p>Let’s <a href="http://snoopsnoo.com/subreddits/search?q=robots">search for “robots”</a> on <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span>. Thanks to <a href="http://en.wikipedia.org/wiki/Stemming">stemming</a>, it also includes results for “robotics”. Yay! Of course, not-entirely-relevant subreddits such as /r/DaftPunk, /r/plotholes and /r/robotchicken are included (and they should be, because they do have the word “robots” in them somwehere), but the search lets you restrict your results to particular topics — <a href="http://snoopsnoo.com/subreddits/search?q=robots+topic%3Atechnology">search for “robots topic:technology”</a>, and only subreddits that are classified under Technology are returned. </p>
+
+<p>Let’s look at a few more interesting examples:</p>
+
+<ul>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=python">Searching for “python”</a> returns /r/pygame — even though the word “python” does not appear in the subreddit’s title or description, because we know that it is classified under the Python topic. The search results also include /r/montypython and /r/ballpython, but <a href="http://snoopsnoo.com/subreddits/search?q=python+topic%3Aprogramming">add “topic:programming” to your search query</a> and they’re gone. On the other hand, if you’re really looking for subreddits about the <em>other</em> python, simply <a href="http://snoopsnoo.com/subreddits/search?q=python+topic%3Aanimals">search for “python topic:animals”</a>.</li>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=universities+in+texas">Searching for “universities in texas”</a> returns /r/aggies, because we know that the subreddit is about “Universities and Colleges” and because “Texas” appears in its title/description.</li>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=india">Searching for “india”</a> returns /r/mumbai and /r/bangalore (although only on page 2), even when they don’t have the word India in their title or description.</li>
+</ul>
+
+<p>The search also supports a small number of filters that I hope you find useful:</p>
+
+<ul>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=cats+subscribers%3C5000">“cats subscribers&lt;5000”</a> returns subreddits about cats that have fewer than 5000 subscribers, for when you are purposely looking for smaller subreddits.</li>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=music+created%3E2013-05-10">“music created&gt;2013-05-10”</a> returns subreddits about music that were created within the past two years.</li>
+  <li><a href="http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse">“hardcore over18:false”</a> excludes 18+ subreddits from the results. Use “over18:true” if you only want 18+ subreddits returned — the search does not judge.</li>
+</ul>
+
+<p>It’s exciting to release this new feature, but it does have its limitations — it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I’m working hard on adding more and more subreddits.</p>
+
+<p>Thanks for reading, and I hope you enjoy the new search feature. Feedback and bug reports are welcome!</p>
+
+	</div>
+	<div class="comments">
+		<a href="/2015/05/10/searching-for-subreddits/#disqus_thread">Comments</a>
+	</div>
+</div>
+
+<div class="post">
+	<div class="header">
 		<h2><a href="/2015/04/10/your-stats-compared-to-the-rest-of-us">Your stats compared to the rest of us</a></h2>
 		
 		<h4 class="no-top-margin">10 April 2015</h4>
@@ -355,6 +397,11 @@
 			<ul class="list-unstyled">
 				
 				<li>
+					<a href="/2015/05/10/searching-for-subreddits">Searching for subreddits</a>
+					<small>10 May 2015</small>
+				</li>
+				
+				<li>
 					<a href="/2015/04/10/your-stats-compared-to-the-rest-of-us">Your stats compared to the rest of us</a>
 					<small>10 Apr 2015</small>
 				</li>
@@ -406,16 +453,13 @@
             </div>
         </div>
 	</div>
-
-	<div id="footer">
-        <div class="container">
-            <footer class="text-right">
-                <ul class="list-inline">
-                    <li>&copy; 2015 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
-                </ul>
-            </footer>
-        </div>
-    </div>
+    <footer class="footer text-right">
+      <div class="container">
+        <ul class="list-inline">
+            <li>&copy; 2015 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
+        </ul>
+      </div>
+    </footer>
 
 	
 
