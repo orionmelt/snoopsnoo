@@ -5,8 +5,8 @@
         <description>SnoopSnoo Blog - OrionMelt</description>
         <link>blog.snoopsnoo.com</link>
         <link>blog.snoopsnoo.com</link>
-        <lastBuildDate>2015-05-10T18:38:56-07:00</lastBuildDate>
-        <pubDate>2015-05-10T18:38:56-07:00</pubDate>
+        <lastBuildDate>2015-05-10T21:38:40-07:00</lastBuildDate>
+        <pubDate>2015-05-10T21:38:40-07:00</pubDate>
         <ttl>1800</ttl>
 
 
@@ -29,12 +29,18 @@
   &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=india&quot;&gt;Searching for “india”&lt;/a&gt; returns /r/mumbai and /r/bangalore (although only on page 2), even when they don’t have the word India in their title or description.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;The search also supports a small number of filters that I hope you find useful:&lt;/p&gt;
+&lt;p&gt;The search also supports a small number of filters and operators that I hope you find useful:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=cats+subscribers%3C5000&quot;&gt;“cats subscribers&amp;lt;5000”&lt;/a&gt; returns subreddits about cats that have fewer than 5000 subscribers, for when you are purposely looking for smaller subreddits.&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=music+created%3E2013-05-10&quot;&gt;“music created&amp;gt;2013-05-10”&lt;/a&gt; returns subreddits about music that were created within the past two years.&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse&quot;&gt;“hardcore over18:false”&lt;/a&gt; excludes 18+ subreddits from the results. Use “over18:true” if you only want 18+ subreddits returned — the search does not judge.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse&quot;&gt;“hardcore over18:false”&lt;/a&gt; excludes 18+ subreddits from the results. Use “over18:true” if you want only 18+ subreddits returned — the search does not judge.&lt;/li&gt;
+  &lt;li&gt;Common search operators:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=modeling+-3d&quot;&gt;“modeling -3d”&lt;/a&gt; returns search results that match “modeling” but not “3d”&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;http://snoopsnoo.com/subreddits/search?q=cats+OR+dogs&quot;&gt;“cats OR dogs”&lt;/a&gt; returns search results that match either “cats” or “dogs”&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;It’s exciting to release this new feature, but it does have its limitations — it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I’m working hard on adding more and more subreddits.&lt;/p&gt;

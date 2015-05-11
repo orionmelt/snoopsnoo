@@ -21,11 +21,14 @@ Let's look at a few more interesting examples:
 * [Searching for "universities in texas"](http://snoopsnoo.com/subreddits/search?q=universities+in+texas) returns /r/aggies, because we know that the subreddit is about "Universities and Colleges" and because "Texas" appears in its title/description.
 * [Searching for "india"](http://snoopsnoo.com/subreddits/search?q=india) returns /r/mumbai and /r/bangalore (although only on page 2), even when they don't have the word India in their title or description.
 
-The search also supports a small number of filters that I hope you find useful:
+The search also supports a small number of filters and operators that I hope you find useful:
 
 * ["cats subscribers<5000"](http://snoopsnoo.com/subreddits/search?q=cats+subscribers%3C5000) returns subreddits about cats that have fewer than 5000 subscribers, for when you are purposely looking for smaller subreddits.
 * ["music created>2013-05-10"](http://snoopsnoo.com/subreddits/search?q=music+created%3E2013-05-10) returns subreddits about music that were created within the past two years.
-* ["hardcore over18:false"](http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse) excludes 18+ subreddits from the results. Use "over18:true" if you only want 18+ subreddits returned &mdash; the search does not judge.
+* ["hardcore over18:false"](http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse) excludes 18+ subreddits from the results. Use "over18:true" if you want only 18+ subreddits returned &mdash; the search does not judge.
+* Common search operators:
+	* ["modeling -3d"](http://snoopsnoo.com/subreddits/search?q=modeling+-3d) returns search results that match "modeling" but not "3d"
+	* ["cats OR dogs"](http://snoopsnoo.com/subreddits/search?q=cats+OR+dogs) returns search results that match either "cats" or "dogs"
 
 It's exciting to release this new feature, but it does have its limitations &mdash; it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I'm working hard on adding more and more subreddits.
 
