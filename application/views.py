@@ -476,21 +476,26 @@ def search_subreddits():
     MAX_RESULTS_PER_PAGE = 20
     OPER_CHARACTERS = [":", "<", ">"]
     STOP_WORDS = [
-        "a", "all", "am", "an", "and", "any", "are", "as", "at", "be", "but", 
-        "can", "did", "do", "does", "for", "from", "had", "has", "have", 
-        "here", "how", "i", "if", "in", "is", "it", "no", "not", "of", "on", 
-        "or", "so", "that", "the", "then", "there", "this", "to", "too", "up", 
-        "use", "you"
+        "a", "an", "any", "are", "as", "at", "be", "but", 
+        "can", "do", "for", "from", "had", "has", "have", 
+        "i", "if", "in", "is", "it", "no", "of", "on", 
+        "so", "that", "the", "to" 
     ]
     search_query = request.args.get("q")
     if not search_query:
         return redirect(url_for("subreddits_home"))
 
-    search_query = re.sub(r"~", "", search_query)
     search_query = re.sub(r"\s*([\:\<\>])\s*", r"\1", search_query)
 
+    query_string = re.sub(r"[~\(\)]", "", search_query)
+    # Remove /r/ from query string
+    query_string = re.sub(r"\s?\/?r\/\s?", r"", query_string)
+    query_string = re.sub(r"\+", " AND ", query_string)
+    query_string = re.sub(r"\-", " NOT ", query_string)
+    
+
     query_string = " ".join(
-        [x for x in search_query.split(" ") \
+        [x for x in query_string.split(" ") \
             if not any(o in x for o in OPER_CHARACTERS)]
     )
 
@@ -531,18 +536,28 @@ def search_subreddits():
         subreddits = []
         index = search.Index(name="subreddit_search")
 
-        if not page_number or page_number == 1:
+        if (not page_number or page_number == 1) and len(query_string.strip()):
             name_result = index.search(search.Query(
-                query_string="display_name:(%s)" % " ".join(
-                    ["~"+x for x in query_string.split(" ") if x]
+                query_string=("display_name:(%s)" % " ".join(
+                    ["~"+x if x.lower() not in ["and", "not", "or"] else x \
+                        for x in query_string.split(" ") if x]
+                )) + " OR " + (
+                    "display_name:%s" % re.sub(" ", "", query_string)
+                )  + " OR " + (
+                    "display_name:%s" % re.sub(" ", "_", query_string)
                 ) + query_filters,
                 options=search.QueryOptions(sort_options=sort_opts, limit=5)
             ))
             results += name_result.results
 
             title_result = index.search(search.Query(
-                query_string="title:(%s)" % " ".join(
-                    ["~"+x for x in query_string.split(" ") if x]
+                query_string=("title:(%s)" % " ".join(
+                    ["~"+x if x.lower() not in ["and", "not", "or"] else x \
+                        for x in query_string.split(" ") if x]
+                )) + " OR " + (
+                    "title:%s" % re.sub(" ", "", query_string)
+                )  + " OR " + (
+                    "title:%s" % re.sub(" ", "_", query_string)
                 ) + query_filters,
                 options=search.QueryOptions(sort_options=sort_opts, limit=5)
             ))
@@ -555,7 +570,8 @@ def search_subreddits():
 
         other_result = index.search(search.Query(
             query_string=" ".join(
-                ["~"+x for x in query_string.split(" ") if x]
+                ["~"+x if x.lower() not in ["and", "not", "or"] else x \
+                        for x in query_string.split(" ") if x]
             ) + query_filters,
             options=search.QueryOptions(sort_options=sort_opts, offset=offset)
         ))
