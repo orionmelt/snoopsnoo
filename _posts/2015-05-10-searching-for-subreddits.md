@@ -30,6 +30,6 @@ The search also supports a small number of filters and operators that I hope you
 	* ["modeling -3d"](http://snoopsnoo.com/subreddits/search?q=modeling+-3d) returns subreddits that match "modeling" but not "3d"
 	* ["cats OR dogs"](http://snoopsnoo.com/subreddits/search?q=cats+OR+dogs) returns subreddits that match either "cats" or "dogs"
 
-It's exciting to release this new feature, but it does have its limitations &mdash; it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I'm working hard on adding more and more subreddits.
+It's exciting to release this new feature, but it does have its limitations &mdash; it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for (**UPDATE 05/13:** The index has now been updated to include over 800K subreddits, thanks [/u/GoldenSights](http://www.reddit.com/user/GoldenSights)!) but I'm working hard on adding more and more subreddits.
 
 Thanks for reading, and I hope you enjoy the new search feature. Feedback and bug reports are welcome!

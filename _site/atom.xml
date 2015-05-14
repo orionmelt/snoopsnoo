@@ -4,7 +4,7 @@
  <title>SnoopSnoo Blog</title>
  <link href="blog.snoopsnoo.com/" rel="self"/>
  <link href="blog.snoopsnoo.com"/>
- <updated>2015-05-10T21:48:31-07:00</updated>
+ <updated>2015-05-13T23:35:43-07:00</updated>
  <id>blog.snoopsnoo.com</id>
  <author>
    <name>OrionMelt</name>
@@ -48,7 +48,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;It’s exciting to release this new feature, but it does have its limitations — it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for, but I’m working hard on adding more and more subreddits.&lt;/p&gt;
+&lt;p&gt;It’s exciting to release this new feature, but it does have its limitations — it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for (&lt;strong&gt;UPDATE 05/13:&lt;/strong&gt; The index has now been updated to include over 800K subreddits, thanks &lt;a href=&quot;http://www.reddit.com/user/GoldenSights&quot;&gt;/u/GoldenSights&lt;/a&gt;!) but I’m working hard on adding more and more subreddits.&lt;/p&gt;
 
 &lt;p&gt;Thanks for reading, and I hope you enjoy the new search feature. Feedback and bug reports are welcome!&lt;/p&gt;
 </content>
