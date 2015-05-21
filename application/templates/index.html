@@ -47,9 +47,33 @@
                 <div class="row">
                     <div class="col-md-6">
                         <section id="announcements" class="bottom-buffer">
-                            <h2>Show off your snoovatar!</h2>
-                            <p class="margin-btm-20">{{ snoopsnoo_macros.logo_small() }} now shows your snoovatar! Another perk of your hard-earned reddit gold.</p>
-                            <p><img class="img-responsive" style="border:1px solid #ccc;" src="http://i.imgur.com/OL5bvL1.png" width="300" alt="SnoopSnoo now shows your snoovatar!" title="SnoopSnoo now shows your snoovatar!"></p>
+                            <h2>Try the new subreddit search</h2>
+                            <form class="margin-20" action="{{ url_for("search_subreddits") }}" method="get">
+                                <div class="form-group">
+                                    <div class="input-group col-md-8">
+                                        <input type="text" name="q" class="form-control" placeholder="Search for subreddits or topics">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <p class="big">Try these searches:</p>
+                            <ul>
+                                <li>
+                                    Filter searches by topics &mdash; <a href="http://snoopsnoo.com/subreddits/search?q=robots+topic%3Atechnology">robots topic:technology</a>
+                                </li>
+                                <li>
+                                    Explore smaller subreddits &mdash; <a href="http://snoopsnoo.com/subreddits/search?q=cats+subscribers%3C5000">cats subscribers<5000</a>
+                                </li>
+                                <li>
+                                    Browse safely at work &mdash; <a href="http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse">hardcore over18:false</a>
+                                </li>
+                            </ul>
+                            
+                            <p class="margin-20"><a href="http://blog.snoopsnoo.com/2015/05/10/searching-for-subreddits/">Read more on the blog.</i></a></p>
+                            
                         </section>
                     </div>
 
