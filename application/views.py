@@ -485,14 +485,13 @@ def search_subreddits():
     if not search_query:
         return redirect(url_for("subreddits_home"))
 
+    search_query = search_query.strip()
     search_query = re.sub(r"\s*([\:\<\>])\s*", r"\1", search_query)
-
     query_string = re.sub(r"[~\(\)]", "", search_query)
     # Remove /r/ from query string
     query_string = re.sub(r"\s?\/?r\/\s?", r"", query_string)
     query_string = re.sub(r"\+", " AND ", query_string)
     query_string = re.sub(r"\-", " NOT ", query_string)
-    
 
     query_string = " ".join(
         [x for x in query_string.split(" ") \
@@ -508,7 +507,6 @@ def search_subreddits():
             if any(o in x for o in OPER_CHARACTERS)]
     )
 
-
     page_number = request.args.get("page")
     if page_number and page_number.isnumeric():
         page_number = int(page_number)
@@ -516,25 +514,9 @@ def search_subreddits():
         page_number = 1
 
     try:    
-        sort_opts = search.SortOptions(
-            expressions=[
-                search.SortExpression(
-                    expression='_score',
-                    direction=search.SortExpression.DESCENDING, 
-                    default_value=0 
-                ),
-                search.SortExpression(
-                    expression='subscribers',
-                    direction=search.SortExpression.DESCENDING, 
-                    default_value=0
-                )
-            ],
-            match_scorer=search.RescoringMatchScorer()
-        )
-
         results = []
         subreddits = []
-        index = search.Index(name="subreddit_search")
+        index = search.Index(name="subreddits_search")
 
         if (not page_number or page_number == 1) and len(query_string.strip()):
             name_result = index.search(search.Query(
@@ -546,7 +528,7 @@ def search_subreddits():
                 )  + " OR " + (
                     "display_name:%s" % re.sub(" ", "_", query_string)
                 ) + query_filters,
-                options=search.QueryOptions(sort_options=sort_opts, limit=5)
+                options=search.QueryOptions(limit=5)
             ))
             results += name_result.results
 
@@ -559,7 +541,7 @@ def search_subreddits():
                 )  + " OR " + (
                     "title:%s" % re.sub(" ", "_", query_string)
                 ) + query_filters,
-                options=search.QueryOptions(sort_options=sort_opts, limit=5)
+                options=search.QueryOptions(limit=5)
             ))
             results += title_result.results
         
@@ -573,7 +555,7 @@ def search_subreddits():
                 ["~"+x if x.lower() not in ["and", "not", "or"] else x \
                         for x in query_string.split(" ") if x]
             ) + query_filters,
-            options=search.QueryOptions(sort_options=sort_opts, offset=offset)
+            options=search.QueryOptions(offset=offset)
         ))
         results += other_result.results
         
@@ -587,7 +569,7 @@ def search_subreddits():
                 x.value for x in item.fields if x.name=="title"
             ][0]
             public_description = [
-                x.value for x in item.fields if x.name=="description"
+                x.value for x in item.fields if x.name=="public_description"
             ][0]
             subscribers = [
                 x.value for x in item.fields if x.name=="subscribers"
@@ -598,6 +580,9 @@ def search_subreddits():
             over18 = True if [
                 x.value for x in item.fields if x.name=="over18"
             ][0] == "true" else False
+            subreddit_type = [
+                x.value for x in item.fields if x.name=="subreddit_type"
+            ][0]
             subreddits.append(
                 Bunch(
                     display_name=display_name,
@@ -605,7 +590,8 @@ def search_subreddits():
                     public_description=public_description,
                     subscribers=subscribers,
                     created_utc=created_utc,
-                    over18=over18
+                    over18=over18,
+                    subreddit_type=subreddit_type
                 )
             )
 
