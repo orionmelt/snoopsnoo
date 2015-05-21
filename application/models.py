@@ -55,7 +55,7 @@ class Category(ndb.Model):
             r'([^\s\w]|_)+', '', self.display_name.lower()
         ).replace(" ","-")
     )
-    size = ndb.IntegerProperty()
+    subreddit_count = ndb.IntegerProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
     parent_id = ndb.StringProperty()
 
@@ -69,12 +69,15 @@ class Subreddit(ndb.Model):
     )
     title = ndb.StringProperty()
     public_description = ndb.StringProperty(indexed=False)
+    description_html = ndb.TextProperty()
+    subreddit_type = ndb.IntegerProperty()
+    submission_type = ndb.IntegerProperty()
     created_utc = ndb.DateTimeProperty()
     subscribers = ndb.IntegerProperty()
     over18 = ndb.BooleanProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
     parent_id = ndb.StringProperty()
-    deleted = ndb.BooleanProperty(default=False)
+
 
 class CategoryTree(ndb.Model):
     """Models a category tree entry.
