@@ -50,6 +50,12 @@
         {% if subreddit.over18 %}
         <span class="margin-lft-5 smaller text-danger">(18+)</span>
         {% endif %}
+        {% if subreddit.subreddit_type == 2 %}
+        <span class="margin-lft-5 smaller text-danger"><i class="fa fa-eye-slash" title="Private"></i></span>
+        {% endif %}
+        {% if subreddit.subreddit_type == 6 %}
+        <span class="margin-lft-5 smaller"><img src="/static/icons/reddit_gold.png" alt="For gold members only" title="For gold members only" width="20" height="20"></span>
+        {% endif %}
     </div>
     
     <div class="panel-body">
