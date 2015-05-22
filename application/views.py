@@ -210,7 +210,9 @@ def get_recommended_subreddits(subreddits):
         ]
         recommended_subreddits.append(related)
     if recommended_subreddits:
-        flattened_list = [item for sublist in recommended_subreddits for item in sublist]
+        flattened_list = [
+            item for sublist in recommended_subreddits for item in sublist
+        ]
         counter = Counter(flattened_list)
         output_list = sorted(
             counter, key=lambda x: (-counter[x], flattened_list.index(x))
@@ -494,6 +496,7 @@ def subreddit_frontpage():
 
 
 MAX_RESULTS_PER_PAGE = 20
+MAX_PAGES = 50
 OPER_CHARACTERS = [":", "<", ">"]
 STOP_WORDS = [
     "a", "an", "any", "are", "as", "at", "be", "but",
@@ -533,6 +536,7 @@ def search_subreddits():
     page_number = request.args.get("page")
     if page_number and page_number.isnumeric():
         page_number = int(page_number)
+        page_number = page_number if page_number <= MAX_PAGES else MAX_PAGES
     else:
         page_number = 1
 
@@ -625,8 +629,10 @@ def search_subreddits():
                 subreddits=subreddits,
                 page_number=page_number,
                 prev_page=(page_number-1) if page_number > 1 else None,
-                next_page=(page_number+1) if \
-                    len(other_result.results) == 20 else None
+                next_page=(page_number+1) if (
+                    len(other_result.results) == 20 and \
+                    page_number < MAX_PAGES
+                ) else None
             )
         )
     except search.Error:
