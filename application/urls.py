@@ -22,11 +22,8 @@ app.add_url_rule("/", "home", view_func=views.home)
 app.add_url_rule("/about/", "about", view_func=views.about)
 
 # Random user page
-app.add_url_rule("/random", "random_profile", view_func=views.random_profile)
-
-app.add_url_rule(
-    "/random-user", "random_profile", view_func=views.random_profile
-)
+app.add_url_rule("/random", "random_user", view_func=views.random_user)
+app.add_url_rule("/random-user", "random_user", view_func=views.random_user)
 
 # User page
 app.add_url_rule("/u/<username>", "user_profile", view_func=views.user_profile)
@@ -36,21 +33,28 @@ app.add_url_rule("/check/<username>", "check_user", view_func=views.check_user)
 
 # Update user data page
 app.add_url_rule(
-    "/update", "update_user", view_func=views.update_user, methods=["POST"]
+    "/update",
+    "update_user",
+    view_func=views.update_user,
+    methods=["POST"]
 )
 
 # Feedback page
-app.add_url_rule("/feedback", "feedback", view_func=views.process_feedback)
+app.add_url_rule(
+    "/feedback",
+    "save_synopsis_feedback",
+    view_func=views.save_synopsis_feedback
+)
 
 # Subreddit Recommendation Feedback page
 app.add_url_rule(
-    "/sub-reco-feedback", 
-    "subreddit_recommendation_feedback", 
-    view_func=views.process_subreddit_recommendation_feedback
+    "/sub-reco-feedback",
+    "save_sub_reco_feedback",
+    view_func=views.save_sub_reco_feedback
 )
 
 # Error log page
-app.add_url_rule("/error-log", "error_log", view_func=views.error_log)
+app.add_url_rule("/error-log", "save_error", view_func=views.save_error)
 
 # Delete page
 app.add_url_rule("/delete/<username>", "delete", view_func=views.delete_user)
@@ -62,76 +66,69 @@ app.add_url_rule(
 
 # Subreddit Recommendations
 app.add_url_rule(
-    "/subreddits/recommended/<subreddits>", 
-    "recommended_subreddits", 
-    view_func=views.recommended_subreddits
+    "/subreddits/recommended/<subreddits>",
+    "get_recommended_subreddits",
+    view_func=views.get_recommended_subreddits
 )
 
 # Subreddits Category page
 app.add_url_rule(
-    "/subreddits/<level1>/", 
-    "subreddits_category", 
+    "/subreddits/<level1>/",
+    "subreddits_category",
     view_func=views.subreddits_category
 )
 
 app.add_url_rule(
-    "/subreddits/<level1>/<level2>/", 
-    "subreddits_category", 
+    "/subreddits/<level1>/<level2>/",
+    "subreddits_category",
     view_func=views.subreddits_category
 )
 
 app.add_url_rule(
-    "/subreddits/<level1>/<level2>/<level3>/", 
-    "subreddits_category", 
+    "/subreddits/<level1>/<level2>/<level3>/",
+    "subreddits_category",
     view_func=views.subreddits_category
 )
 
 # Subreddit page
 app.add_url_rule(
-    "/r/<subreddit_name>", 
-    "subreddit", 
+    "/r/<subreddit_name>",
+    "subreddit",
     view_func=views.subreddit
 )
 
 # Subreddit Frontpage preview
 app.add_url_rule(
-    "/subreddit_frontpage", 
-    "subreddit_frontpage", 
-    view_func=views.subreddit_frontpage, 
+    "/subreddit_frontpage",
+    "subreddit_frontpage",
+    view_func=views.subreddit_frontpage,
     methods=["POST"]
 )
 
 # Subreddit Category Suggestion page
 app.add_url_rule(
-    "/suggest-subreddit-category", 
-    "suggest_subreddit_category", 
-    view_func=views.suggest_subreddit_category, 
-    methods=["POST"]
-)
-
-# Find Subreddit page
-app.add_url_rule(
-    "/find-subreddit", 
-    "find_subreddit", 
-    view_func=views.find_subreddit, 
+    "/suggest-subreddit-category",
+    "save_sub_category_suggestion",
+    view_func=views.save_sub_category_suggestion,
     methods=["POST"]
 )
 
 # Subreddit Search Results page
 app.add_url_rule(
-    "/subreddits/search", 
-    "search_subreddits", 
-    view_func=views.search_subreddits, 
+    "/subreddits/search",
+    "search_subreddits",
+    view_func=views.search_subreddits,
     methods=["GET"]
 )
 
 ## Error handlers
-# Handle 404 errors
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template("404.html"), 404
+def page_not_found(exception):
+    """Return 404 page."""
+    return render_template("404.html", exception=exception), 404
 
 # Handle 500 errors
 @app.errorhandler(500)
-def server_error(e):
-    return render_template("500.html"), 500
+def server_error(exception):
+    """Return 500 page."""
+    return render_template("500.html", exception=exception), 500

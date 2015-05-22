@@ -431,7 +431,7 @@
                 var form = $(this);
                 var done_span = $(this).parent().find(".save_done");
                 var data=$(this).serializeArray();
-                var action="{{ url_for("suggest_subreddit_category") }}";
+                var action="{{ url_for("save_sub_category_suggestion") }}";
                 $.ajax({
                     url: action,
                     type: "POST",

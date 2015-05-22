@@ -1,3 +1,9 @@
+"""
+
+Custom jinja2 filters
+
+"""
+
 from datetime import datetime
 import re
 
@@ -5,19 +11,24 @@ import jinja2
 import markdown
 
 #Change %e to %d if running on Windows
-def format_date(value, format='%b %d, %Y'):
-    return value.strftime(format)
+def format_date(value, format_string='%b %d, %Y'):
+    """Returns formatted date given a datetime object."""
+    return value.strftime(format_string)
 
-def format_month(value, format='%b'):
-    return value.strftime(format)
+def format_month(value, format_string='%b'):
+    """Returns month given a datetime object."""
+    return value.strftime(format_string)
 
-def format_day(value, format='%e'):
-    return value.strftime(format)
-    
+def format_day(value, format_string='%e'):
+    """Returns day given a datetime object."""
+    return value.strftime(format_string)
+
 def from_timestamp(value):
+    """Returns datetime object given a timestamp."""
     return datetime.fromtimestamp(int(value))
 
 def time_since(value):
+    """Returns textual representation of time since given datetime object."""
     now = datetime.utcnow()
     diff = now - value
     periods = (
@@ -35,11 +46,13 @@ def time_since(value):
     return "a few seconds"
 
 def safe_markdown(text):
+    """Returns marked up text given markdown text."""
     return jinja2.Markup(markdown.markdown(text))
 
 def strip_links(text):
+    """Removes markdown links from given text."""
     return re.sub(
-        r"\[(.*?)\]\s*\(.+?\)", r"\1", 
-        text, 
+        r"\[(.*?)\]\s*\(.+?\)", r"\1",
+        text,
         re.IGNORECASE|re.MULTILINE
     )

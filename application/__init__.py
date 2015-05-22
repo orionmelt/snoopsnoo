@@ -1,13 +1,19 @@
+"""
+
+Flask application initalization
+
+"""
+
 import os
 
 from flask import Flask
 
-from jinja_filters import (
-    format_date, time_since, format_month, format_day, 
+from application.jinja_filters import (
+    format_date, time_since, format_month, format_day,
     safe_markdown, from_timestamp, strip_links
 )
 
-app = Flask(__name__)
+app = Flask(__name__) # pylint: disable=C0103
 
 if os.getenv('FLASK_CONF') == 'TEST':
     app.config.from_object('application.settings.Testing')
@@ -28,4 +34,4 @@ app.jinja_env.filters["from_timestamp"] = from_timestamp
 app.jinja_env.filters["strip_links"] = strip_links
 
 # Pull in URL dispatch routes
-import urls
+import application.urls

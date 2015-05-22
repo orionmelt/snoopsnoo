@@ -45,15 +45,15 @@ class ErrorLog(ndb.Model):
 
 class Category(ndb.Model):
     """
-    Models a category entry. A category could be a top-level 
-    category (level 1), subcategory (level 2), or a third-level 
+    Models a category entry. A category could be a top-level
+    category (level 1), subcategory (level 2), or a third-level
     description (level 3).
     """
     display_name = ndb.StringProperty()
     pretty_url = ndb.ComputedProperty(
         lambda self: re.sub(
             r'([^\s\w]|_)+', '', self.display_name.lower()
-        ).replace(" ","-")
+        ).replace(" ", "-")
     )
     subreddit_count = ndb.IntegerProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
@@ -127,7 +127,7 @@ class PreprocessedItem(ndb.Model):
 
 class SubredditRecommendationFeedback(ndb.Model):
     """
-    Models a feedback entry that records user feedback about 
+    Models a feedback entry that records user feedback about
     subreddit recommendations.
     """
     username = ndb.StringProperty(indexed=False)
@@ -135,4 +135,3 @@ class SubredditRecommendationFeedback(ndb.Model):
     input_subreddits = ndb.StringProperty(indexed=False)
     recommended_subreddit = ndb.StringProperty()
     feedback = ndb.BooleanProperty()
-    
