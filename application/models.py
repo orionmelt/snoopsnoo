@@ -29,7 +29,7 @@ class Feedback(ndb.Model):
     Models a feedback entry that records user feedback about synopsis items.
     """
     username = ndb.StringProperty()
-    log_date = ndb.DateTimeProperty(auto_now=True)
+    log_date = ndb.DateTimeProperty(auto_now_add=True)
     data_key = ndb.StringProperty()
     data_value = ndb.StringProperty(indexed=False)
     feedback = ndb.BooleanProperty()
@@ -77,7 +77,6 @@ class Subreddit(ndb.Model):
     over18 = ndb.BooleanProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
     parent_id = ndb.StringProperty()
-
 
 class CategoryTree(ndb.Model):
     """Models a category tree entry.
@@ -131,7 +130,22 @@ class SubredditRecommendationFeedback(ndb.Model):
     subreddit recommendations.
     """
     username = ndb.StringProperty(indexed=False)
-    log_date = ndb.DateTimeProperty(auto_now=True)
+    log_date = ndb.DateTimeProperty(auto_now_add=True)
     input_subreddits = ndb.StringProperty(indexed=False)
     recommended_subreddit = ndb.StringProperty()
     feedback = ndb.BooleanProperty()
+
+class SearchQuery(ndb.Model):
+    """
+    Models a search query entry.
+    """
+    kind = ndb.IntegerProperty()
+    log_date = ndb.DateTimeProperty(auto_now_add=True)
+    query_text = ndb.StringProperty(indexed=False)
+    country = ndb.StringProperty(indexed=False)
+    region = ndb.StringProperty(indexed=False)
+    city = ndb.StringProperty(indexed=False)
+    latlong = ndb.StringProperty(indexed=False)
+    remote_addr = ndb.StringProperty(indexed=False)
+
+

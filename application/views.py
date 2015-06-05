@@ -28,7 +28,8 @@ from application import app
 from application.models import  (
     User, Feedback, ErrorLog, Subreddit, Category, CategoryTree,
     PredefinedCategorySuggestion, ManualCategorySuggestion,
-    SubredditRelation, PreprocessedItem, SubredditRecommendationFeedback
+    SubredditRelation, PreprocessedItem, SubredditRecommendationFeedback,
+    SearchQuery
 )
 
 class Bunch(object):
@@ -546,6 +547,15 @@ def search_subreddits():
         index = search.Index(name="subreddits_search")
 
         if (not page_number or page_number == 1) and len(query_string.strip()):
+            SearchQuery(
+                kind=0,
+                query_text=search_query,
+                country=request.headers.get("X-AppEngine-Country"),
+                region=request.headers.get("X-AppEngine-Region"),
+                city=request.headers.get("X-AppEngine-City"),
+                latlong=request.headers.get("X-AppEngine-CityLatLong"),
+                remote_addr=request.remote_addr
+            ).put()
             name_result = index.search(search.Query(
                 query_string=("display_name:(%s)" % " ".join(
                     ["~"+x if x.lower() not in ["and", "not", "or"] else x \
