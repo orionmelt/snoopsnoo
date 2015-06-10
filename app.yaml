@@ -21,6 +21,9 @@ libraries:
 inbound_services:
 - warmup
 
+includes:
+- lib/mapreduce/include.yaml
+
 handlers:
 - url: /favicon.ico
   static_files: application/static/icons/favicon.ico
@@ -38,6 +41,10 @@ handlers:
   static_dir: application/static
 
 - url: /subreddits/add-new
+  script: application.app
+  login: admin
+
+- url: /subreddits/update-subreddit-counts
   script: application.app
   login: admin
 

@@ -121,12 +121,20 @@ app.add_url_rule(
     methods=["GET"]
 )
 
-# Add new subreddits page
+# Add new subreddits
 app.add_url_rule(
     "/subreddits/add-new",
     "add_new_subs",
     view_func=views.add_new_subs,
     methods=["GET"]
+)
+
+# Update subreddit count for each category
+app.add_url_rule(
+    "/subreddits/update-subreddit-counts",
+    "update_subreddit_counts",
+    view_func=views.update_subreddit_counts,
+    methods=["POST"]
 )
 
 ## Error handlers

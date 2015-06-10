@@ -25,6 +25,8 @@ from flask import (
 )
 from apiclient.discovery import build
 from oauth2client.appengine import AppAssertionCredentials
+from mapreduce import operation as op
+from mapreduce import model
 
 from application.decorators import admin_required
 from application import app
@@ -712,8 +714,7 @@ def add_new_subs():
                 created_utc=datetime.datetime.fromtimestamp(sub["data"]["created_utc"]),
                 subscribers=sub["data"]["subscribers"],
                 over18=sub["data"]["over18"],
-                parent_id="reddit_other" \
-                    if not sub["data"]["over18"] else "reddit_adult-and-nsfw"
+                parent_id="reddit_adult-and-nsfw" if sub["data"]["over18"] else "reddit_other"
             )
             ndb_subs.append(ndb_sub)
 
@@ -768,6 +769,23 @@ def add_new_subs():
             #time.sleep(0.5)
         else:
             more_subs = False
+
+def count_subreddits_by_category(subreddit):
+    """Count subreddits under each category."""
+    yield op.counters.Increment(subreddit.parent_id)
+
+def update_subreddit_counts():
+    """Callback for updating subreddit count for each category."""
+    mapreduce_id =  request.headers.get("Mapreduce-Id")
+    state = model.MapreduceState.get_by_key_name(mapreduce_id)   
+    logging.info(state)
+    logging.info(state.counters_map)
+    for category, count in state.counters_map.to_dict().iteritems():
+        ndb_category = Category.get_by_id(category)
+        if ndb_category:
+            ndb_category.subreddit_count = count
+            ndb_category.put()
+    return "Done"
 
 @admin_required
 def delete_user(username):

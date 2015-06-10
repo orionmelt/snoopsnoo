@@ -1,0 +1,14 @@
+mapreduce:
+
+- name: Update subreddit count for all categories
+  params:
+  - name: done_callback
+    value: /subreddits/update-subreddit-counts
+  mapper:
+    input_reader: mapreduce.input_readers.DatastoreInputReader
+    handler: application.views.count_subreddits_by_category
+    params:
+    - name: entity_kind
+      default: application.models.Subreddit
+    - name: shard_count
+      default: 32
