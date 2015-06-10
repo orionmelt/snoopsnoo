@@ -10,10 +10,13 @@ import json
 import random
 import logging
 import math
+import datetime
+import time
 from collections import Counter
 
 import markdown
 import httplib2
+import requests
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.api import search
@@ -657,6 +660,114 @@ def search_subreddits():
                 next_page=None
             )
         )
+
+HEADERS = {
+    'User-Agent': 'SnoopSnoo v0.1 by /u/orionmelt'
+}
+SUBREDDIT_TYPES = {
+    'public':0,
+    'restricted':1,
+    'private':2,
+    'archived':3,
+    None:4,
+    'employees_only':5,
+    'gold_restricted':6,
+    'gold_only':6
+}
+SUBMISSION_TYPES = {
+    'any':0,
+    'link':1,
+    'self':2,
+    None:3
+}
+
+def add_new_subs():
+    """Add new subreddits."""
+    latest = Subreddit.query().order(-Subreddit.created_utc).get()
+    num_nsfw = 0
+    num_other = 0
+    more_subs = True
+    after = None
+    base_url = "http://www.reddit.com/subreddits/new.json?limit=100"
+    url = base_url
+    index = search.Index(name="subreddits_search")
+    while more_subs:
+        ndb_subs = []
+        search_docs = []
+        response = requests.get(url, headers=HEADERS)
+        response_json = response.json()
+
+        # TODO - Error handling for user not found (404) and
+        # rate limiting (429) errors
+
+        for sub in response_json["data"]["children"]:
+            ndb_sub = Subreddit(
+                id=sub["data"]["id"],
+                display_name=sub["data"]["display_name"],
+                title=sub["data"]["title"],
+                public_description=sub["data"]["public_description"],
+                description_html=sub["data"]["description_html"],
+                subreddit_type=SUBREDDIT_TYPES[sub["data"]["subreddit_type"]],
+                submission_type=SUBMISSION_TYPES[sub["data"]["submission_type"]],
+                created_utc=datetime.datetime.fromtimestamp(sub["data"]["created_utc"]),
+                subscribers=sub["data"]["subscribers"],
+                over18=sub["data"]["over18"],
+                parent_id="reddit_other" \
+                    if not sub["data"]["over18"] else "reddit_adult-and-nsfw"
+            )
+            ndb_subs.append(ndb_sub)
+
+            if ndb_sub.over18:
+                num_nsfw += 1
+            else:
+                num_other += 1
+
+            fields = [
+                search.TextField(name='display_name', value=ndb_sub.display_name),
+                search.TextField(name='title', value=ndb_sub.title),
+                search.TextField(name='public_description', value=ndb_sub.public_description),
+                search.NumberField(name='subscribers', value=ndb_sub.subscribers or 0),
+                search.DateField(name='created', value=ndb_sub.created_utc),
+                search.AtomField(name='over18', value="true" if ndb_sub.over18 else "false"),
+                search.NumberField(name='subreddit_type', value=ndb_sub.subreddit_type),
+                search.NumberField(name='submission_type', value=ndb_sub.submission_type),
+                search.TextField(
+                    name='topic',
+                    value="Adult and NSFW" if ndb_sub.over18 else "Other"
+                )
+            ]
+            doc = search.Document(
+                doc_id=ndb_sub.key.id(),
+                fields=fields,
+                rank=ndb_sub.subscribers if ndb_sub.subscribers > 0 else 1
+            )
+            search_docs.append(doc)
+
+            if sub["data"]["id"] == latest.key.id():
+                ndb.put_multi(ndb_subs)
+                index.put(search_docs)
+                nsfw_category = Category.get_by_id("reddit_adult-and-nsfw")
+                nsfw_category.subreddit_count += num_nsfw
+                nsfw_category.put()
+                other_category = Category.get_by_id("reddit_other")
+                other_category.subreddit_count += num_other
+                other_category.put()
+
+                return "Done"
+
+        ndb.put_multi(ndb_subs)
+        index.put(search_docs)
+        time.sleep(30)
+        after = response_json["data"]["after"]
+
+        if after:
+            url = base_url + "&after=%s" % after
+            # reddit may rate limit if we don't wait for 2 seconds
+            # between successive requests. If that happens,
+            # uncomment and increase sleep time in the following line.
+            #time.sleep(0.5)
+        else:
+            more_subs = False
 
 @admin_required
 def delete_user(username):

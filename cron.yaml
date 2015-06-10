@@ -1,0 +1,4 @@
+cron:
+- description: Add new subreddits
+  url: /subreddits/add-new
+  schedule: every 24 hours

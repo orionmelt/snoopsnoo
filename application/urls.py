@@ -121,6 +121,14 @@ app.add_url_rule(
     methods=["GET"]
 )
 
+# Add new subreddits page
+app.add_url_rule(
+    "/subreddits/add-new",
+    "add_new_subs",
+    view_func=views.add_new_subs,
+    methods=["GET"]
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

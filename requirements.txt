@@ -8,3 +8,4 @@ Flask==0.10
 Markdown==2.6.1
 httplib2>=0.9
 google-api-python-client>=1.4.0
+requests>=2.7.0
