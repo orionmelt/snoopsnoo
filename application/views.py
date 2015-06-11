@@ -683,25 +683,60 @@ SUBMISSION_TYPES = {
     None:3
 }
 
+def base36encode(number, alphabet='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+    """Converts integer to base36 string."""
+    if not isinstance(number, (int)):
+        raise TypeError('number must be an integer')
+    base36 = ''
+    sign = ''
+    if number < 0:
+        sign = '-'
+        number = -number
+    if 0 <= number < len(alphabet):
+        return sign + alphabet[number]
+    while number != 0:
+        number, i = divmod(number, len(alphabet))
+        base36 = alphabet[i] + base36
+    return (sign + base36).lower()
+
+def base36decode(number):
+    """Converts base36 string to integer."""
+    return int(number, 36)
+
+def b36(i):
+    """Handles base36 encode/decode."""
+    if type(i) == int:
+        return base36encode(i)
+    if type(i) == str:
+        return base36decode(i)
+
+chunk = lambda ulist, step: map(lambda i: ulist[i:i+step], xrange(0, len(ulist), step))
+
 def add_new_subs():
     """Add new subreddits."""
-    latest = Subreddit.query().order(-Subreddit.created_utc).get()
+    oldest = Subreddit.query().order(-Subreddit.created_utc).get()
+    index = search.Index(name="subreddits_search")
+
+    response = requests.get("http://www.reddit.com/subreddits/new.json?limit=1", headers=HEADERS)
+    response_json = response.json()
+    newest_id = str(response_json["data"]["children"][0]["data"]["id"])
     num_nsfw = 0
     num_other = 0
-    more_subs = True
-    after = None
-    base_url = "http://www.reddit.com/subreddits/new.json?limit=100"
-    url = base_url
-    index = search.Index(name="subreddits_search")
-    while more_subs:
+    time.sleep(10)
+
+    for ids in chunk(range(b36(oldest.key.id()), b36(newest_id)+1), 100):
+        url = "http://www.reddit.com/api/info.json?id=" + ",".join(
+            ["t5_" + b36(x) for x in ids]
+        )
         ndb_subs = []
         search_docs = []
         response = requests.get(url, headers=HEADERS)
-        response_json = response.json()
-
-        # TODO - Error handling for user not found (404) and
-        # rate limiting (429) errors
-
+        if response.status_code != 200:
+            raise Exception("Invalid response: HTTP %d" % response.status_code)
+        try:
+            response_json = response.json()
+        except:
+            continue
         for sub in response_json["data"]["children"]:
             ndb_sub = Subreddit(
                 id=sub["data"]["id"],
@@ -744,31 +779,18 @@ def add_new_subs():
             )
             search_docs.append(doc)
 
-            if sub["data"]["id"] == latest.key.id():
-                ndb.put_multi(ndb_subs)
-                index.put(search_docs)
-                nsfw_category = Category.get_by_id("reddit_adult-and-nsfw")
-                nsfw_category.subreddit_count += num_nsfw
-                nsfw_category.put()
-                other_category = Category.get_by_id("reddit_other")
-                other_category.subreddit_count += num_other
-                other_category.put()
-
-                return "Done"
-
         ndb.put_multi(ndb_subs)
         index.put(search_docs)
-        time.sleep(30)
-        after = response_json["data"]["after"]
+        time.sleep(10)
 
-        if after:
-            url = base_url + "&after=%s" % after
-            # reddit may rate limit if we don't wait for 2 seconds
-            # between successive requests. If that happens,
-            # uncomment and increase sleep time in the following line.
-            #time.sleep(0.5)
-        else:
-            more_subs = False
+    nsfw_category = Category.get_by_id("reddit_adult-and-nsfw")
+    nsfw_category.subreddit_count += num_nsfw
+    nsfw_category.put()
+    other_category = Category.get_by_id("reddit_other")
+    other_category.subreddit_count += num_other
+    other_category.put()
+
+    return "Done"
 
 def count_subreddits_by_category(subreddit):
     """Count subreddits under each category."""
@@ -776,10 +798,8 @@ def count_subreddits_by_category(subreddit):
 
 def update_subreddit_counts():
     """Callback for updating subreddit count for each category."""
-    mapreduce_id =  request.headers.get("Mapreduce-Id")
-    state = model.MapreduceState.get_by_key_name(mapreduce_id)   
-    logging.info(state)
-    logging.info(state.counters_map)
+    mapreduce_id = request.headers.get("Mapreduce-Id")
+    state = model.MapreduceState.get_by_key_name(mapreduce_id)
     for category, count in state.counters_map.to_dict().iteritems():
         ndb_category = Category.get_by_id(category)
         if ndb_category:
