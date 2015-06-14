@@ -129,11 +129,11 @@ app.add_url_rule(
     methods=["GET"]
 )
 
-# Update subreddit count for each category
+# Callback for counting subreddits by category
 app.add_url_rule(
-    "/subreddits/update-subreddit-counts",
-    "update_subreddit_counts",
-    view_func=views.update_subreddit_counts,
+    "/subreddits/count-subreddits-callback",
+    "count_subreddits_callback",
+    view_func=views.count_subreddits_callback,
     methods=["POST"]
 )
 

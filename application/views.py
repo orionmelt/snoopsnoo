@@ -85,6 +85,41 @@ SAMPLE_TOPICS = [
     },
 ]
 
+MAX_RESULTS_PER_PAGE = 20
+MAX_PAGES = 50
+OPER_CHARACTERS = [":", "<", ">"]
+STOP_WORDS = [
+    "a", "an", "any", "are", "as", "at", "be", "but",
+    "can", "do", "for", "from", "had", "has", "have",
+    "i", "if", "in", "is", "it", "no", "of", "on",
+    "so", "that", "the", "to"
+]
+
+HEADERS = {
+    'User-Agent': 'SnoopSnoo v0.1 by /u/orionmelt'
+}
+SUBREDDIT_TYPES = {
+    'public':0,
+    'restricted':1,
+    'private':2,
+    'archived':3,
+    None:4,
+    'employees_only':5,
+    'gold_restricted':6,
+    'gold_only':6
+}
+SUBMISSION_TYPES = {
+    'any':0,
+    'link':1,
+    'self':2,
+    None:3
+}
+
+def chunk(input_list, chunk_size):
+    """Yield successive chunks from input list."""
+    for i in xrange(0, len(input_list), chunk_size):
+        yield input_list[i:i+chunk_size]
+
 def uniq(seq):
     """Removes duplicates from a given sequence."""
     seen = set()
@@ -500,17 +535,6 @@ def subreddit_frontpage():
         age_confirmed=age_confirmed
     )
 
-
-MAX_RESULTS_PER_PAGE = 20
-MAX_PAGES = 50
-OPER_CHARACTERS = [":", "<", ">"]
-STOP_WORDS = [
-    "a", "an", "any", "are", "as", "at", "be", "but",
-    "can", "do", "for", "from", "had", "has", "have",
-    "i", "if", "in", "is", "it", "no", "of", "on",
-    "so", "that", "the", "to"
-]
-
 def search_subreddits():
     """Returns subreddit search results given query string in a GET request."""
     search_query = request.args.get("q")
@@ -663,27 +687,7 @@ def search_subreddits():
             )
         )
 
-HEADERS = {
-    'User-Agent': 'SnoopSnoo v0.1 by /u/orionmelt'
-}
-SUBREDDIT_TYPES = {
-    'public':0,
-    'restricted':1,
-    'private':2,
-    'archived':3,
-    None:4,
-    'employees_only':5,
-    'gold_restricted':6,
-    'gold_only':6
-}
-SUBMISSION_TYPES = {
-    'any':0,
-    'link':1,
-    'self':2,
-    None:3
-}
-
-def base36encode(number, alphabet='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+def base36encode(number, alphabet="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     """Converts integer to base36 string."""
     if not isinstance(number, (int)):
         raise TypeError('number must be an integer')
@@ -705,15 +709,13 @@ def base36decode(number):
 
 def b36(i):
     """Handles base36 encode/decode."""
-    if type(i) == int:
+    if isinstance(i, int):
         return base36encode(i)
-    if type(i) == str:
+    if isinstance(i, str):
         return base36decode(i)
 
-chunk = lambda ulist, step: map(lambda i: ulist[i:i+step], xrange(0, len(ulist), step))
-
 def add_new_subs():
-    """Add new subreddits."""
+    """Adds newly created subreddits to the datastore."""
     oldest = Subreddit.query().order(-Subreddit.created_utc).get()
     index = search.Index(name="subreddits_search")
 
@@ -735,7 +737,7 @@ def add_new_subs():
             raise Exception("Invalid response: HTTP %d" % response.status_code)
         try:
             response_json = response.json()
-        except:
+        except ValueError:
             continue
         for sub in response_json["data"]["children"]:
             ndb_sub = Subreddit(
@@ -785,27 +787,75 @@ def add_new_subs():
 
     nsfw_category = Category.get_by_id("reddit_adult-and-nsfw")
     nsfw_category.subreddit_count += num_nsfw
+    nsfw_category.total_subreddit_count += num_nsfw
     nsfw_category.put()
     other_category = Category.get_by_id("reddit_other")
     other_category.subreddit_count += num_other
+    other_category.total_subreddit_count += num_other
     other_category.put()
-
+    update_category_tree("reddit")
     return "Done"
 
-def count_subreddits_by_category(subreddit):
-    """Count subreddits under each category."""
-    yield op.counters.Increment(subreddit.parent_id)
+def count_subreddits_handler(sub):
+    """MapReduce handler for counting subreddits by category."""
+    yield op.counters.Increment(sub.parent_id)
 
-def update_subreddit_counts():
-    """Callback for updating subreddit count for each category."""
+def count_subreddits_callback():
+    """MapReduce callback for counting subreddits by category."""
     mapreduce_id = request.headers.get("Mapreduce-Id")
     state = model.MapreduceState.get_by_key_name(mapreduce_id)
     for category, count in state.counters_map.to_dict().iteritems():
+        if not category.startswith("reddit"):
+            continue
         ndb_category = Category.get_by_id(category)
-        if ndb_category:
-            ndb_category.subreddit_count = count
-            ndb_category.put()
+        ndb_category.subreddit_count = count
+        ndb_category.put()
+    update_total_count("reddit")
+    update_category_tree("reddit")
     return "Done"
+
+def update_total_count(node="reddit"):
+    """Updates total subreddit count for given category and its children."""
+    children = Category.query(Category.parent_id == node).fetch()
+    ndb_category = Category.get_by_id(node)
+    count = ndb_category.subreddit_count
+    for child in children:
+        count += update_total_count(child.key.id())
+    ndb_category.total_subreddit_count = count
+    ndb_category.put()
+    return count
+
+def update_category_tree(node="reddit"):
+    """Updates category tree for given category and its children."""
+    category = Category.get_by_id(node)
+    child_cats = Category.query(Category.parent_id == node).fetch()
+    child_cats = sorted(
+        child_cats,
+        key=lambda x: x.display_name \
+            if x.display_name.lower() not in ["adult and nsfw", "other"] else "z"
+    )
+    children = []
+    if node != "reddit":
+        child_subs = Subreddit.query(
+            Subreddit.parent_id == node
+        ).order(-Subreddit.subscribers).fetch(5)
+        for child_sub in child_subs:
+            children.append({"id": child_sub.key.id(), "display_name": child_sub.display_name})
+        children.append({"id": "more_subs", "count": category.subreddit_count - 5})
+    for child_cat in child_cats:
+        children.append(update_category_tree(child_cat.key.id()))
+    data = {
+        "id": category.key.id(),
+        "display_name": category.display_name,
+        "children": children
+    }
+    cat_tree = CategoryTree(
+        id=category.key.id(),
+        data=json.dumps(data),
+        subreddit_count=category.total_subreddit_count
+    )
+    cat_tree.put()
+    return data
 
 @admin_required
 def delete_user(username):

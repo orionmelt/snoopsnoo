@@ -56,6 +56,7 @@ class Category(ndb.Model):
         ).replace(" ", "-")
     )
     subreddit_count = ndb.IntegerProperty()
+    total_subreddit_count = ndb.IntegerProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
     parent_id = ndb.StringProperty()
 

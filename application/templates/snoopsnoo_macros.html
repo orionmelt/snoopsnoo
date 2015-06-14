@@ -141,20 +141,20 @@
         {% endfor %}
         {% if t1_sub %}
             <a class="list-group-item cat_collapse" data-toggle="collapse" data-parent="#topics-menu" href="#{{t1.id}}">
-                <span class="text-primary">{{t1.display_name}}</span>
+                <span class="text-primary">{{t1["display_name"]}}</span>
                 <i class="fa fa-plus-square text-info pull-right"></i>
             </a>
 
             <div id="{{t1.id}}" class="collapse">
             {% for t2 in t1["children"] %}
                 {% if "children" in t2 and t2["children"]|length %}
-                    {{ link_to_subreddits_category(t2.id, '<i class="fa fa-chevron-right menu-icon text-info small"></i><span class="text-primary smaller">'+t2.display_name+'</span>', "list-group-item") }}
+                    {{ link_to_subreddits_category(t2["id"], '<i class="fa fa-chevron-right menu-icon text-info small"></i><span class="text-primary smaller">'+t2.display_name+'</span>', "list-group-item") }}
                 {% endif %}
             {% endfor %}
-                {{ link_to_subreddits_category(t1.id, '<i class="fa fa-chevron-circle-right menu-icon text-info small"></i><span class="text-primary small">See all in '+t1.display_name+'</span>', "list-group-item") }}
+                {{ link_to_subreddits_category(t1["id"], '<i class="fa fa-chevron-circle-right menu-icon text-info small"></i><span class="text-primary small">See all in '+t1["display_name"]+'</span>', "list-group-item") }}
             </div>
         {% else %}
-            {{ link_to_subreddits_category(t1.id, '<span class="text-primary">'+t1.display_name+'</span>', "list-group-item") }}
+            {{ link_to_subreddits_category(t1["id"], '<span class="text-primary">'+t1["display_name"]+'</span>', "list-group-item") }}
         {% endif %}
     {% endfor %}
 </div>

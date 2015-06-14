@@ -3,10 +3,10 @@ mapreduce:
 - name: Update subreddit count for all categories
   params:
   - name: done_callback
-    value: /subreddits/update-subreddit-counts
+    value: /subreddits/count-subreddits-callback
   mapper:
     input_reader: mapreduce.input_readers.DatastoreInputReader
-    handler: application.views.count_subreddits_by_category
+    handler: application.views.count_subreddits_handler
     params:
     - name: entity_kind
       default: application.models.Subreddit
