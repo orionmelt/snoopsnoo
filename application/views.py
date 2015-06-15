@@ -793,6 +793,7 @@ def add_new_subs():
     other_category.subreddit_count += num_other
     other_category.total_subreddit_count += num_other
     other_category.put()
+    update_total_count("reddit")
     update_category_tree("reddit")
     return "Done"
 
