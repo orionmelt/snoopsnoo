@@ -542,7 +542,7 @@ function populate_results(results) {
     */
 
     g_username = data.username;
-    load_snoovatar();
+    //load_snoovatar();
     if(location.search.substring(1)==="debug") g_debug=true;
     if(g_debug) {
         console.log(data);
