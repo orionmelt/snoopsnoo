@@ -13,7 +13,9 @@ from application import private_settings
 class Config(object):
     """Base class for a configuration object."""
     GOOGLE_CLOUD_PROJECT_ID = private_settings.GOOGLE_CLOUD_PROJECT_ID
+    BIGQUERY_DATASET_ID = private_settings.BIGQUERY_DATASET_ID
     BIGDATA_QUERIES = private_settings.BIGDATA_QUERIES
+    GCS_BUCKET_NAME = private_settings.GCS_BUCKET_NAME
 
 class Development(Config):
     """Development specific configuration."""

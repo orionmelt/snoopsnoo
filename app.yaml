@@ -25,6 +25,9 @@ includes:
 - lib/mapreduce/include.yaml
 
 handlers:
+- url: /_ah/pipeline(/.*)?
+  script: pipeline.handlers._APP
+
 - url: /favicon.ico
   static_files: application/static/icons/favicon.ico
   upload: application/static/icons/favicon.ico
@@ -45,6 +48,10 @@ handlers:
   login: admin
 
 - url: /subreddits/update-subreddit-counts
+  script: application.app
+  login: admin
+
+- url: /jobs(.*)?
   script: application.app
   login: admin
 

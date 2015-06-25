@@ -137,6 +137,34 @@ app.add_url_rule(
     methods=["POST"]
 )
 
+# Export subredits MapReduce handler
+app.add_url_rule(
+    "/jobs/export-subreddits-to-bigquery",
+    "export_subreddits_handler",
+    view_func=views.export_subreddits_handler
+)
+
+# Export synopsis feedback MapReduce handler
+app.add_url_rule(
+    "/jobs/export-feedback-to-bigquery",
+    "export_synopsis_feedback_handler",
+    view_func=views.export_synopsis_feedback_handler
+)
+
+# Export predefined category suggestion MapReduce handler
+app.add_url_rule(
+    "/jobs/export-predef-suggestions-to-bigquery",
+    "export_predefined_category_suggestion_handler",
+    view_func=views.export_predefined_category_suggestion_handler
+)
+
+# Export manual category suggestion MapReduce handler
+app.add_url_rule(
+    "/jobs/export-manual-suggestions-to-bigquery",
+    "export_manual_category_suggestion_handler",
+    view_func=views.export_manual_category_suggestion_handler
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

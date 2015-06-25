@@ -27,6 +27,8 @@ from apiclient.discovery import build
 from oauth2client.appengine import AppAssertionCredentials
 from mapreduce import operation as op
 from mapreduce import model
+from mapreduce import mapreduce_pipeline
+import pipeline
 
 from application.decorators import admin_required
 from application import app
@@ -726,7 +728,7 @@ def add_new_subs():
     num_other = 0
     time.sleep(10)
 
-    for ids in chunk(range(b36(oldest.key.id()), b36(newest_id)+1), 100):
+    for ids in chunk(range(b36(oldest.key.id())+1, b36(newest_id)+1), 100):
         url = "http://www.reddit.com/api/info.json?id=" + ",".join(
             ["t5_" + b36(x) for x in ids]
         )
@@ -742,6 +744,7 @@ def add_new_subs():
         for sub in response_json["data"]["children"]:
             ndb_sub = Subreddit(
                 id=sub["data"]["id"],
+                subreddit_id=sub["data"]["id"],
                 display_name=sub["data"]["display_name"],
                 title=sub["data"]["title"],
                 public_description=sub["data"]["public_description"],
@@ -795,6 +798,7 @@ def add_new_subs():
     other_category.put()
     update_total_count("reddit")
     update_category_tree("reddit")
+    export_subreddits_handler(oldest.key.id(), newest_id)
     return "Done"
 
 def count_subreddits_handler(sub):
@@ -857,6 +861,383 @@ def update_category_tree(node="reddit"):
     )
     cat_tree.put()
     return data
+
+class ExportSubredditsPipeline(pipeline.Pipeline):
+    """A pipeline that iterates through Subreddit entities."""
+    def run(self, from_sub_id=None, to_sub_id=None):
+        """Iterates through Subreddit entities and writes to GCS files."""
+        output = yield mapreduce_pipeline.MapperPipeline(
+            "ExportSubredditsPipeline",
+            "application.views.export_subreddits_map",
+            "mapreduce.input_readers.DatastoreInputReader",
+            output_writer_spec="mapreduce.output_writers.GoogleCloudStorageOutputWriter",
+            params={
+                "input_reader": {
+                    "entity_kind": "application.models.Subreddit",
+                    "filters": \
+                        [
+                            ("subreddit_id", ">", from_sub_id),
+                            ("subreddit_id", "<=", to_sub_id),
+                        ] if (from_sub_id and to_sub_id) else []
+                },
+                "output_writer": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"]
+                }
+            },
+            shards=128
+        )
+        yield ImportSubredditsIntoBigQuery(output)
+
+class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
+    """A pipeline that imports Subreddit entities into BigQuery."""
+    def run(self, subreddits_files):
+        """Import Subreddit entities from GCS into BigQuery."""
+        bigquery_service = get_bq_service()
+        jobs = bigquery_service.jobs()
+        table_name = "subreddits"
+        files = [str("gs:/" + f) for f in subreddits_files]
+        result = jobs.insert(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body={
+                "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                "configuration": {
+                    "load": {
+                        "quote": "",
+                        "sourceUris": files,
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "subreddit_id",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "display_name",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "created_utc",
+                                    "type": "TIMESTAMP"
+                                },
+                                {
+                                    "name": "over18",
+                                    "type": "BOOLEAN"
+                                },
+                                {
+                                    "name": "parent_id",
+                                    "type": "STRING"
+                                }
+                            ]
+                        },
+                        "destinationTable": {
+                            "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                            "datasetId": app.config["BIGQUERY_DATASET_ID"],
+                            "tableId": table_name
+                        }
+                    }
+                }
+
+            }
+        ).execute()
+        logging.info(result)
+
+def export_subreddits_map(sub):
+    """Map function for exporting Subreddit entities."""
+    row = "%s, %s, %s, %s, %s\n" % (
+        str(sub.key.id()),
+        sub.display_name.encode("ascii", "ignore").strip(),
+        sub.created_utc.strftime("%Y-%m-%d %H:%M"),
+        1 if sub.over18 else 0,
+        str(sub.parent_id)
+    )
+    yield row
+
+def export_subreddits_handler(from_sub_id=None, to_sub_id=None):
+    """Handler function for exporting Subreddit entities."""
+    mr_pipeline = ExportSubredditsPipeline(from_sub_id, to_sub_id)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
+
+class ExportSynopsisFeedbackPipeline(pipeline.Pipeline):
+    """A pipeline that iterates through Feedback entities."""
+    def run(self, start_ts, end_ts):
+        """Iterates through Feedback entities and writes to GCS files."""
+        output = yield mapreduce_pipeline.MapperPipeline(
+            "ExportSynopsisFeedbackPipeline",
+            "application.views.export_synopsis_feedback_map",
+            "mapreduce.input_readers.DatastoreInputReader",
+            output_writer_spec="mapreduce.output_writers.GoogleCloudStorageOutputWriter",
+            params={
+                "input_reader": {
+                    "entity_kind": "application.models.Feedback",
+                    "filters": \
+                        [
+                            ("log_date", ">=", start_ts),
+                            ("log_date", "<", end_ts)
+                        ]
+                },
+                "output_writer": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"],
+                }
+            },
+            shards=128
+        )
+        yield ImportSynopsisFeedbackIntoBigQuery(output)
+
+class ImportSynopsisFeedbackIntoBigQuery(pipeline.Pipeline):
+    """A pipeline that imports Feedback entities into BigQuery."""
+    def run(self, feedback_files):
+        """Import Feedback entities from GCS into BigQuery."""
+        bigquery_service = get_bq_service()
+        jobs = bigquery_service.jobs()
+        table_name = "synopsis_feedback"
+        files = [str("gs:/" + f) for f in feedback_files]
+        result = jobs.insert(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body={
+                "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                "configuration": {
+                    "load": {
+                        "quote": "",
+                        "sourceUris": files,
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "log_date",
+                                    "type": "TIMESTAMP"
+                                },
+                                {
+                                    "name": "username_lower",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "data_key",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "data_value",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "feedback",
+                                    "type": "BOOLEAN"
+                                }
+                            ]
+                        },
+                        "destinationTable": {
+                            "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                            "datasetId": app.config["BIGQUERY_DATASET_ID"],
+                            "tableId": table_name
+                        }
+                    }
+                }
+
+            }
+        ).execute()
+        logging.info(result)
+
+def export_synopsis_feedback_map(feedback):
+    """Map function for exporting Feedback entities."""
+    row = "%s, %s, %s, %s, %s\n" % (
+        feedback.log_date.strftime("%Y-%m-%d %H:%M"),
+        feedback.username.encode("ascii", "ignore").lower() if feedback.username else "",
+        feedback.data_key.encode("ascii", "ignore") if feedback.data_key else "",
+        feedback.data_value.encode("ascii", "ignore") if feedback.data_value else "",
+        1 if feedback.feedback else 0
+    )
+    yield row
+
+def export_synopsis_feedback_handler():
+    """Handler function for exporting Feedback entities."""
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    yesterday = today - datetime.timedelta(hours=24)
+    mr_pipeline = ExportSynopsisFeedbackPipeline(yesterday, today)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
+
+class ExportPredefinedCategorySuggestionPipeline(pipeline.Pipeline):
+    """A pipeline that iterates through PredefinedCategorySuggestion entities."""
+    def run(self, start_ts, end_ts):
+        """Iterates through PredefinedCategorySuggestion entities and writes to GCS files."""
+        output = yield mapreduce_pipeline.MapperPipeline(
+            "ExportPredefinedCategorySuggestionPipeline",
+            "application.views.export_predefined_category_suggestion_map",
+            "mapreduce.input_readers.DatastoreInputReader",
+            output_writer_spec="mapreduce.output_writers.GoogleCloudStorageOutputWriter",
+            params={
+                "input_reader": {
+                    "entity_kind": "application.models.PredefinedCategorySuggestion",
+                    "filters": \
+                        [
+                            ("log_date", ">=", start_ts),
+                            ("log_date", "<", end_ts)
+                        ]
+                },
+                "output_writer": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"],
+                }
+            },
+            shards=128
+        )
+        yield ImportPredefinedCategorySuggestionIntoBigQuery(output)
+
+class ImportPredefinedCategorySuggestionIntoBigQuery(pipeline.Pipeline):
+    """A pipeline that imports PredefinedCategorySuggestion entities into BigQuery."""
+    def run(self, category_suggestion_files):
+        """Import PredefinedCategorySuggestion entities from GCS into BigQuery."""
+        bigquery_service = get_bq_service()
+        jobs = bigquery_service.jobs()
+        table_name = "predefined_sugg"
+        files = [str("gs:/" + f) for f in category_suggestion_files]
+        result = jobs.insert(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body={
+                "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                "configuration": {
+                    "load": {
+                        "quote": "",
+                        "sourceUris": files,
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "log_date",
+                                    "type": "TIMESTAMP"
+                                },
+                                {
+                                    "name": "display_name_lower",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "category_id",
+                                    "type": "STRING"
+                                }
+                            ]
+                        },
+                        "destinationTable": {
+                            "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                            "datasetId": app.config["BIGQUERY_DATASET_ID"],
+                            "tableId": table_name
+                        }
+                    }
+                }
+
+            }
+        ).execute()
+        logging.info(result)
+
+def export_predefined_category_suggestion_map(suggestion):
+    """Map function for exporting PredefinedCategorySuggestion entities."""
+    row = "%s, %s, %s\n" % (
+        suggestion.log_date.strftime("%Y-%m-%d %H:%M"),
+        str(suggestion.subreddit_display_name_lower),
+        str(suggestion.category_id),
+    )
+    yield row
+
+def export_predefined_category_suggestion_handler():
+    """Handler function for exporting PredefinedCategorySuggestion entities."""
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    yesterday = today - datetime.timedelta(hours=24)
+    mr_pipeline = ExportPredefinedCategorySuggestionPipeline(yesterday, today)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
+
+class ExportManualCategorySuggestionPipeline(pipeline.Pipeline):
+    """A pipeline that iterates through ManualCategorySuggestion entities."""
+    def run(self, start_ts, end_ts):
+        """Iterates through ManualCategorySuggestion entities and writes to GCS files."""
+        output = yield mapreduce_pipeline.MapperPipeline(
+            "ExportManualCategorySuggestionPipeline",
+            "application.views.export_manual_category_suggestion_map",
+            "mapreduce.input_readers.DatastoreInputReader",
+            output_writer_spec="mapreduce.output_writers.GoogleCloudStorageOutputWriter",
+            params={
+                "input_reader": {
+                    "entity_kind": "application.models.ManualCategorySuggestion",
+                    "filters": \
+                        [
+                            ("log_date", ">=", start_ts),
+                            ("log_date", "<", end_ts)
+                        ]
+                },
+                "output_writer": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"],
+                }
+            },
+            shards=128
+        )
+        yield ImportManualCategorySuggestionIntoBigQuery(output)
+
+class ImportManualCategorySuggestionIntoBigQuery(pipeline.Pipeline):
+    """A pipeline that imports ManualCategorySuggestion entities into BigQuery."""
+    def run(self, category_suggestion_files):
+        """Import ManualCategorySuggestion entities from GCS into BigQuery."""
+        bigquery_service = get_bq_service()
+        jobs = bigquery_service.jobs()
+        table_name = "manual_sugg"
+        files = [str("gs:/" + f) for f in category_suggestion_files]
+        result = jobs.insert(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body={
+                "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                "configuration": {
+                    "load": {
+                        "sourceUris": files,
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "log_date",
+                                    "type": "TIMESTAMP"
+                                },
+                                {
+                                    "name": "display_name_lower",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "category_id",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "suggested_category",
+                                    "type": "STRING"
+                                }
+                            ]
+                        },
+                        "destinationTable": {
+                            "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                            "datasetId": app.config["BIGQUERY_DATASET_ID"],
+                            "tableId": table_name
+                        }
+                    }
+                }
+
+            }
+        ).execute()
+        logging.info(result)
+
+def export_manual_category_suggestion_map(suggestion):
+    """Map function for exporting ManualCategorySuggestion entities."""
+    suggested_category = suggestion.suggested_category.encode("ascii", "ignore").strip() \
+        if suggestion.suggested_category else ""
+    suggested_category = suggested_category.replace("\"", "'")
+    row = "%s, %s, %s, \"%s\"\n" % (
+        suggestion.log_date.strftime("%Y-%m-%d %H:%M"),
+        str(suggestion.subreddit_display_name_lower),
+        str(suggestion.category_id) if suggestion.category_id else "",
+        suggested_category
+    )
+    yield row
+
+def export_manual_category_suggestion_handler():
+    """Handler function for exporting ManualCategorySuggestion entities."""
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    yesterday = today - datetime.timedelta(hours=24)
+    mr_pipeline = ExportManualCategorySuggestionPipeline(yesterday, today)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
 
 @admin_required
 def delete_user(username):
