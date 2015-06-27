@@ -1088,7 +1088,7 @@ class ImportPredefinedCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import PredefinedCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "predefined_sugg"
+        table_name = "cat_sugg_predef"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1176,7 +1176,7 @@ class ImportManualCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import ManualCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "manual_sugg"
+        table_name = "cat_sugg_manual"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
