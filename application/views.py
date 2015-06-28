@@ -942,7 +942,7 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
 
 def export_subreddits_map(sub):
     """Map function for exporting Subreddit entities."""
-    row = "%s, %s, %s, %s, %s\n" % (
+    row = "%s,%s,%s,%s,%s\n" % (
         str(sub.key.id()),
         sub.display_name.encode("ascii", "ignore").strip(),
         sub.created_utc.strftime("%Y-%m-%d %H:%M"),
@@ -1038,7 +1038,7 @@ class ImportSynopsisFeedbackIntoBigQuery(pipeline.Pipeline):
 
 def export_synopsis_feedback_map(feedback):
     """Map function for exporting Feedback entities."""
-    row = "%s, %s, %s, %s, %s\n" % (
+    row = "%s,%s,%s,%s,%s\n" % (
         feedback.log_date.strftime("%Y-%m-%d %H:%M"),
         feedback.username.encode("ascii", "ignore").lower() if feedback.username else "",
         feedback.data_key.encode("ascii", "ignore") if feedback.data_key else "",
@@ -1128,7 +1128,7 @@ class ImportPredefinedCategorySuggestionIntoBigQuery(pipeline.Pipeline):
 
 def export_predefined_category_suggestion_map(suggestion):
     """Map function for exporting PredefinedCategorySuggestion entities."""
-    row = "%s, %s, %s\n" % (
+    row = "%s,%s,%s\n" % (
         suggestion.log_date.strftime("%Y-%m-%d %H:%M"),
         str(suggestion.subreddit_display_name_lower),
         str(suggestion.category_id),
@@ -1222,7 +1222,7 @@ def export_manual_category_suggestion_map(suggestion):
     suggested_category = suggestion.suggested_category.encode("ascii", "ignore").strip() \
         if suggestion.suggested_category else ""
     suggested_category = suggested_category.replace("\"", "'")
-    row = "%s, %s, %s, \"%s\"\n" % (
+    row = "%s,%s,%s,\"%s\"\n" % (
         suggestion.log_date.strftime("%Y-%m-%d %H:%M"),
         str(suggestion.subreddit_display_name_lower),
         str(suggestion.category_id) if suggestion.category_id else "",
