@@ -894,7 +894,7 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
         """Import Subreddit entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "subreddits"
+        table_name = "subreddits_data"
         files = [str("gs:/" + f) for f in subreddits_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -906,6 +906,10 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
                         "sourceUris": files,
                         "schema": {
                             "fields": [
+                                {
+                                    "name": "log_date",
+                                    "type": "TIMESTAMP"
+                                },
                                 {
                                     "name": "subreddit_id",
                                     "type": "STRING"
@@ -942,7 +946,9 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
 
 def export_subreddits_map(sub):
     """Map function for exporting Subreddit entities."""
-    row = "%s,%s,%s,%s,%s\n" % (
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    row = "%s,%s,%s,%s,%s,%s\n" % (
+        today.strftime("%Y-%m-%d %H:%S"),
         str(sub.key.id()),
         sub.display_name.encode("ascii", "ignore").strip(),
         sub.created_utc.strftime("%Y-%m-%d %H:%M"),
@@ -1088,7 +1094,7 @@ class ImportPredefinedCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import PredefinedCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "cat_sugg_predef"
+        table_name = "predefined_suggestions"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1176,7 +1182,7 @@ class ImportManualCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import ManualCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "cat_sugg_manual"
+        table_name = "manual_suggestions"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1235,6 +1241,40 @@ def export_manual_category_suggestion_handler():
     today = datetime.datetime.combine(datetime.date.today(), datetime.time())
     yesterday = today - datetime.timedelta(hours=24)
     mr_pipeline = ExportManualCategorySuggestionPipeline(yesterday, today)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
+
+class UpdateSubscribersPipeline(pipeline.Pipeline):
+    """A pipeline that updates subscriber counts for subreddits."""
+    def run(self):
+        """Update Subreddit subscribers counts."""
+        yield mapreduce_pipeline.MapperPipeline(
+            "UpdateSubscribersPipeline",
+            "application.views.update_subscribers_map",
+            "mapreduce.input_readers.GoogleCloudStorageInputReader",
+            params={
+                "input_reader": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"],
+                    "objects": ["subreddits/subscribers/delta/*"]
+                }
+            },
+            shards=8
+        )
+
+def update_subscribers_map(delta):
+    """Map function for updating Subreddit subscribers counts."""
+    lines = delta.read().split("\n")
+    for batch in chunk(lines, 100):
+        id_subs = [(x.split(",")[0], x.split(",")[1]) for x in batch if "," in x]
+        subs = [x for x in ndb.get_multi([ndb.Key("Subreddit", x[0]) for x in id_subs]) if x]
+        for sub in subs:
+            sub.subscribers = int([x[1] for x in id_subs if x[0] == sub.key.id()][0])
+        ndb.put_multi(subs)
+
+def update_subscribers_handler():
+    """Handler function for updating Subreddit subscribers counts."""
+    mr_pipeline = UpdateSubscribersPipeline()
     mr_pipeline.start()
     path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
     return "Kicked off job: %s" % path

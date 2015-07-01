@@ -165,6 +165,12 @@ app.add_url_rule(
     view_func=views.export_manual_category_suggestion_handler
 )
 
+app.add_url_rule(
+    "/jobs/update-subscribers",
+    "update_subscribers_handler",
+    view_func=views.update_subscribers_handler
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):
