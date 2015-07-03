@@ -65,11 +65,11 @@ class Subreddit(ndb.Model):
     Models a subreddit entry.
     """
     subreddit_id = ndb.StringProperty()
-    display_name = ndb.StringProperty()
+    display_name = ndb.StringProperty(indexed=False)
     display_name_lower = ndb.ComputedProperty(
         lambda self: self.display_name.lower()
     )
-    title = ndb.StringProperty()
+    title = ndb.StringProperty(indexed=False)
     public_description = ndb.StringProperty(indexed=False)
     description_html = ndb.TextProperty()
     subreddit_type = ndb.IntegerProperty()
