@@ -2,7 +2,7 @@ cron:
 
 - description: Add new subreddits
   url: /subreddits/add-new
-  schedule: every day 04:00
+  schedule: every day 23:30
 
 - description: Export synopsis feedback to BigQuery
   url: /jobs/export-feedback-to-bigquery
@@ -15,3 +15,7 @@ cron:
 - description: Export manual category suggestions to BigQuery
   url: /jobs/export-manual-suggestions-to-bigquery
   schedule: every day 07:00
+
+- description: Update trends
+  url: /jobs/update-trends
+  schedule: every day 11:00

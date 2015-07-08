@@ -48,6 +48,22 @@
                 </div>
             </div>
             <div class="col-md-3">
+                {% if trending_subs_in_cat %}
+                <div class="list-group">
+                    <div class="list-group-item active">
+                        Trending in {{ breadcrumbs[-1].display_name }}
+                    </div>
+                    {% for sub in trending_subs_in_cat %}
+                    <div class="list-group-item small">
+                        <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{ sub["display_name"] }}</a>
+                        {% if sub["over18"] %}
+                        <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                        {% endif %}
+                        <span class="pull-right"><i class="fa fa-arrow-up"></i> {{ '{0:+,}'.format(sub["growth_3_days"] | int) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {{ snoopsnoo_macros.topics_menu(root["children"]) }}
             </div>
         </div>

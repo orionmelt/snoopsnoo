@@ -171,6 +171,12 @@ app.add_url_rule(
     view_func=views.update_subscribers_handler
 )
 
+app.add_url_rule(
+    "/jobs/update-trends",
+    "update_trends",
+    view_func=views.update_trends
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

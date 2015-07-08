@@ -1,6 +1,8 @@
 {% extends "base.html" %}
-{% block title %} - {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits | {{subreddit_count}} subreddits in {{category.display_name}}{% if subreddits %} | /r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}{% endif %}{% endblock %}
-{% block meta_description %}{{subreddit_count}} {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits on reddit{% if subreddits %} - {{subreddits | length}} subreddits on this page (/r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}){% endif %}. Browse and find thousands of subreddits categorized by topics.{% endblock %}
+
+{% block title %} - {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits | {{ '{0:,}'.format(subreddit_count | int) }} subreddits in {{category.display_name}}{% if subreddits %} | /r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}{% endif %}{% endblock %}
+
+{% block meta_description %}{{ '{0:,}'.format(subreddit_count | int) }} {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits on reddit{% if subreddits %} - {{subreddits | length}} subreddits on this page (/r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}){% endif %}. Browse and find thousands of subreddits categorized by topics.{% endblock %}
 
 
 {% block nav_subreddits %}active{% endblock %}
@@ -16,7 +18,7 @@
                     <a href=".">
                         <span class="category-heading">{{ category.display_name }}</span>
                     </a>
-                    <span class="margin-lft-10 tiny text-muted text-lowercase">({{subreddit_count}} subreddits)</span>
+                    <span class="margin-lft-10 tiny text-muted text-lowercase">({{ '{0:,}'.format(subreddit_count | int) }} subreddits)</span>
                 </h2>
                 {% if subreddits %}
                     {% for subreddit in subreddits %}
@@ -39,6 +41,22 @@
                 {% endif %}
             </div>
             <div class="col-md-3">
+                {% if trending_subs_in_cat %}
+                <div class="list-group">
+                    <div class="list-group-item active">
+                        Trending in {{ category.display_name }}
+                    </div>
+                    {% for sub in trending_subs_in_cat %}
+                    <div class="list-group-item small">
+                        <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{ sub["display_name"] }}</a>
+                        {% if sub["over18"] %}
+                        <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                        {% endif %}
+                        <span class="pull-right"><i class="fa fa-arrow-up"></i> +{{ '{0:,}'.format(sub["growth_7_days"] | int) }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% if cat_tree and subreddits %}
                 <div class="list-group">
                     <div class="list-group-item active">

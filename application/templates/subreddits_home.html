@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %} - reddit subreddit analytics | Browse and find subreddits by topics{% endblock %}
-{% block meta_description %}Organized directory of {{subreddit_count}} subreddits, categorized by thousands of topics. Browse and find subreddits by topics.{% endblock %}
+{% block title %} - Subreddits | Browse and find subreddits by topics{% endblock %}
+{% block meta_description %}Organized directory of {{ '{0:,}'.format(subreddit_count | int) }} subreddits, categorized by thousands of topics. Browse and find subreddits by topics. Discover new and trending subreddits.{% endblock %}
 {% block nav_subreddits %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
@@ -62,6 +62,75 @@
     </div>
     <div class="margin-40">
         <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>New</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <td>Subreddit</td>
+                            <td class="text-right">Subscribers</td>
+                        </thead>
+                        <tbody>
+                            {% for sub in new_subs %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
+                                    {% if sub["over18"] %}
+                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">{{ '{0:,}'.format(sub["current_subscribers"] | int) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <h2>Trending</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <td>Subreddit</td>
+                            <td class="text-right">New Subscribers</td>
+                        </thead>
+                        <tbody>
+                            {% for sub in trending_subs %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
+                                    {% if sub["over18"] %}
+                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <h2>Growing</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <td>Subreddit</td>
+                            <td class="text-right">New Subscribers</td>
+                        </thead>
+                        <tbody>
+                            {% for sub in growing_subs %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
+                                    {% if sub["over18"] %}
+                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-right">{{ '{0:+,}'.format(sub["growth_1_day"] | int) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2 class="margin-40">Subreddits by Topic</h2>
             <div class="row">
                 <div class="col-md-8">
                     {% for category in root["children"] %}

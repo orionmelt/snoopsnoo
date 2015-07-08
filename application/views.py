@@ -28,6 +28,7 @@ from oauth2client.appengine import AppAssertionCredentials
 from mapreduce import operation as op
 from mapreduce import model
 from mapreduce import mapreduce_pipeline
+from google.appengine.runtime.apiproxy_errors import DeadlineExceededError
 import pipeline
 
 from application.decorators import admin_required
@@ -129,41 +130,54 @@ def uniq(seq):
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 def get_bq_service():
-    """Builds and eturns a BigQuery service."""
+    """Builds and returns a BigQuery service."""
     app_credentials = AppAssertionCredentials(
         scope="https://www.googleapis.com/auth/bigquery"
     )
     http = app_credentials.authorize(httplib2.Http())
     return build("bigquery", "v2", http=http)
 
-def get_user_averages():
-    """
-    Returns average values for comment karma, submission karma and unique
-    word percent.
-    """
-    user_averages = memcache.get("user_averages")
-    if not user_averages:
+def bq_query(query, params=None, cache_key=None, cached=False):
+    """Returns BigQuery results as a dictionary."""
+    if not cache_key:
+        cache_key = "bq_" + query
+    results = memcache.get(cache_key)
+    if not results and not cached:
         bigquery_service = get_bq_service()
+        query_string = app.config["BQ_QUERIES"][query]
+        if params:
+            query_string = query_string % params
         query_data = {
-            "query": app.config["BIGDATA_QUERIES"]["user_averages"]
+            "query": query_string,
+            "useQueryCache": cached
         }
-        query_request = bigquery_service.jobs()
-        query_response = query_request.query(
-            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
-            body=query_data
-        ).execute()
-
-        results = query_response["rows"][0]
-        avg_comment_karma = results["f"][0]["v"]
-        avg_submission_karma = results["f"][1]["v"]
-        avg_unique_word_percent = results["f"][2]["v"]
-        user_averages = {
-            "average_comment_karma": float(avg_comment_karma),
-            "average_submission_karma": float(avg_submission_karma),
-            "average_unique_word_percent": float(avg_unique_word_percent)
-        }
-        memcache.add("user_averages", user_averages)
-    return user_averages
+        query_done = False
+        while not query_done:
+            try:
+                query_request = bigquery_service.jobs()
+                query_response = query_request.query(
+                    projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                    body=query_data
+                ).execute()
+                query_done = query_response["jobComplete"]
+            except DeadlineExceededError:
+                pass
+        results = []
+        if "rows" not in query_response:
+            return None
+        for row in query_response["rows"]:
+            result = {}
+            for i, key in enumerate(query_response["schema"]["fields"]):
+                value = {
+                    "STRING": lambda x: x,
+                    "INTEGER": lambda x: int(x) if x else 0,
+                    "FLOAT": lambda x: float(x) if x else 0,
+                    "BOOLEAN": lambda x: True if x == "true" else False
+                }[key["type"]](row["f"][i]["v"])
+                result[key["name"]] = value
+            results.append(result)
+        memcache.add(cache_key, results)
+    return results
 
 def get_subreddit(display_name_lower):
     """Returns a subreddit object given a subreddit name."""
@@ -266,7 +280,22 @@ def get_recommended_subreddits(subreddits):
 
 def home():
     """Renders the site home page."""
-    return render_template("index.html")
+    new_subs = None
+    trending_subs = None
+
+    prep_new_subs = PreprocessedItem.get_by_id("new_subs")
+    if prep_new_subs:
+        new_subs = json.loads(prep_new_subs.data)
+
+    prep_trending_subs = PreprocessedItem.get_by_id("trending_subs")
+    if prep_trending_subs:
+        trending_subs = json.loads(prep_trending_subs.data)
+
+    return render_template(
+        "index.html",
+        new_subs=new_subs,
+        trending_subs=trending_subs
+    )
 
 def about():
     """Renders the site about page."""
@@ -314,12 +343,14 @@ def user_profile(username):
         ) if user.data["summary"]["comments"]["worst"]["text"] else None
 
     all_subreddit_categories = get_all_subreddit_categories()
+
+    user_averages = bq_query("user_averages")[0]
     return render_template(
         "user_profile.html",
         user=user,
         data=json.dumps(user.data),
         all_subreddit_categories=all_subreddit_categories,
-        user_averages=json.dumps(get_user_averages())
+        user_averages=json.dumps(user_averages)
     )
 
 def update_user():
@@ -425,12 +456,34 @@ def save_sub_category_suggestion():
 def subreddits_home():
     """Renders subreddits directory home page."""
     root = get_subreddits_root()
+
+    new_subs = None
+    trending_subs = None
+    growing_subs = None
+
+    prep_new_subs = PreprocessedItem.get_by_id("new_subs")
+    if prep_new_subs:
+        new_subs = json.loads(prep_new_subs.data)
+    prep_trending_subs = PreprocessedItem.get_by_id("trending_subs")
+    if prep_trending_subs:
+        trending_subs = json.loads(prep_trending_subs.data)
+    prep_growing_subs = PreprocessedItem.get_by_id("growing_subs")
+    if prep_growing_subs:
+        growing_subs = json.loads(prep_growing_subs.data)
+
+    #new_subs = bq_query("new_subs")
+    #trending_subs = bq_query("trending_subs")
+    #growing_subs = bq_query("growing_subs")
+
     return render_template(
         "subreddits_home.html",
         root=json.loads(root.data),
         subreddit_count=root.subreddit_count,
         last_updated=root.last_updated,
-        intro_items=random.sample(SAMPLE_TOPICS, 3)
+        intro_items=random.sample(SAMPLE_TOPICS, 3),
+        growing_subs=growing_subs,
+        new_subs=new_subs,
+        trending_subs=trending_subs
     )
 
 def subreddits_category(level1, level2=None, level3=None):
@@ -482,6 +535,11 @@ def subreddits_category(level1, level2=None, level3=None):
     if cursor and not subreddits:
         abort(404)
 
+    trending_subs_in_cat = None
+    prep_trending_subs_in_cat = PreprocessedItem.get_by_id("trending_%s" % category_id)
+    if prep_trending_subs_in_cat:
+        trending_subs_in_cat = json.loads(prep_trending_subs_in_cat.data)
+
     return render_template(
         "subreddits_category.html",
         subreddits=subreddits,
@@ -492,7 +550,8 @@ def subreddits_category(level1, level2=None, level3=None):
         next=next_bookmark,
         all_subreddit_categories=get_all_subreddit_categories(),
         subreddit_count=ct_object.subreddit_count,
-        root=json.loads(get_subreddits_root().data)
+        root=json.loads(get_subreddits_root().data),
+        trending_subs_in_cat=trending_subs_in_cat
     )
 
 def subreddit(subreddit_name):
@@ -516,13 +575,19 @@ def subreddit(subreddit_name):
 
     all_subreddit_categories = get_all_subreddit_categories()
 
+    trending_subs_in_cat = None
+    prep_trending_subs_in_cat = PreprocessedItem.get_by_id("trending_%s" % sub.parent_id)
+    if prep_trending_subs_in_cat:
+        trending_subs_in_cat = json.loads(prep_trending_subs_in_cat.data)
+
     return render_template(
         "subreddit.html",
         subreddit=sub,
         breadcrumbs=breadcrumbs[1:],
         all_subreddit_categories=all_subreddit_categories,
         related_subreddits=related_subreddits,
-        root=json.loads(root.data)
+        root=json.loads(root.data),
+        trending_subs_in_cat=trending_subs_in_cat
     )
 
 def subreddit_frontpage():
@@ -1285,6 +1350,25 @@ def delete_user(username):
     user = User.query(User.username == username).get()
     user.key.delete()
     return "OK"
+
+def update_trends():
+    """Updates trending subreddits for each category."""
+    trend_keys = ["new_subs", "trending_subs", "growing_subs"]
+    for trend_key in trend_keys:
+        data = bq_query(trend_key, cached=False) or []
+        PreprocessedItem(
+            id=trend_key,
+            data=json.dumps(data)
+        ).put()
+    categories = get_all_subreddit_categories()
+    data = bq_query("trending_subs_in_cats", cached=False)
+    for category in categories:
+        cat_data = [x for x in data if x["parent_id"] == category["id"]]
+        PreprocessedItem(
+            id="trending_%s" % category["id"],
+            data=json.dumps(cat_data)
+        ).put()
+    return "Done"
 
 def warmup():
     """Handles AppEngine warmup requests."""

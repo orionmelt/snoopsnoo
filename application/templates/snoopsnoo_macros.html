@@ -9,7 +9,7 @@
         {% if "children" in child %}
             {% if child["id"]=="more_cats" %}
                 {% if child["count"]> 0%}
-                    <div class="l{{level}}_more_cats text-muted">+{{ child["count"] }} more topics in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
+                    <div class="l{{level}}_more_cats text-muted">+{{ '{0:,}'.format(child["count"] | int) }} more topics in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
                 {% endif %} 
             {% else %}
             <div class="l{{level}}_cat">
@@ -21,8 +21,8 @@
             {% endif %}
         {% else %}
             {% if child["id"]=="more_subs" %}
-                {% if child["count"]> 0%}
-                    <div class="l{{level}}_more_subs text-muted">+{{ child["count"] }} more subreddits in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
+                {% if child["count"]> 0 %}
+                    <div class="l{{level}}_more_subs text-muted">+{{ '{0:,}'.format(child["count"] | int) }} more subreddits in {{link_to_subreddits_category(category["id"], category["display_name"])}}</div>
                 {% else %}
                     <div class="l{{level}}_more_subs text-muted">
                         See all in {{link_to_subreddits_category(category["id"], category["display_name"])}}
