@@ -147,14 +147,14 @@ def bq_query(query, params=None, cache_key=None, cached=False):
         query_string = app.config["BQ_QUERIES"][query]
         if params:
             query_string = query_string % params
-        query_data = {
-            "query": query_string,
-            "useQueryCache": cached
-        }
         query_response = None
         query_done = False
         while not query_done:
             try:
+                query_data = {
+                    "query": query_string,
+                    "useQueryCache": cached
+                }
                 query_request = bigquery_service.jobs()
                 query_response = query_request.query(
                     projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -162,7 +162,7 @@ def bq_query(query, params=None, cache_key=None, cached=False):
                 ).execute()
                 query_done = query_response["jobComplete"]
             except DeadlineExceededError:
-                pass
+                cached = True
         if not query_response or "rows" not in query_response:
             return []
         results = []
@@ -1400,7 +1400,6 @@ def update_search_subscribers():
             )
             docs.append(doc)
         index.put(docs)
-        logging.info("Put 200 docs")
     return "Done"
 
 def sitemap():
