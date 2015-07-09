@@ -19,3 +19,7 @@ cron:
 - description: Update trends
   url: /jobs/update-trends
   schedule: every day 11:00
+
+- description: Update search subscribers
+  url: /jobs/update-search-subscribers
+  schedule: every day 13:00

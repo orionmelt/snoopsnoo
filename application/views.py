@@ -151,6 +151,7 @@ def bq_query(query, params=None, cache_key=None, cached=False):
             "query": query_string,
             "useQueryCache": cached
         }
+        query_response = None
         query_done = False
         while not query_done:
             try:
@@ -162,9 +163,9 @@ def bq_query(query, params=None, cache_key=None, cached=False):
                 query_done = query_response["jobComplete"]
             except DeadlineExceededError:
                 pass
+        if not query_response or "rows" not in query_response:
+            return []
         results = []
-        if "rows" not in query_response:
-            return None
         for row in query_response["rows"]:
             result = {}
             for i, key in enumerate(query_response["schema"]["fields"]):
@@ -1368,6 +1369,38 @@ def update_trends():
             id="trending_%s" % category["id"],
             data=json.dumps(cat_data)
         ).put()
+    return "Done"
+
+def update_search_subscribers():
+    """Updates search index entries for subreddits that have grown."""
+    search_subs = bq_query("update_search_subs", cached=False)
+    index = search.Index(name="subreddits_search")
+    for search_chunk in chunk(search_subs, 200):
+        docs = []
+        for sub in search_chunk:
+            doc = index.get(sub["subreddit_id"])
+            if not doc:
+                continue
+            doc_fields = []
+            subscribers = sub["current_subscribers"]
+            for field in doc.fields:
+                if field.name == "subscribers":
+                    doc_fields.append(
+                        search.NumberField(
+                            name='subscribers',
+                            value=subscribers or 0
+                        )
+                    )
+                else:
+                    doc_fields.append(field)
+            doc = search.Document(
+                doc_id=doc.doc_id,
+                fields=doc_fields,
+                rank=subscribers if subscribers > 0 else 1
+            )
+            docs.append(doc)
+        index.put(docs)
+        logging.info("Put 200 docs")
     return "Done"
 
 def warmup():
