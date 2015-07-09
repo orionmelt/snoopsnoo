@@ -3,6 +3,24 @@
 {%- endmacro -%}
 
 
+{% macro subreddits_category_xml(category, level=1, today) -%}
+{%- for child in category["children"] -%}
+    {%- if "children" in child -%}
+        {%- if child["id"]=="more_cats" -%}
+        {%- else -%}
+        <url>
+            <loc>http://snoopsnoo.com/subreddits/{{ "/".join(child["id"].split("_")[1:]) }}/</loc>
+            <lastmod>{{ today }}</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.8</priority>
+        </url>
+        {{ subreddits_category_xml(child, level+1, today) }}
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+{%- endmacro %}
+
+
 {% macro subreddits_category(category, level=1) -%}
 <div id="d_{{category["id"]}}" class="l{{level}}_tree {% if level>1 %}collapse{% endif %}">
     {% for child in category["children"] %}

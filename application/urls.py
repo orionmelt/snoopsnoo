@@ -183,6 +183,12 @@ app.add_url_rule(
     view_func=views.update_search_subscribers
 )
 
+app.add_url_rule(
+    "/sitemap.xml",
+    "sitemap",
+    view_func=views.sitemap
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

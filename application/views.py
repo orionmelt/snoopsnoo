@@ -21,7 +21,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.api import search
 from flask import (
-    request, render_template, url_for, redirect, abort, Markup, jsonify
+    request, render_template, url_for, redirect, abort, Markup, jsonify, make_response
 )
 from apiclient.discovery import build
 from oauth2client.appengine import AppAssertionCredentials
@@ -1402,6 +1402,18 @@ def update_search_subscribers():
         index.put(docs)
         logging.info("Put 200 docs")
     return "Done"
+
+def sitemap():
+    """Renders sitemap XML."""
+    subreddits_root = get_subreddits_root()
+    sitemap_xml = render_template(
+        "sitemap.xml",
+        today=datetime.date.today().strftime("%Y-%m-%d"),
+        subreddits_root=json.loads(subreddits_root.data)
+    )
+    response = make_response(sitemap_xml)
+    response.headers["Content-Type"] = "application/xml"
+    return response
 
 def warmup():
     """Handles AppEngine warmup requests."""
