@@ -21,6 +21,7 @@
         var color = options.color || d3.scale.category10();
         var interpolate = options.interpolate || "";
         var tooltips = options.tooltips || false;
+        var tooltip_date_format = options.tooltip_date_format || "%B %Y";
         var secondary_scale = options.secondary_scale || [];
         var x_label = options.x_label || "Date";
 
@@ -188,7 +189,7 @@
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
                 .html(function(d) {
-                    return "<p>" +  d3.time.format("%B %Y")(d.date) + "</p>" + d.value + " " + this.parentNode.__data__.name.replace("_"," ");
+                    return "<p>" +  d3.time.format(tooltip_date_format)(d.date) + "</p>" + d3.format(",d")(d.value) + " " + this.parentNode.__data__.name.replace("_"," ");
                 });
 
             svg.call(tip);
@@ -357,7 +358,7 @@
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
                 .html(function(d) {
-                    return "<p>" + (tooltip_names ? tooltip_names[this.parentNode.__data__[x_col]] : this.parentNode.__data__[x_col]) + "</p>" + d.value + " " + d.name;
+                    return "<p>" + (tooltip_names ? tooltip_names[this.parentNode.__data__[x_col]] : this.parentNode.__data__[x_col]) + "</p>" + d3.format(",d")(d.value) + " " + d.name;
                 });
 
             svg.call(tip);
