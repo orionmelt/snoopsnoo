@@ -162,7 +162,7 @@ def bq_query(query, params=None, cache_key=None, cached=False):
                 ).execute()
                 query_done = query_response["jobComplete"]
             except DeadlineExceededError:
-                cached = True
+                pass
         if not query_response or "rows" not in query_response:
             return []
         results = []
@@ -173,7 +173,9 @@ def bq_query(query, params=None, cache_key=None, cached=False):
                     "STRING": lambda x: x,
                     "INTEGER": lambda x: int(x) if x else 0,
                     "FLOAT": lambda x: float(x) if x else 0,
-                    "BOOLEAN": lambda x: True if x == "true" else False
+                    "BOOLEAN": lambda x: True if x == "true" else False,
+                    "TIMESTAMP": lambda x: \
+                        datetime.datetime.fromtimestamp(float(x)).strftime("%Y-%m-%d")
                 }[key["type"]](row["f"][i]["v"])
                 result[key["name"]] = value
             results.append(result)
@@ -960,7 +962,7 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
         """Import Subreddit entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "subreddits_data"
+        table_name = "_subreddits"
         files = [str("gs:/" + f) for f in subreddits_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1062,7 +1064,7 @@ class ImportSynopsisFeedbackIntoBigQuery(pipeline.Pipeline):
         """Import Feedback entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "synopsis_feedback"
+        table_name = "_synopsis_feedback"
         files = [str("gs:/" + f) for f in feedback_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1160,7 +1162,7 @@ class ImportPredefinedCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import PredefinedCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "predefined_suggestions"
+        table_name = "_predefined_suggestions"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1248,7 +1250,7 @@ class ImportManualCategorySuggestionIntoBigQuery(pipeline.Pipeline):
         """Import ManualCategorySuggestion entities from GCS into BigQuery."""
         bigquery_service = get_bq_service()
         jobs = bigquery_service.jobs()
-        table_name = "manual_suggestions"
+        table_name = "_manual_suggestions"
         files = [str("gs:/" + f) for f in category_suggestion_files]
         result = jobs.insert(
             projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
@@ -1363,12 +1365,16 @@ def update_trends():
         ).put()
     categories = get_all_subreddit_categories()
     data = bq_query("trending_subs_in_cats", cached=False)
+    trends = []
     for category in categories:
         cat_data = [x for x in data if x["parent_id"] == category["id"]]
-        PreprocessedItem(
-            id="trending_%s" % category["id"],
-            data=json.dumps(cat_data)
-        ).put()
+        trends.append(
+            PreprocessedItem(
+                id="trending_%s" % category["id"],
+                data=json.dumps(cat_data)
+            )
+        )
+    ndb.put_multi(trends)
     return "Done"
 
 def update_search_subscribers():
@@ -1413,6 +1419,25 @@ def sitemap():
     response = make_response(sitemap_xml)
     response.headers["Content-Type"] = "application/xml"
     return response
+
+def subreddit_metrics(subreddit_id):
+    """Returns subreddit rank from BigQuery."""
+    subreddit_rank = bq_query(
+        "subreddit_rank",
+        params=(subreddit_id),
+        cache_key="rank_"+subreddit_id
+    )
+    subscriber_history = bq_query(
+        "subscriber_history",
+        params=(subreddit_id),
+        cache_key="history_"+subreddit_id
+    )
+    return jsonify(
+        metrics={
+            "subreddit_rank": subreddit_rank[0]["subreddit_rank"],
+            "subscriber_history": subscriber_history
+        }
+    )
 
 def warmup():
     """Handles AppEngine warmup requests."""

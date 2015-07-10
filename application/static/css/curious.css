@@ -139,6 +139,16 @@ h2 {
   padding: 10px;
 }
 
+.flair {
+  background-color: #28b62c;
+  padding: 4px;
+  font-size: 11px;
+  margin: 0px 5px;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
 .fa {
   min-width: 14px;
   margin-right: 5px;

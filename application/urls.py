@@ -97,6 +97,13 @@ app.add_url_rule(
     view_func=views.subreddit
 )
 
+# Subreddit metrics API
+app.add_url_rule(
+    "/api/r/<subreddit_id>/metrics",
+    "subreddit_metrics",
+    view_func=views.subreddit_metrics
+)
+
 # Subreddit Frontpage preview
 app.add_url_rule(
     "/subreddit_frontpage",

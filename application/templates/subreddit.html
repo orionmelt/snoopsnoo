@@ -124,8 +124,65 @@
         });
     }
 
+    function load_subreddit_metrics() {
+        var metrics_api_url = "/api/r/{{subreddit.key.id()}}/metrics";
+        $.ajax({
+            url: metrics_api_url
+        }).done(function(data) {
+            console.log(data);
+            var top_flair = "";
+            if(data.metrics.subreddit_rank <= 10) {
+                top_flair = ' <span class="flair">TOP 10</span>';
+            } else if(data.metrics.subreddit_rank <= 50) {
+                top_flair = ' <span class="flair">TOP 50</span>';
+            } else if(data.metrics.subreddit_rank <= 100) {
+                top_flair = ' <span class="flair">TOP 100</span>';
+            } else if(data.metrics.subreddit_rank <= 500) {
+                top_flair = ' <span class="flair">TOP 500</span>';
+            } else if(data.metrics.subreddit_rank <= 1000) {
+                top_flair = ' <span class="flair">TOP 1K</span>';
+            } else if(data.metrics.subreddit_rank <= 5000) {
+                top_flair = ' <span class="flair">TOP 5K</span>';
+            } else if(data.metrics.subreddit_rank <= 10000) {
+                top_flair = ' <span class="flair">TOP 10K</span>';
+            }
+            $("#sub_rank").removeClass("hide");
+            $("#sub_rank").html('<i class="fa fa-star text-muted"></i>'+"Ranked # "+d3.format(",d")(+data.metrics.subreddit_rank)+top_flair);
+
+            var metrics = data.metrics.subscriber_history.map(function(d) {
+                return {
+                    date:d.log_date,
+                    subscribers:d.subscribers
+                };
+            });
+
+            if(metrics.length < 2) return;
+
+            $("#subreddit-metrics").removeClass("hide");
+
+            curious.timeseries({
+                container: "data-subscriber_history",
+                data: metrics.slice(0,10),
+                width: 536,
+                height: 120,
+                margin: {
+                    top: 10,
+                    right: 30,
+                    bottom: 30,
+                    left: 30
+                },
+                tooltips: true,
+                tooltip_date_format: "%B %d, %Y",
+                x_label: "Date",
+            });
+        }).fail(function(jqXHR, status_text, error_thrown) {
+
+        });
+    }
+
     $(function () {
         load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
+        load_subreddit_metrics();
         $("#show-thumbnail").click(function() {
             load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 1);
         });
