@@ -92,17 +92,23 @@
         y_max = d3.max(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)<0;}), function(d) { return d3.max(d.values, function(v) { return v.value; }); });
         ys_max = d3.max(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)>-1;}), function(d) { return d3.max(d.values, function(v) { return v.value; }); });
 
+        y_min = d3.min(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)<0;}), function(d) { return d3.min(d.values, function(v) { return v.value; }); });
+        ys_min = d3.min(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)>-1;}), function(d) { return d3.min(d.values, function(v) { return v.value; }); });
+
         y_max += y_max*0.1;
         ys_max += ys_max*0.1;
 
+        y_min -= y_min*0.1;
+        ys_min -= ys_min*0.1;
+
         y.domain([
-            d3.min(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)<0;}), function(d) { return d3.min(d.values, function(v) { return v.value; }); }),
+            y_min,
             y_max
         ]);
 
         if(secondary_scale && secondary_scale.length>0) {
             ys.domain([
-                d3.min(series_values.filter(function(d) { return secondary_scale.indexOf(d.name)>-1;}), function(d) { return d3.min(d.values, function(v) { return v.value; }); }),
+                ys_min,
                 ys_max
             ]);
         }
