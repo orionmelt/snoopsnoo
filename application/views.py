@@ -1335,7 +1335,7 @@ def update_subscribers_map(delta):
     lines = delta.read().split("\n")
     for batch in chunk(lines, 100):
         id_subs = [(x.split(",")[0], x.split(",")[1]) for x in batch if "," in x]
-        subs = [x for x in ndb.get_multi([ndb.Key("Subreddit", x[0]) for x in id_subs]) if x]
+        subs = [x for x in ndb.get_multi([ndb.Key("Subreddit", s[0]) for s in id_subs]) if x]
         for sub in subs:
             sub.subscribers = int([x[1] for x in id_subs if x[0] == sub.key.id()][0])
         ndb.put_multi(subs)

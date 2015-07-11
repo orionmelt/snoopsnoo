@@ -79,8 +79,7 @@ class Subreddit(ndb.Model):
     over18 = ndb.BooleanProperty()
     last_updated = ndb.DateTimeProperty(auto_now=True)
     parent_id = ndb.StringProperty()
-    search_updated = ndb.DateProperty(auto_now_add=True)
-    metadata_updated = ndb.DateProperty(auto_now_add=True)
+    related_updated = ndb.DateProperty(default=None)
 
 class CategoryTree(ndb.Model):
     """Models a category tree entry.
