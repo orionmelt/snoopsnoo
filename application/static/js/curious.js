@@ -24,6 +24,8 @@
         var tooltip_date_format = options.tooltip_date_format || "%B %Y";
         var secondary_scale = options.secondary_scale || [];
         var x_label = options.x_label || "Date";
+        var x_tick = options.x_tick || null;
+        var x_tick_interval = options.x_tick_interval || null;
 
         // If data doesn't contain a "date" field, write error message to log
         if (!data.length || !("date" in data[0])) console.log("Error: Data doesn't contain field named 'date'.");
@@ -65,7 +67,8 @@
         // Declare x and y axis functions
         var x_axis_fn = d3.svg.axis()
             .scale(x)
-            .orient("bottom");
+            .orient("bottom")
+            .ticks(x_tick, x_tick_interval);
 
         var y_axis_fn = d3.svg.axis()
             .scale(y)
@@ -99,8 +102,8 @@
         y_max += y_max*0.1;
         ys_max += ys_max*0.1;
 
-        y_min -= y_min*0.1;
-        ys_min -= ys_min*0.1;
+        y_min -= y_min*0.05;
+        ys_min -= ys_min*0.05;
 
         y.domain([
             y_min,
