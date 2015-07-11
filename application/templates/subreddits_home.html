@@ -50,7 +50,10 @@
                             {% for category in root["children"] %}
                             <li>
                                 <a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
-                                    {{ category["display_name"] }}
+                                    {{ category["display_name"] }} 
+                                    {% if category["id"]=="reddit_adult-and-nsfw" %}
+                                    <span class="smaller text-danger">(18+)</span>
+                                    {% endif %}
                                 </a>
                             </li>
                             {% endfor %}
@@ -139,7 +142,7 @@
                         <h2 class="margin-btm-15">
                             <a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
                                 <img class="icon" src="/static/icons/topics/{{category["id"]}}.png">
-                                <span class="category-heading {{ "text-danger" if category["id"]=="reddit_adult-and-nsfw" }}">{{ category["display_name"] }}</span>
+                                <span class="category-heading" title="{{ category["id"] }}">{{ category["display_name"] }}</span>
                             </a>
                         </h2>
                         {{ snoopsnoo_macros.subreddits_category(category, level) }}

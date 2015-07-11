@@ -47,13 +47,13 @@
                         Trending in {{ category.display_name }}
                     </div>
                     {% for sub in trending_subs_in_cat %}
-                    <div class="list-group-item small">
-                        <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{ sub["display_name"] }}</a>
+                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}" class="list-group-item">
+                        <span class="text-primary">/r/{{ sub["display_name"] }}</span>
                         {% if sub["over18"] %}
                         <span class="margin-lft-5 smaller text-danger">(18+)</span>
                         {% endif %}
-                        <span class="pull-right"><i class="fa fa-arrow-up"></i> +{{ '{0:,}'.format(sub["growth_7_days"] | int) }}</span>
-                    </div>
+                        <span class="small pull-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }} <i class="fa fa-arrow-up"></i></span>
+                    </a>
                     {% endfor %}
                 </div>
                 {% endif %}

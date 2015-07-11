@@ -123,7 +123,12 @@
 
 {% macro link_to_subreddits_category(category_id, link_text, class=None) -%}
 {% autoescape false %}
-<a {% if class %}class="{{class}}"{% endif %} href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">{{ link_text }}</a>
+<a {% if class %}class="{{class}}"{% endif %} href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">
+    {{ link_text }}
+    {% if category_id=="reddit_adult-and-nsfw" %}
+    <span class="smaller text-danger">(18+)</span>
+    {% endif %}
+</a>
 {% endautoescape %}
 {%- endmacro %}
 
@@ -165,7 +170,9 @@
         {% endfor %}
         {% if t1_sub %}
             <a class="list-group-item cat_collapse" data-toggle="collapse" data-parent="#topics-menu" href="#{{t1.id}}">
-                <span class="text-primary">{{t1["display_name"]}}</span>
+                <span class="text-primary">
+                    {{t1["display_name"]}}
+                </span>
                 <i class="fa fa-plus-square text-info pull-right"></i>
             </a>
 

@@ -905,7 +905,7 @@ def update_category_tree(node="reddit"):
     child_cats = sorted(
         child_cats,
         key=lambda x: x.display_name \
-            if x.display_name.lower() not in ["adult and nsfw", "other"] else "z"
+            if x.display_name.lower() not in ["other"] else "z"
     )
     children = []
     if node != "reddit":
