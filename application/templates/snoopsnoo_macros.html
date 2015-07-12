@@ -66,7 +66,7 @@
         <a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
         {% endif %}
         {% if subreddit.over18 %}
-        <span class="margin-lft-5 smaller text-danger">(18+)</span>
+        <span class="margin-lft-5 flair-danger">NSFW</span>
         {% endif %}
         {% if subreddit.subreddit_type == 2 %}
         <span class="margin-lft-5 smaller text-danger"><i class="fa fa-eye-slash" title="Private"></i></span>
@@ -126,7 +126,7 @@
 <a {% if class %}class="{{class}}"{% endif %} href="/subreddits/{{ "/".join(category_id.split("_")[1:]) }}/">
     {{ link_text }}
     {% if category_id=="reddit_adult-and-nsfw" %}
-    <span class="smaller text-danger">(18+)</span>
+    <span class="flair-danger">NSFW</span>
     {% endif %}
 </a>
 {% endautoescape %}

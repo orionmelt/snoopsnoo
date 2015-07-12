@@ -52,7 +52,7 @@
                                 <a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
                                     {{ category["display_name"] }} 
                                     {% if category["id"]=="reddit_adult-and-nsfw" %}
-                                    <span class="smaller text-danger">(18+)</span>
+                                    <span class="flair-danger">NSFW</span>
                                     {% endif %}
                                 </a>
                             </li>
@@ -79,7 +79,7 @@
                                 <td>
                                     <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
                                     {% if sub["over18"] %}
-                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    <span class="margin-lft-5 flair-danger">NSFW</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-right">{{ '{0:,}'.format(sub["current_subscribers"] | int) }}</td>
@@ -101,7 +101,7 @@
                                 <td>
                                     <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
                                     {% if sub["over18"] %}
-                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    <span class="margin-lft-5 flair-danger">NSFW</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }}</td>
@@ -123,7 +123,7 @@
                                 <td>
                                     <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
                                     {% if sub["over18"] %}
-                                    <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                                    <span class="margin-lft-5 flair-danger">NSFW</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-right">{{ '{0:+,}'.format(sub["growth_1_day"] | int) }}</td>

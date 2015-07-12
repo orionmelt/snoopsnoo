@@ -149,6 +149,12 @@ h2 {
   white-space: nowrap;
 }
 
+.flair-danger {
+  padding: 2px;
+  font-size:70%;
+  color: #ff4136;
+}
+
 .fa {
   min-width: 14px;
   margin-right: 5px;
