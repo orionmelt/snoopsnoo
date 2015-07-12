@@ -120,6 +120,14 @@ app.add_url_rule(
     methods=["POST"]
 )
 
+# Stage Subreddit Category page
+app.add_url_rule(
+    "/stage-subreddit-category",
+    "stage_sub_category",
+    view_func=views.stage_sub_category,
+    methods=["POST"]
+)
+
 # Subreddit Search Results page
 app.add_url_rule(
     "/subreddits/search",
@@ -188,6 +196,12 @@ app.add_url_rule(
     "/jobs/update-search-subscribers",
     "update_search_subscribers",
     view_func=views.update_search_subscribers
+)
+
+app.add_url_rule(
+    "/jobs/process-category-stage",
+    "process_sub_category_stage",
+    view_func=views.process_sub_category_stage
 )
 
 app.add_url_rule(

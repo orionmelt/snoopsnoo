@@ -13,6 +13,27 @@
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-9">
+                    {% if is_admin %}
+                    <div class="margin-btm-20">
+                        <form id="admin-set-category-form" class="form-horizontal">
+                            <div class="row">
+                                <input type="hidden" name="subreddit_id" value="{{ subreddit.key.id() }}">
+                                <div class="col-md-9">
+                                    <select name="category_id" class="form-control small">
+                                        <option value="">-- Select topic --</option>
+                                    {% for c in all_subreddit_categories %}
+                                        <option value="{{c["id"]}}">{{c["text"]}}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                    <span class="save_done margin-lft-10"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
                     {{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=True) }}
                     </div>
                     <div class="col-md-3">
@@ -57,9 +78,9 @@
                     <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}" class="list-group-item">
                         <span class="text-primary">/r/{{ sub["display_name"] }}</span>
                         {% if sub["over18"] %}
-                        <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                        <span class="margin-lft-5 flair-danger">NSFW</span>
                         {% endif %}
-                        <span class="small pull-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }} <i class="fa fa-arrow-up"></i></span>
+                        <span class="small pull-right">{{ '{0:+,}'.format(sub["growth_1_day"] | int) }} <i class="fa fa-arrow-up"></i></span>
                     </a>
                     {% endfor %}
                 </div>
@@ -183,6 +204,25 @@
     }
 
     $(function () {
+        {% if is_admin %}
+        $("select").select2();
+
+        $(document).on('submit', '#admin-set-category-form', function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var done_span = $(this).parent().find(".save_done");
+            var data=$(this).serializeArray();
+            var action="{{ url_for("stage_sub_category") }}";
+            $.ajax({
+                url: action,
+                type: "POST",
+                data: data
+            }).done(function(response) {
+                done_span.html('<i class="fa fa-check text-success"></i>');
+            });
+        });
+        
+        {% endif %}
         load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
         load_subreddit_metrics();
         $("#show-thumbnail").click(function() {

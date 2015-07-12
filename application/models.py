@@ -111,6 +111,16 @@ class ManualCategorySuggestion(ndb.Model):
     category_id = ndb.StringProperty()
     suggested_category = ndb.StringProperty(indexed=False)
 
+class SubredditCategoryStage(ndb.Model):
+    """
+    Models a staging entry for subreddit category.
+    """
+    log_date = ndb.DateTimeProperty(auto_now_add=True)
+    subreddit_id = ndb.StringProperty()
+    category_id = ndb.StringProperty()
+    user_id = ndb.StringProperty()
+
+
 class SubredditRelation(ndb.Model):
     """
     Models a related subreddit entry.

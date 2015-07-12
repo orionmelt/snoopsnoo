@@ -20,6 +20,7 @@ import requests
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.api import search
+from google.appengine.api import users
 from flask import (
     request, render_template, url_for, redirect, abort, Markup, jsonify, make_response
 )
@@ -37,7 +38,7 @@ from application.models import  (
     User, Feedback, ErrorLog, Subreddit, Category, CategoryTree,
     PredefinedCategorySuggestion, ManualCategorySuggestion,
     SubredditRelation, PreprocessedItem, SubredditRecommendationFeedback,
-    SearchQuery
+    SearchQuery, SubredditCategoryStage
 )
 
 class Bunch(object):
@@ -422,7 +423,7 @@ def save_error():
     return "OK"
 
 def save_sub_category_suggestion():
-    """Persists subreddit category suggestion given in a GET request."""
+    """Persists subreddit category suggestion by users."""
     category_ids = request.form.getlist("category_id")
     subreddit_names = request.form.getlist("subreddit_name")
     suggested_categories = request.form.getlist("suggested_category")
@@ -456,6 +457,21 @@ def save_sub_category_suggestion():
         ndb.put_multi(manual_suggestions)
     return "OK"
 
+@admin_required
+def stage_sub_category():
+    """Saves subreddit category set by admin to stage."""
+    category_id = request.form.get("category_id")
+    subreddit_id = request.form.get("subreddit_id")
+    user = users.get_current_user()
+    user_id = user.nickname()
+    stage_entry = SubredditCategoryStage(
+        subreddit_id=subreddit_id,
+        category_id=category_id,
+        user_id=user_id
+    )
+    stage_entry.put()
+    return "OK"
+
 def subreddits_home():
     """Renders subreddits directory home page."""
     root = get_subreddits_root()
@@ -473,10 +489,6 @@ def subreddits_home():
     prep_growing_subs = PreprocessedItem.get_by_id("growing_subs")
     if prep_growing_subs:
         growing_subs = json.loads(prep_growing_subs.data)
-
-    #new_subs = bq_query("new_subs")
-    #trending_subs = bq_query("trending_subs")
-    #growing_subs = bq_query("growing_subs")
 
     return render_template(
         "subreddits_home.html",
@@ -503,7 +515,7 @@ def subreddits_category(level1, level2=None, level3=None):
         )
         if request.query_string:
             url += "?" + request.query_string
-        return redirect(url)
+        return redirect(url, code=301)
     category_id = "reddit_" + level1.lower()
     breadcrumbs_ids = [category_id]
     if level2:
@@ -562,6 +574,7 @@ def subreddit(subreddit_name):
     root = get_subreddits_root()
     subreddit_name = subreddit_name.lower()
     sub = get_subreddit(subreddit_name)
+    is_admin = users.is_current_user_admin()
     if not sub:
         return render_template(
             "subreddit_not_found.html",
@@ -590,7 +603,8 @@ def subreddit(subreddit_name):
         all_subreddit_categories=all_subreddit_categories,
         related_subreddits=related_subreddits,
         root=json.loads(root.data),
-        trending_subs_in_cat=trending_subs_in_cat
+        trending_subs_in_cat=trending_subs_in_cat,
+        is_admin=is_admin
     )
 
 def subreddit_frontpage():
@@ -866,7 +880,11 @@ def add_new_subs():
     other_category.put()
     update_total_count("reddit")
     update_category_tree("reddit")
-    export_subreddits_handler(oldest.key.id(), newest_id)
+    filters = [
+        ("subreddit_id", ">", oldest.key.id()),
+        ("subreddit_id", "<=", newest_id),
+    ]
+    export_subreddits_handler(filters=filters)
     return "Done"
 
 def count_subreddits_handler(sub):
@@ -930,9 +948,70 @@ def update_category_tree(node="reddit"):
     cat_tree.put()
     return data
 
+def process_sub_category_stage():
+    """Processes staging entries and updates categories."""
+    from_ts = datetime.datetime.now()
+    index = search.Index(name="subreddits_search")
+    stage_entries = SubredditCategoryStage.query().order(
+        SubredditCategoryStage.log_date
+    ).fetch(200)
+    if not stage_entries:
+        return "Done"
+    subs = []
+    processed = []
+    docs = []
+    categories = Category.query().fetch()
+    for stage_entry in stage_entries:
+        logging.info("Processing %s" % stage_entry.subreddit_id)
+        if stage_entry.subreddit_id in processed:
+            continue
+        sub = Subreddit.get_by_id(stage_entry.subreddit_id)
+        if not sub:
+            continue
+        old_category = [x for x in categories if x.key.id() == sub.parent_id][0]
+        new_category = [
+            x for x in categories if x.key.id() == stage_entry.category_id
+        ][0]
+        old_category.subreddit_count -= 1
+        new_category.subreddit_count += 1
+        sub.parent_id = stage_entry.category_id
+        subs.append(sub)
+        processed.append(stage_entry.subreddit_id)
+        doc = index.get(stage_entry.subreddit_id)
+        if not doc:
+            continue
+        doc_fields = [f for f in doc.fields if f.name != "topic"]
+        search_topics = []
+        current_parent_id = sub.parent_id
+        while current_parent_id != "reddit":
+            cat = [x for x in categories if x.key.id() == current_parent_id][0]
+            search_topics.append(
+                search.TextField(name="topic", value=cat.display_name)
+            )
+            current_parent_id = cat.parent_id
+        doc_fields += search_topics
+        doc = search.Document(
+            doc_id=doc.doc_id,
+            fields=doc_fields,
+            rank=sub.subscribers if sub.subscribers > 0 else 1
+        )
+        docs.append(doc)
+    ndb.put_multi(subs)
+    ndb.put_multi(categories)
+    ndb.delete_multi([x.key for x in stage_entries])
+    index.put(docs)
+    update_total_count("reddit")
+    update_category_tree("reddit")
+    filters = [
+        ("last_updated", ">", from_ts),
+        ("last_updated", "<=", datetime.datetime.now()),
+    ]
+    export_subreddits_handler(filters=filters)
+    return "Done"
+
 class ExportSubredditsPipeline(pipeline.Pipeline):
     """A pipeline that iterates through Subreddit entities."""
-    def run(self, from_sub_id=None, to_sub_id=None):
+    def run(self, filters=None):
         """Iterates through Subreddit entities and writes to GCS files."""
         output = yield mapreduce_pipeline.MapperPipeline(
             "ExportSubredditsPipeline",
@@ -942,11 +1021,7 @@ class ExportSubredditsPipeline(pipeline.Pipeline):
             params={
                 "input_reader": {
                     "entity_kind": "application.models.Subreddit",
-                    "filters": \
-                        [
-                            ("subreddit_id", ">", from_sub_id),
-                            ("subreddit_id", "<=", to_sub_id),
-                        ] if (from_sub_id and to_sub_id) else []
+                    "filters": filters or []
                 },
                 "output_writer": {
                     "bucket_name": app.config["GCS_BUCKET_NAME"]
@@ -1025,9 +1100,9 @@ def export_subreddits_map(sub):
     )
     yield row
 
-def export_subreddits_handler(from_sub_id=None, to_sub_id=None):
+def export_subreddits_handler(filters=None):
     """Handler function for exporting Subreddit entities."""
-    mr_pipeline = ExportSubredditsPipeline(from_sub_id, to_sub_id)
+    mr_pipeline = ExportSubredditsPipeline(filters)
     mr_pipeline.start()
     path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
     return "Kicked off job: %s" % path
