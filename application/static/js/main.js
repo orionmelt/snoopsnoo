@@ -83,6 +83,31 @@ $(function () {
     $('button[type="submit"]').prop("disabled", false)
 });
 
+function timeSince(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+        return interval + " years";
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + " months";
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + " days";
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours";
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes";
+    }
+    return Math.floor(seconds) + " seconds";
+}
+
 function jqXHR_error(jqXHR, status_text, error_thrown, error_message) {
     var error_object = {};
     if(jqXHR.status===404) {
@@ -552,10 +577,10 @@ function populate_results(results) {
 
     // Summary
     $("#data-signup_date").text(new Date(data.summary.signup_date.date*1000).toLocaleDateString());
-    $("#data-signup_date_humanized").text(data.summary.signup_date.humanized);
+    $("#data-signup_date_humanized").text("redditor for "+timeSince(new Date(data.summary.signup_date.date*1000)));
 
     $("#data-first_post_date").text(new Date(data.summary.first_post_date.date*1000).toLocaleDateString());
-    $("#data-first_post_date_humanized").text(data.summary.first_post_date.humanized);
+    $("#data-first_post_date_humanized").text("(past "+timeSince(new Date(data.summary.first_post_date.date*1000))+")");
 
     $("#data-lurk_period_humanized").text(data.summary.lurk_period.days_humanized);
     $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + 
