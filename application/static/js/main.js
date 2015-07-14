@@ -76,6 +76,7 @@ var DEFAULT_SUBS = [
 
 
 $(function () {
+    $("[data-toggle='tooltip']").tooltip();
     $(".user-timezone").text(g_user_timezone);
     $("[data-hide]").on("click", function(){
         $(this).closest("#error").hide();

@@ -44,8 +44,8 @@
 
         <div class="margin-20">
             <div class="container">
-                <div class="row margin-btm-20">
-                    <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-4 margin-btm-40">
                         <section id="announcements" class="bottom-buffer">
                             <h2>Try the new subreddit search</h2>
                             <form class="margin-20" action="{{ url_for("search_subreddits") }}" method="get">
@@ -76,11 +76,12 @@
                             
                         </section>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 margin-btm-40">
                         <h2>New Subreddits</h2>
-                        <table class="table table-striped">
+                        <table class="table table-striped small">
                             <thead>
                                 <td>Subreddit</td>
+                                <td></td>
                                 <td class="text-right">Subscribers</td>
                             </thead>
                             <tbody>
@@ -92,21 +93,27 @@
                                         <span class="margin-lft-5 smaller text-danger">(18+)</span>
                                         {% endif %}
                                     </td>
+                                    <td>
+                                    {% if "parent_name" in sub %}
+                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
+                                    {% endif %}
+                                    </td>
                                     <td class="text-right">{{ '{0:,}'.format(sub["current_subscribers"] | int) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                         <div class="text-right">
-                            <a href="/subreddits/">See more new subreddits</a>
+                            <a href="/subreddits/#new-subreddits">See more new subreddits</a>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 margin-btm-40">
                         <h2>Trending Subreddits</h2>
-                        <table class="table table-striped">
+                        <table class="table table-striped small">
                             <thead>
                                 <td>Subreddit</td>
-                                <td class="text-right">New Subscribers</td>
+                                <td></td>
+                                <td class="text-right">+Subscribers<i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
                             </thead>
                             <tbody>
                                 {% for sub in trending_subs[:5] %}
@@ -117,13 +124,18 @@
                                         <span class="margin-lft-5 smaller text-danger">(18+)</span>
                                         {% endif %}
                                     </td>
+                                    <td>
+                                    {% if "parent_name" in sub %}
+                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
+                                    {% endif %}
+                                    </td>
                                     <td class="text-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                         <div class="text-right">
-                            <a href="/subreddits/">See more trending subreddits</a>
+                            <a href="/subreddits/#trending-subreddits">See more trending subreddits</a>
                         </div>
                     </div>
                 </div>

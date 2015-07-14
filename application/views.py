@@ -138,12 +138,12 @@ def get_bq_service():
     http = app_credentials.authorize(httplib2.Http())
     return build("bigquery", "v2", http=http)
 
-def bq_query(query, params=None, cache_key=None, cached=False):
+def bq_query(query, params=None, cache_key=None, cached=True):
     """Returns BigQuery results as a dictionary."""
     if not cache_key:
         cache_key = "bq_" + query
     results = memcache.get(cache_key)
-    if not results and not cached:
+    if not results or not cached:
         bigquery_service = get_bq_service()
         query_string = app.config["BQ_QUERIES"][query]
         if params:
@@ -962,7 +962,6 @@ def process_sub_category_stage():
     docs = []
     categories = Category.query().fetch()
     for stage_entry in stage_entries:
-        logging.info("Processing %s" % stage_entry.subreddit_id)
         if stage_entry.subreddit_id in processed:
             continue
         sub = Subreddit.get_by_id(stage_entry.subreddit_id)
@@ -1432,13 +1431,18 @@ def delete_user(username):
 def update_trends():
     """Updates trending subreddits for each category."""
     trend_keys = ["new_subs", "trending_subs", "growing_subs"]
+    categories = get_all_subreddit_categories()
     for trend_key in trend_keys:
         data = bq_query(trend_key, cached=False) or []
+        for sub in data:
+            parent_name = [
+                x for x in categories if x["id"] == sub["parent_id"]
+            ][0]["text"].split(">")[-1].strip()
+            sub["parent_name"] = parent_name
         PreprocessedItem(
             id=trend_key,
             data=json.dumps(data)
         ).put()
-    categories = get_all_subreddit_categories()
     data = bq_query("trending_subs_in_cats", cached=False)
     trends = []
     for category in categories:

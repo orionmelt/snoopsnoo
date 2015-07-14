@@ -155,6 +155,15 @@ h2 {
   color: #ff4136;
 }
 
+.flair-subtle {
+  font-size: 12px;
+  text-decoration: none !important;
+}
+
+.flair-subtle a {
+  text-decoration: none;
+}
+
 .fa {
   min-width: 14px;
   margin-right: 5px;
