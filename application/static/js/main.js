@@ -84,8 +84,9 @@ $(function () {
     $('button[type="submit"]').prop("disabled", false)
 });
 
-function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
+function timeSince(date, since) {
+    var today = since ? since : new Date();
+    var seconds = Math.floor((today - date) / 1000);
     var interval = Math.floor(seconds / 31536000);
     if (interval > 1) {
         return interval + " years";
@@ -583,7 +584,7 @@ function populate_results(results) {
     $("#data-first_post_date").text(new Date(data.summary.first_post_date.date*1000).toLocaleDateString());
     $("#data-first_post_date_humanized").text("(past "+timeSince(new Date(data.summary.first_post_date.date*1000))+")");
 
-    $("#data-lurk_period_humanized").text(data.summary.lurk_period.days_humanized);
+    $("#data-lurk_period_humanized").text(timeSince(new Date(data.summary.lurk_period.from*1000), new Date(data.summary.lurk_period.to*1000)));
     $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + 
         " to " + new Date(data.summary.lurk_period.to*1000).toLocaleDateString());
 
