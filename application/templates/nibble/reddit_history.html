@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %} - Ten years of reddit: an annotated history{% endblock %}
+
+{% block page_styles %}
+<style>
+.border {
+  box-sizing: content-box;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+#history-chart {
+  min-height: 500px;
+}
+
+#posts_by_sub_control {
+  text-align: center;
+}
+
+#loading {;
+  padding-top: 200px;
+  text-align: center;
+}
+
+#history-control {
+  text-align: center;
+}
+
+#history-control-form label {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="margin-20">
+  <div class="container">
+    <div class="row margin-btm-40">
+      <div class="col-md-12 margin-btm-40">
+        <div class="row margin-btm-20">
+          <div class="col-md-6">
+            <h2>Ten years of reddit: An Annotated History</h2>
+          <p class="small margin-btm-20">July 15, 2015</p>
+          </div>
+          <div class="col-md-6">
+            <img class="img-responsive" src="http://2.bp.blogspot.com/-990PztzdEPY/Tl7G6x32nFI/AAAAAAAAAHY/8Umid1nkuJg/s1600/evolve.png" alt="Ten years of reddit: An Annotated History">
+          </div>
+        </div>
+        <div id="history-control">
+          <form id="history-control-form">
+              <label><input type="radio" name="mode" value="monthly" checked> by month</label>
+              <label><input type="radio" name="mode" value="daily"> by day</label>
+          </form>
+        </div>
+        <div id="loading">
+          <i class="fa fa-4x fa-spinner fa-spin"></i>
+        </div>
+        <div id="history-chart">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="margin-btm-40">
+          <h2 class="margin-btm-20">Data Sources</h2>
+          <ul>
+            <li>Daily comments data from Nov 2007 to May 2015 from <a href="https://www.reddit.com/r/datasets/comments/3bxlg7/i_have_every_publicly_available_reddit_comment/" target="_blank">/r/datasets</a></li>
+            <li>Monthly accounts, submissions and comments data from <a href="https://www.reddit.com/r/redditdata/comments/3aujfe/10_years_of_reddit_data_dump/" target="_blank">/r/redditdata</a></li>
+            <li>Daily subreddit data from <a href="/subreddits/">SnoopSnoo Subreddits</a></li>
+            <li>When daily data was unavailable, an average based on monthly data was used.</li>
+            <li>Comments, accounts and submissions data available only until June 23, 2015.</li>
+          </ul>
+          <hr>
+        </div>
+        <div class="margin-btm-40">
+          <h2 class="margin-btm-20">Comments</h2>
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+              /* * * CONFIGURATION VARIABLES * * */
+              var disqus_shortname = 'snoopsnoo';
+              
+              /* * * DON'T EDIT BELOW THIS LINE * * */
+              (function() {
+                  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+        </div>
+      </div>
+      <div class="col-md-5 col-md-offset-1">
+        <h2 class="margin-btm-20">What did we miss?</h2>
+        <iframe id="add-event-form" src="https://docs.google.com/forms/d/16p1aO6bTj7P8zJXYRJPyeNED_B3cHdLcH_lvJq7-ByM/viewform?embedded=true#start=embed" height="800" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}"></script>
+<script>
+$(function () {
+  var form_width = $("#add-event-form").parent().width();
+  $("#add-event-form").attr("width",form_width);
+
+  $("#history-control-form input").on("change", function() {
+    drawChart(this.value);
+  });
+
+  google.load('visualization', '1', {'packages':['annotationchart']});
+  google.setOnLoadCallback(drawChart);
+  
+  function drawChart(series) {
+    var sheet_name = series === "daily" ? "ChartData" : "ChartDataMonthly";
+    var query = new google.visualization.Query("https://docs.google.com/spreadsheets/d/1S1252e1Z60X0eSpZHWe68Mj788eVOaHaVAHfCJ_Nk0s/gviz/tq?sheet="+sheet_name+"&headers=1");
+    query.send(handleQueryResponse);
+  }
+  
+  function handleQueryResponse(response) {
+    var data = response.getDataTable();
+    console.log(data);
+    var chart = new google.visualization.AnnotationChart(document.getElementById('history-chart'));
+    var options = {
+      displayAnnotations: true,
+      displayAnnotationsFilter: false,
+      allowHtml: true,
+      scaleType: 'allmaximized',
+      scaleFormat: '#,##0',
+      scaleColumns: [0,2],
+      height: 500,
+      numberFormats: "#,##0",
+      min:0
+    };
+    chart.draw(data, options);
+    $("#history-chart").removeClass("container");
+    $("#history-control").show();
+    $("#loading").hide();
+  }
+});
+</script>
+{% endblock %}

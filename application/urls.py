@@ -210,6 +210,12 @@ app.add_url_rule(
     view_func=views.sitemap
 )
 
+app.add_url_rule(
+    "/nibble/reddit-history/",
+    "reddit_history",
+    view_func=views.reddit_history
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

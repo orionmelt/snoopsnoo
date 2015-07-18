@@ -284,8 +284,8 @@ def get_recommended_subreddits(subreddits):
 
 def home():
     """Renders the site home page."""
-    new_subs = None
-    trending_subs = None
+    new_subs = []
+    trending_subs = []
 
     prep_new_subs = PreprocessedItem.get_by_id("new_subs")
     if prep_new_subs:
@@ -304,6 +304,10 @@ def home():
 def about():
     """Renders the site about page."""
     return render_template("about.html")
+
+def reddit_history():
+    """Renders the site about page."""
+    return render_template("nibble/reddit_history.html")
 
 def random_user():
     """Redirects to a random user profile page."""
