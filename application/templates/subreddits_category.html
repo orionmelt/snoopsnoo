@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} - {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits | {{ '{0:,}'.format(subreddit_count | int) }} subreddits in {{category.display_name}}{% if subreddits %} | /r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}{% endif %}{% endblock %}
+{% block title %} - {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits{% endblock %}
 
 {% block meta_description %}{{ '{0:,}'.format(subreddit_count | int) }} {% for crumb in breadcrumbs %}{{ crumb.display_name }}{%if not loop.last %} > {% endif %}{% endfor %} subreddits on reddit{% if subreddits %} - {{subreddits | length}} subreddits on this page (/r/{{subreddits[0].display_name}} - /r/{{subreddits[-1].display_name}}){% endif %}. Browse and find thousands of subreddits categorized by topics.{% endblock %}
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %} - /r/{{subreddit.display_name}} {{"("+subreddit.title|safe+")" if subreddit.title}} in {{ breadcrumbs[-1].display_name }} | Subreddit statistics and related subreddits{% endblock %}
-{% block meta_description %}Subreddit analytics for /r/{{subreddit.display_name}}{{" - " + subreddit.title|safe + "." if subreddit.title}} {{(subreddit.public_description or "No subreddit description available.")|safe}}{% endblock %}
+{% block title %} - /r/{{subreddit.display_name}} {{"("+subreddit.title|safe+")" if subreddit.title}}{% endblock %}
+{% block meta_description %}/r/{{subreddit.display_name}} in {{ breadcrumbs[-1].display_name }} - subreddit analytics and related subreddits.{{" " + subreddit.title|safe + "." if subreddit.title}} {{(subreddit.public_description or "No subreddit description available.")|safe}}{% endblock %}
 {% block nav_subreddits %}active{% endblock %}
 
 {% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
