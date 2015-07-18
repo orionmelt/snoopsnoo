@@ -15,7 +15,7 @@
    </url>
    {%- for category in subreddits_root["children"] -%}
    <url>
-      <loc>http://snoopsnoo.com/subreddits/{{ "/".join(category["id"].split("_")[1:]) }}</loc>
+      <loc>http://snoopsnoo.com/subreddits/{{ "/".join(category["id"].split("_")[1:]) }}/</loc>
       <lastmod>{{ today }}</lastmod>
       <changefreq>daily</changefreq>
       <priority>0.9</priority>
