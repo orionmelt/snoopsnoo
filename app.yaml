@@ -1,4 +1,6 @@
 application: curiousdognightapp
+module: default
+instance_class: F4_1G
 version: 2
 runtime: python27
 api_version: 1

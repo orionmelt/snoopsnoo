@@ -81,6 +81,16 @@ class Subreddit(ndb.Model):
     parent_id = ndb.StringProperty()
     related_updated = ndb.DateProperty(default=None)
 
+class SubredditExtras(ndb.Model):
+    """
+    Models additional metadata for a subreddit.
+    """
+    subreddit_id = ndb.StringProperty()
+    default_subreddit = ndb.BooleanProperty(default=False)
+    ignore_text = ndb.BooleanProperty(default=False)
+    derived_key = ndb.StringProperty(default=None)
+    derived_value = ndb.TextProperty(default=None)
+
 class CategoryTree(ndb.Model):
     """Models a category tree entry.
     """

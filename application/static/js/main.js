@@ -578,11 +578,15 @@ function populate_results(results) {
     var offset_hours = Math.floor(new Date().getTimezoneOffset()/60);
 
     // Summary
-    $("#data-signup_date").text(new Date(data.summary.signup_date.date*1000).toLocaleDateString());
-    $("#data-signup_date_humanized").text("redditor for "+timeSince(new Date(data.summary.signup_date.date*1000)));
+    // Data v3/5 to v7 adjustment
+    var signup_date = data.summary.signup_date.date || data.summary.signup_date
+    $("#data-signup_date").text(new Date(signup_date*1000).toLocaleDateString());
+    $("#data-signup_date_humanized").text("redditor for "+timeSince(new Date(signup_date*1000)));
 
-    $("#data-first_post_date").text(new Date(data.summary.first_post_date.date*1000).toLocaleDateString());
-    $("#data-first_post_date_humanized").text("(past "+timeSince(new Date(data.summary.first_post_date.date*1000))+")");
+    // Data v3/5 to v7 adjustment
+    var first_post_date = data.summary.first_post_date.date || data.summary.first_post_date
+    $("#data-first_post_date").text(new Date(first_post_date*1000).toLocaleDateString());
+    $("#data-first_post_date_humanized").text("(past "+timeSince(new Date(first_post_date*1000))+")");
 
     $("#data-lurk_period_humanized").text(timeSince(new Date(data.summary.lurk_period.from*1000), new Date(data.summary.lurk_period.to*1000)));
     $("#data-lurk_period_dates").text(new Date(data.summary.lurk_period.from*1000).toLocaleDateString() + 
@@ -633,16 +637,16 @@ function populate_results(results) {
     }
 
     if(data.summary.comments.best.text) {
-        $("#data-best_comment").html(data.summary.comments.best.text+" <small><a href='"+data.summary.comments.best.permalink+"'>(permalink)</a></small>");
+        $("#data-best_comment").html(data.summary.comments.best.text+" <small><a target='_blank' href='"+data.summary.comments.best.permalink+"'>(permalink)</a></small>");
     }
     if(data.summary.comments.worst.text) {
-        $("#data-worst_comment").html(data.summary.comments.worst.text+" <small><a href='"+data.summary.comments.worst.permalink+"'>(permalink)</a></small>");
+        $("#data-worst_comment").html(data.summary.comments.worst.text+" <small><a target='_blank' href='"+data.summary.comments.worst.permalink+"'>(permalink)</a></small>");
     }
     if(data.summary.submissions.best.title) {
-        $("#data-best_submission").html(data.summary.submissions.best.title+" <small><a href='"+data.summary.submissions.best.permalink+"'>(permalink)</a></small>");
+        $("#data-best_submission").html(data.summary.submissions.best.title+" <small><a target='_blank' href='"+data.summary.submissions.best.permalink+"'>(permalink)</a></small>");
     }
     if(data.summary.submissions.worst.title) {
-        $("#data-worst_submission").html(data.summary.submissions.worst.title+" <small><a href='"+data.summary.submissions.worst.permalink+"'>(permalink)</a></small>");
+        $("#data-worst_submission").html(data.summary.submissions.worst.title+" <small><a target='_blank' href='"+data.summary.submissions.worst.permalink+"'>(permalink)</a></small>");
     }
 
     // Synopsis
@@ -958,7 +962,7 @@ function populate_results(results) {
             url: "/subreddits/recommended/" + reco_qs,
             type: "GET",
         }).done(function(response) {
-            if(response.recommended) {
+            if(response.recommended && response.recommended.length) {
                 var posted_subs = subreddits_array.map(function(d) {
                     return d.name;
                 });
@@ -1007,13 +1011,13 @@ function populate_results(results) {
 
     if(c && c.length>1) {
 
-        $("#data-worst_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[0].name + "\">/r/"+c[0].name+"</a>");
+        $("#data-worst_karma_per_comment").html("<a target='_blank' href=\"/r/" + c[0].name + "\">/r/"+c[0].name+"</a>");
         $("#data-worst_karma_per_comment_subtext").html(
             "<p>" + c[0].average_karma_per_comment + " karma/comment on average</p>" + 
             "<p><small>" + c[0].comment_karma + " total karma over " + c[0].comments + " comments</small></p>"
         );
 
-        $("#data-best_karma_per_comment").html("<a href=\"http://www.reddit.com/r/" + c[c.length-1].name + "\">/r/"+c[c.length-1].name+"</a>");
+        $("#data-best_karma_per_comment").html("<a target='_blank' href=\"/r/" + c[c.length-1].name + "\">/r/"+c[c.length-1].name+"</a>");
         $("#data-best_karma_per_comment_subtext").html(
             "<p>" + c[c.length-1].average_karma_per_comment + " karma/comment on average</p>" + 
             "<p><small>" + c[c.length-1].comment_karma + " total karma over " + c[c.length-1].comments + " comments</small></p>"
@@ -1034,13 +1038,13 @@ function populate_results(results) {
 
     if(s && s.length>1) {
 
-        $("#data-worst_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[0].name + "\">/r/"+s[0].name+"</a>");
+        $("#data-worst_karma_per_submission").html("<a target='_blank' href=\"/r/" + s[0].name + "\">/r/"+s[0].name+"</a>");
         $("#data-worst_karma_per_submission_subtext").html(
             "<p>" + s[0].average_karma_per_submission + " karma/submission on average</p>" + 
             "<p><small>" + s[0].submission_karma + " total karma over " + s[0].submissions + " submissions</small></p>"
         );
 
-        $("#data-best_karma_per_submission").html("<a href=\"http://www.reddit.com/r/" + s[s.length-1].name + "\">/r/"+s[s.length-1].name+"</a>");
+        $("#data-best_karma_per_submission").html("<a target='_blank' href=\"/r/" + s[s.length-1].name + "\">/r/"+s[s.length-1].name+"</a>");
         $("#data-best_karma_per_submission_subtext").html(
             "<p>" + s[s.length-1].average_karma_per_submission + " karma/submission on average</p>" + 
             "<p><small>" + s[s.length-1].submission_karma + " total karma over " + s[s.length-1].submissions + " submissions</small></p>"
@@ -1068,7 +1072,7 @@ function populate_results(results) {
                 $("#sub-categorize-table-tbody").append(
                     '<tr>' +
                     '<td class="col-md-2">' + 
-                        '<a href="http://www.reddit.com/r/' + c.name + '/" target="_blank">' + c.name + '</a>' +
+                        '<a href="/r/' + c.name + '" target="_blank">' + c.name + '</a>' +
                         '<input type="hidden" name="subreddit_name" value="' + c.name + '">' + 
                     '</td>' +
                     '<td class="col-md-5">' + $("#all-subreddit-categories-placeholder").html() + '</td>' +

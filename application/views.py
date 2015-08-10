@@ -376,6 +376,7 @@ def update_user():
         user.put()
     else:
         user = User(
+            id=data["metadata"]["reddit_id"],
             username=username,
             data_version=data_version,
             data=data
