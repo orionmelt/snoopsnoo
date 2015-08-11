@@ -85,11 +85,11 @@
                     </div>
                     <div class="col-md-4 margin-btm-40">
                         <h2>New Subreddits</h2>
-                        <table class="table table-striped small">
+                        <table class="table table-condensed table-striped small">
                             <thead>
-                                <td>Subreddit</td>
-                                <td></td>
-                                <td class="text-right">Subscribers</td>
+                                <td class="col-xs-6">Subreddit</td>
+                                <td class="col-xs-4">Topic</td>
+                                <td class="col-xs-2 text-right">Subscribers</td>
                             </thead>
                             <tbody>
                                 {% for sub in new_subs[:5] %}
@@ -116,11 +116,11 @@
                     </div>
                     <div class="col-md-4 margin-btm-40">
                         <h2>Trending Subreddits</h2>
-                        <table class="table table-striped small">
+                        <table class="table table-condensed table-striped small">
                             <thead>
-                                <td>Subreddit</td>
-                                <td></td>
-                                <td class="text-right">+Subscribers<i class="text-muted fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
+                                <td class="col-xs-6">Subreddit</td>
+                                <td class="col-xs-4">Topic</td>
+                                <td class="col-xs-2 text-right"><i class="text-muted fa fa-plus-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
                             </thead>
                             <tbody>
                                 {% for sub in trending_subs[:5] %}
