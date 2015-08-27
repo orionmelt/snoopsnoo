@@ -6,6 +6,7 @@ Custom jinja2 filters
 
 from datetime import datetime
 import re
+import os
 
 import jinja2
 import markdown
@@ -56,3 +57,7 @@ def strip_links(text):
         text,
         re.IGNORECASE|re.MULTILINE
     )
+
+def current_version(text):
+    """Returns current app version"""
+    return os.environ['CURRENT_VERSION_ID']

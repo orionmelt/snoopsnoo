@@ -10,7 +10,7 @@ from flask import Flask
 
 from application.jinja_filters import (
     format_date, time_since, format_month, format_day,
-    safe_markdown, from_timestamp, strip_links
+    safe_markdown, from_timestamp, strip_links, current_version
 )
 
 app = Flask(__name__) # pylint: disable=C0103
@@ -32,6 +32,7 @@ app.jinja_env.filters["time_since"] = time_since
 app.jinja_env.filters["markdown"] = safe_markdown
 app.jinja_env.filters["from_timestamp"] = from_timestamp
 app.jinja_env.filters["strip_links"] = strip_links
+app.jinja_env.filters["current_version"] = current_version
 
 # Pull in URL dispatch routes
 import application.urls

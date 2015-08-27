@@ -50,7 +50,7 @@
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + (margin.left + margin.right/2) + "," + margin.top + ")");
 
         // Get all y-axis data series
         color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
@@ -243,7 +243,7 @@
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + (margin.left + margin.right/2) + "," + margin.top + ")");
 
         // Get all y-axis data series
         var series_names = d3.keys(data[0]).filter(function(key) { return key !== x_col; });
@@ -673,7 +673,7 @@
         var margin = options.margin;
         var show_percent = options.show_percent || false;
         var color = options.color || d3.scale.category20();
-        var b = options.breadcrumb_width || { w: 120, h: 30, s: 3, t: 10 };
+        var b = { w: Math.min(120,width/3.59), h: 30, s: 3, t: 10 };
 
         // Fade all but the current sequence, and show it in the breadcrumb trail.
         function mouseover(d) {

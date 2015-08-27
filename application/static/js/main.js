@@ -691,8 +691,8 @@ function populate_results(results) {
         container: "data-topics",
         legend_container: "data-topics_legend",
         data: data.metrics.topic,
-        width: 430,
-        height: 430,
+        width: Math.min(430,$("#data-topics").parent().width()-80),
+        height: Math.min(430,$("#data-topics").parent().width()-80),
         margin: {
             top: 0,
             right: 40,
@@ -716,8 +716,8 @@ function populate_results(results) {
                 $("#data-common_words").empty();
                 curious.wordcloud({
                     container: "data-common_words",
-                    width: 430,
-                    height: 430,
+                    width: Math.min(430,$("#data-common_words").parent().width()-80),
+                    height: Math.min(430,$("#data-common_words").parent().width()-80),
                     data: data.metrics.common_words.slice(ui.value),
                     margin: {
                         top: 0,
@@ -735,8 +735,8 @@ function populate_results(results) {
 
     curious.wordcloud({
         container: "data-common_words",
-        width: 430,
-        height: 430,
+        width: Math.min(430,$("#data-common_words").parent().width()-80),
+        height: Math.min(430,$("#data-common_words").parent().width()-80),
         data: data.metrics.common_words,
         margin: {
             top: 0,
@@ -747,23 +747,32 @@ function populate_results(results) {
     });
 
     // Metrics chart - Date
+    var start = 0;
+    for(var i=0;i<data.metrics.date.length;i++) {
+        if(!(data.metrics.date[i].posts+data.metrics.date[i].submissions)) {
+            start++;
+        } else {
+            break;
+        }
+    }
+
     curious.timeseries({
         container: "data-activity_date",
         id: "activity_date_chart",
-        data: data.metrics.date.map(function(d) {
+        data: data.metrics.date.slice(start).map(function(d) {
             return {
                 date:d.date,
                 posts:d.comments+d.submissions,
                 karma:d.comment_karma+d.submission_karma
             };
         }),
-        width: 860,
-        height: 430,
+        width: Math.min(860,$("#data-activity_date").parent().width()-80),
+        height: Math.min(860,$("#data-activity_date").parent().width()-80)/2,
         margin: {
             top: 0,
-            right: 40,
+            right: 20,
             bottom: 40,
-            left: 40
+            left: 20
         },
         tooltips:true,
         x_label: "Date",
@@ -781,8 +790,8 @@ function populate_results(results) {
                 karma:d.comment_karma+d.submission_karma
             };
         }),
-        width: 430,
-        height: 430,
+        width: Math.min(430,$("#data-activity_weekday").parent().width()-80),
+        height: Math.min(430,$("#data-activity_weekday").parent().width()-80),
         margin: {
             top: 0,
             right: 40,
@@ -810,8 +819,8 @@ function populate_results(results) {
         }).sort(function(a,b) {
             return a.hour - b.hour;
         }),
-        width: 430,
-        height: 430,
+        width: Math.min(430,$("#data-activity_hour").parent().width()-80),
+        height: Math.min(430,$("#data-activity_hour").parent().width()-80),
         margin: {
             top: 0,
             right: 40,
@@ -829,8 +838,8 @@ function populate_results(results) {
     curious.treemap({
         container: "data-posts_by_subreddit",
         data: data.metrics.subreddit,
-        width: 840,
-        height: 384,
+        width: Math.min(840,$("#data-posts_by_subreddit").parent().width()),
+        height: Math.min(840,$("#data-posts_by_subreddit").parent().width()/2.1875),
         margin: {
             top: 0,
             right: 0,
@@ -848,15 +857,14 @@ function populate_results(results) {
             container: "data-submissions",
             legend_container: "data-submissions_legend",
             data: data.summary.submissions.type_domain_breakdown,
-            width: 430,
-            height: 430,
+            width: Math.min(430,$("#data-submissions").parent().width()-80),
+            height: Math.min(430,$("#data-submissions").parent().width()-80),
             margin: {
                 top: 0,
                 right: 40,
                 bottom: 40,
                 left: 40
-            },
-            breadcrumb_width: { w: 180, h: 30, s: 3, t: 10 }
+            }
         });
     }
 
@@ -895,7 +903,7 @@ function populate_results(results) {
         curious.heatmap({
             container: "data-heatmap",
             data: heatmap_data,
-            width: 500,
+            width: Math.min(500,$("#data-heatmap").parent().width()),
             height: 210,
             margin: {
                 top: 0,
@@ -930,7 +938,7 @@ function populate_results(results) {
         curious.bar({
             container: "data-recent_activity",
             data: recent_activity,
-            width: 500,
+            width: Math.min(500,$("#data-recent_activity").parent().width()),
             height: 80,
             margin: {
                 top: 0,
