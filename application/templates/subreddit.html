@@ -150,7 +150,6 @@
         $.ajax({
             url: metrics_api_url
         }).done(function(data) {
-            console.log(data);
             var top_flair = "";
             if(data.metrics.subreddit_rank <= 10) {
                 top_flair = ' <span class="flair">TOP 10</span>';
@@ -169,35 +168,6 @@
             }
             $("#sub_rank").removeClass("hide");
             $("#sub_rank").html('<i class="fa fa-star text-muted"></i>'+"Ranked # "+d3.format(",d")(+data.metrics.subreddit_rank)+top_flair);
-
-            var metrics = data.metrics.subscriber_history.map(function(d) {
-                return {
-                    date:d.log_date,
-                    subscribers:d.subscribers
-                };
-            });
-
-            if(metrics.length < 2) return;
-
-            $("#subreddit-metrics").removeClass("hide");
-
-            curious.timeseries({
-                container: "data-subscriber_history",
-                data: metrics.slice(0,10),
-                width: $("#subreddit-metrics").parent().width()-40,
-                height: 120,
-                margin: {
-                    top: 10,
-                    right: 10,
-                    bottom: 30,
-                    left: 30
-                },
-                tooltips: true,
-                tooltip_date_format: "%B %d, %Y",
-                x_label: "Date",
-                x_tick: d3.time.day,
-                x_tick_interval: 2,
-            });
         }).fail(function(jqXHR, status_text, error_thrown) {
 
         });

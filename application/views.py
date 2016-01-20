@@ -1511,15 +1511,9 @@ def subreddit_metrics(subreddit_id):
         params=(subreddit_id),
         cache_key="rank_"+subreddit_id
     )
-    subscriber_history = bq_query(
-        "subscriber_history",
-        params=(subreddit_id),
-        cache_key="history_"+subreddit_id
-    )
     return jsonify(
         metrics={
-            "subreddit_rank": subreddit_rank[0]["subreddit_rank"],
-            "subscriber_history": subscriber_history
+            "subreddit_rank": subreddit_rank[0]["subreddit_rank"]
         }
     )
 
