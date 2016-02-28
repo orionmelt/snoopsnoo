@@ -119,7 +119,6 @@ $(function () {
   
   function handleQueryResponse(response) {
     var data = response.getDataTable();
-    console.log(data);
     var chart = new google.visualization.AnnotationChart(document.getElementById('history-chart'));
     var options = {
       displayAnnotations: true,

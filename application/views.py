@@ -306,8 +306,58 @@ def about():
     return render_template("about.html")
 
 def reddit_history():
-    """Renders the site about page."""
+    """Renders the Nibble reddit history page."""
     return render_template("nibble/reddit_history.html")
+
+def first_post():
+    """Renders the Nibble first post page."""
+    username = request.args.get("username") or None
+    comment_id = request.args.get("comment_id") or None
+    comment_subreddit = request.args.get("comment_subreddit") or None
+    comment_link_id = request.args.get("comment_link_id") or None
+
+    submission_id = request.args.get("submission_id") or None
+    submission_subreddit = request.args.get("submission_subreddit") or None
+
+    complete = request.args.get("complete") or None
+    return render_template(
+        "nibble/first_post.html",
+        username=username,
+        comment_id=comment_id,
+        comment_subreddit=comment_subreddit,
+        comment_link_id=comment_link_id,
+        submission_id=submission_id,
+        submission_subreddit=submission_subreddit,
+        complete=complete
+    )
+
+def get_first_post():
+    """Retrieves user's first comment/submission from BigQuery."""
+    username = request.form["username"].lower()
+    post = bq_query("first_post", params=(username), cached=False)
+
+    comment_id = post[0]["comment_id"] if len(post) and "comment_id" in post[0] else None
+    comment_subreddit = post[0]["comment_subreddit"] \
+        if len(post) and "comment_subreddit" in post[0] else None
+    comment_link_id = post[0]["comment_link_id"][3:] \
+        if len(post) and "comment_link_id" in post[0] else None
+
+    submission_id = post[0]["submission_link_id"] \
+        if len(post) and "submission_link_id" in post[0] else None
+    submission_subreddit = post[0]["submission_subreddit"] \
+        if len(post) and "submission_subreddit" in post[0] else None
+    return redirect(
+        url_for(
+            "first_post",
+            username=username,
+            comment_id=comment_id,
+            comment_subreddit=comment_subreddit,
+            comment_link_id=comment_link_id,
+            submission_id=submission_id,
+            submission_subreddit=submission_subreddit,
+            complete="1"
+        )
+    )
 
 def random_user():
     """Redirects to a random user profile page."""

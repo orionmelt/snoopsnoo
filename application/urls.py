@@ -216,6 +216,19 @@ app.add_url_rule(
     view_func=views.reddit_history
 )
 
+app.add_url_rule(
+    "/nibble/reddit-first-post/",
+    "first_post",
+    view_func=views.first_post
+)
+
+app.add_url_rule(
+    "/nibble/get-first-post",
+    "get_first_post",
+    view_func=views.get_first_post,
+    methods=["POST"]
+)
+
 ## Error handlers
 @app.errorhandler(404)
 def page_not_found(exception):

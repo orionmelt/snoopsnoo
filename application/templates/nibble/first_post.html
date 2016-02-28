@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% block title %} - Your first post on reddit{% endblock %}
+
+{% block page_includes %}
+{% endblock %}
+
+{% block content %}
+<div class="margin-20">
+  <div class="container">
+    <div class="row margin-btm-40">
+      <div class="col-md-5">
+        <div class="form-box">
+          <div class="text-center">
+            <a href="/nibble/reddit-first-post/"><h2><strong>Your first post on reddit</strong></h2></a>
+            <p class="small margin-btm-20">An analysis of over 2 billion comments and 215 million submissions.</p>
+            <form id="first_comment_form" method="post" action="/nibble/get-first-post">
+              <h3 class="big margin-btm-20">See your first comment and submission on reddit.</h3>
+              <div class="form-group">
+                <div class="input-group col-md-8 col-md-offset-2">
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    class="form-control"
+                    placeholder="reddit username">
+                  <span class="input-group-btn">
+                    <button
+                      id="get_first_post"
+                      class="btn btn-primary"
+                      type="submit"
+                      disabled="disabled"
+                      data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+          {% if username and (comment_id or submission_id) %}
+          <div id="results" class="margin-top-40">
+            {% if comment_id %}
+            <h3 class="text-center"><strong>Your first comment:</strong></h3>
+            <div class="reddit-embed" data-embed-media="www.redditmedia.com" data-embed-parent="false" data-embed-live="true">
+              <div class="text-center">
+                <a
+                  href="https://www.reddit.com/r/{{comment_subreddit}}/comments/{{comment_link_id}}/_/{{comment_id}}"
+                  target="_blank">
+                  Click here if comment fails to load.
+                </a>
+              </div>
+            </div>
+            <script async src="https://www.redditstatic.com/comment-embed.js"></script>
+            {% endif %}
+            {% if submission_id %}
+            <h3 class="text-center margin-top-40"><strong>Your first submission:</strong></h3>
+            <div class="subreddit-frontpage">
+              <div id="post-preview"></div>
+            </div>
+            <script>
+            function load_post_preview() {
+              var post_url = "http://www.reddit.com/api/info.json?id=t3_{{submission_id}}";
+              $.ajax({
+                  url: post_url,
+                  timeout: 30000,
+              }).done(function(data) {
+                  if(!(data.data && data.data.children && data.data.children.length)) {
+                      console.log("ERROR!");
+                      return;
+                  }
+                  $.ajax({
+                      url: "/subreddit_frontpage?over18=1&age_confirmed=0",
+                      type: "POST",
+                      contentType: "application/json",
+                      data: JSON.stringify(data),
+                  }).done(function(response) {
+                      $("#post-preview").html(response);
+                  });
+              }).fail(function(jqXHR, status_text, error_thrown) {
+                  if(jqXHR.status===404) {
+                  } else {
+                  }
+              });
+            }
+            load_post_preview();
+            </script>
+            {% endif %}
+            <p class="text-center margin-20"><a href="/u/{{username}}">See more stats for your reddit account.</a></p>
+          </div>
+          {% elif complete %}
+          <p class="text-center margin-20">No results found.</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="margin-btm-40">
+          <h2 class="margin-btm-20">What's this all about?</h2>
+          <p>Reddit's user page lists up to 1,000 comments and submissions and lets you sort by new, top or controversial, but not by old. This makes it difficult or even impossible to see what your first submission or comment on reddit was. If you have fewer than 1,000 posts, you would have to keep clicking the Next button (or if you have RES, keep scrolling), until you reach the end. If you have more than 1,000, you're out of luck &mdash; there is just no way to see your first submission or comment.</p>
+          <p>Thanks to /u/Stuck_In_The_Matrix's reddit dataset of all public comments and submissions since October 2007, this page lets you see your first public reddit post.</p>
+          <p>Here is some analysis from over 2 billion comments and 215 million submissions by 22 million users. Questions? <a href="https://www.reddit.com/message/compose/?to=orionmelt">PM me on reddit</a> or leave a comment below.</p>
+
+          <h2 class="margin-btm-20 margin-top-40">Comments</h2>
+          <h3 class="big"><strong>TOP 25 Subreddits</strong></h3>
+          <p>Here is the list of top 25 subreddits where users post their first comment. Not surprisingly, they're mostly defaults or former-defaults.</p>
+          <div id="top-comment-subs" class="margin-top-20"></div>
+
+          <h3 class="big"><strong>Most gilded first comment</strong></h3>
+          <p>
+            <a
+              href="https://www.reddit.com/r/AskReddit/comments/2blj8w/whats_the_closest_thing_you_have_to_a_superpower/cj6mbdt"
+              target="_blank">
+              The most gilded first comment
+            </a> was by /u/mboyle &mdash; posted more than 8 years after signing up &mdash; on the AskReddit post titled <a href="https://www.reddit.com/r/AskReddit/comments/2blj8w/whats_the_closest_thing_you_have_to_a_superpower/" target="_blank">What's the closest thing you have to a superpower?</a>
+          </p>
+          <p>
+            <blockquote>
+              <p>I can hang on Reddit for 8 years and never post once.</p>
+              <p>Wait. Fuck.</p>
+            </blockquote>
+          </p>
+
+          <h3 class="big"><strong>Most upvoted first comment</strong></h3>
+          <p>
+            <a
+              href="https://www.reddit.com/r/AskReddit/comments/t0ynr/throwaway_time_whats_your_secret_that_could/c4zrenn"
+              target="_blank">
+              The most upvoted first comment
+            </a> was by a throwaway account on the AskReddit post titled <a href="https://www.reddit.com/r/AskReddit/comments/t0ynr/" target="_blank">Throwaway time! What's your secret that could literally ruin your life if it came out?</a>
+          </p>
+          <p>
+            <blockquote>
+              <p>Two and a half years ago I was in dire financial straights, so I sold my home to keep my struggling business afloat. I neglected to tell the owners that they have an 800 sq. ft. bunker on the property that I built about seven years ago. The bunker that I've called home since I sold it. The entrance to it is well-hidden, but I still come and go very early/very late in the day.</p>
+              <p>I'm a single man who keeps to himself. I'm now in a situation where I could move somewhere else, but I love this hidden paradise so much.</p>
+            </blockquote>
+          </p>
+
+          <h3 class="big"><strong>Most downvoted first comment</strong></h3>
+          <p>
+            <a
+              href="https://www.reddit.com/r/IAmA/comments/p9a1v/im_woody_harrelson_ama/c3nlalf"
+              target="_blank">
+              The most downvoted first comment
+            </a> was one of those infamous Let's-get-back-to-Rampart comments by Woody Harrelson, from his
+            <a
+              href="https://www.reddit.com/r/IAmA/comments/p9a1v/im_woody_harrelson_ama/"
+              target="_blank">IAmA post</a> in 2012.
+          </p>
+          <p>
+            <blockquote>
+              First of off, its not true, and second off, I don't want to answer questions about that. Lets focus on the film people.
+            </blockquote>
+          </p>
+
+          <h3 class="big"><strong>Post with most first comments</strong></h3>
+          <p>
+            <a
+              href="https://www.reddit.com/r/Music/comments/2utdfk/cyndi_lauper/"
+              target="_blank">
+              This rather odd post on /r/Music
+            </a> is full of gibberish first-time comments, most probably all spam accounts. All of them are shadowbanned as of now.
+          </p>
+          <p>
+            It is followed by
+            <a
+              href="https://www.reddit.com/r/Agario/comments/34r8n0/post_your_skins_here_and_the_dev_might_add_them/"
+              target="_blank">
+              a post on /r/Agario about skins
+            </a>, in which 4,375 out of the total 7,609 comments were by first-time commenters.
+          </p>
+
+          <h2 class="margin-btm-20 margin-top-40">Submissions</h2>
+          <h3 class="big"><strong>TOP 25 Subreddits</strong></h3>
+          <p>Here is the list of top 25 subreddits where users posted their first submission.</p>
+          <div id="top-submission-subs" class="margin-top-20"></div>
+
+          <h3 class="big"><strong>Most gilded and upvoted first submission</strong></h3>
+          <p>
+            <a
+              href="https://www.reddit.com/r/GetMotivated/comments/2xc947/text_soon_i_will_be_gone_forever_but_thats_okay/"
+              target="_blank">
+              This touching post on /r/GetMotivated
+            </a>, /u/mylasttie's first (and only) submission, was gilded over 70 times. It was also the most upvoted first submission.
+          </p>
+
+          <h3 class="big"><strong>SFW vs NSFW submissions</strong></h3>
+          <p>
+            6% of all first submissions are NSFW.
+          </p>
+          <div id="nsfw-submissions" class="margin-top-20"></div>
+
+          <h3 class="big"><strong>Link vs Self submissions</strong></h3>
+          <p>
+            Almost half of all first submissions are self posts.
+          </p>
+          <div id="submission-types" class="margin-top-20"></div>
+
+          <h3 class="big"><strong>Link submissions by site</strong></h3>
+          <p>
+            Pictures, videos and memes dominate first submissions.
+          </p>
+          <div id="submission-domains" class="margin-top-20"></div>
+
+          <h2 class="margin-btm-20 margin-top-40">How long does it take users to post?</h2>
+          <p>In a random sample of 100,000 users, over 60% posted their first comment or submission only after 30 days or more since they signed up.</p>
+          <p class="small text-center"><strong>Time since signup until first post</strong></p>
+          <div id="users-lurk" class="margin-top-20"></div>
+
+
+          <h2 class="margin-btm-20 margin-top-40">More stats</h2>
+          <p>As of December 31, 2015:</p>
+          <table class="table table-hover">
+            <tr>
+              <td>Users with at least one comment
+              </td>
+              <td class="text-right">15,977,313</td>
+            </tr>
+            <tr>
+              <td>Users with at least one submission
+              </td>
+              <td class="text-right">16,037,645</td>
+            </tr>
+            <tr>
+              <td>Users with at least one comment or submission
+              </td>
+              <td class="text-right">22,528,842</td>
+            </tr>
+            <tr>
+              <td>Subreddits where users posted their first comment or submission
+              </td>
+              <td class="text-right">229,807</td>
+            </tr>
+          </table>
+
+          <hr class="margin-top-40">
+        </div>
+        <div class="margin-btm-40">
+          <h2 class="margin-btm-20">Comments</h2>
+          <div id="disqus_thread"></div>
+          <script type="text/javascript">
+              /* * * CONFIGURATION VARIABLES * * */
+              var disqus_shortname = 'snoopsnoo';
+
+              /* * * DON'T EDIT BELOW THIS LINE * * */
+              (function() {
+                  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}"></script>
+<script>
+$(function () {
+  $( "#first_comment_form" ).submit(function( event ) {
+      $( "#get_first_post" ).button("loading");
+  });
+
+  google.load('visualization', '1', {'packages':['annotationchart']});
+  google.setOnLoadCallback(drawCharts);
+
+  function drawCharts() {
+    var comments_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=TopCommentSubs&headers=1"
+    );
+    comments_query.send(handleTopCommentSubsResponse);
+
+    var submissions_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=TopSubmissionSubs&headers=1"
+    );
+    submissions_query.send(handleTopSubmissionSubsResponse);
+
+    var nsfw_submissions_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=SubmissionsOver18&headers=1"
+    );
+    nsfw_submissions_query.send(handleSubmissionsOver18Response);
+
+    var submission_types_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=SubmissionTypes&headers=1"
+    );
+    submission_types_query.send(handleSubmissionTypesResponse);
+
+    var submission_domains_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=SubmissionDomains&headers=1"
+    );
+    submission_domains_query.send(handleSubmissionDomainsResponse);
+
+    var time_since_signup_query = new google.visualization.Query(
+      "https://docs.google.com/spreadsheets/d/1z4W43wqbUjeoMmhN3P4y6iX5boLfFQxuz4NuUWVqfzM/gviz/tq?sheet=TimeSinceSignup&headers=1"
+    );
+    time_since_signup_query.send(handleTimeSinceSignupResponse);
+  }
+
+  function handleTopCommentSubsResponse(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.BarChart(document.getElementById('top-comment-subs'));
+    var options = {
+      legend: {position: "none"},
+      height: 500,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      chartArea: {top: 5, height: "95%"}
+    };
+    chart.draw(data, options);
+  }
+
+  function handleTopSubmissionSubsResponse(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.BarChart(document.getElementById('top-submission-subs'));
+    var options = {
+      legend: {position: "none"},
+      height: 500,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      chartArea: {top: 5, height: "95%"}
+    };
+    chart.draw(data, options);
+  }
+
+  function handleSubmissionsOver18Response(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.PieChart(document.getElementById('nsfw-submissions'));
+    var options = {
+      height: 200,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      chartArea: {height: "90%"}
+    };
+    chart.draw(data, options);
+  }
+
+  function handleSubmissionTypesResponse(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.PieChart(document.getElementById('submission-types'));
+    var options = {
+      height: 200,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      chartArea: {height: "90%"}
+    };
+    chart.draw(data, options);
+  }
+
+  function handleSubmissionDomainsResponse(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.BarChart(document.getElementById('submission-domains'));
+    var options = {
+      legend: {position: "none"},
+      height: 400,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      chartArea: {top: 5, height: "90%"}
+    };
+    chart.draw(data, options);
+  }
+
+  function handleTimeSinceSignupResponse(response) {
+    var data = response.getDataTable();
+    var chart = new google.visualization.PieChart(document.getElementById('users-lurk'));
+    var options = {
+      height: 350,
+      numberFormats: "#,##0",
+      fontName: "Source Sans Pro",
+      pieSliceTextStyle: {
+        color: "#ffffff"
+      },
+      legend: {position: "bottom"},
+      chartArea: {top: 5, height: "90%"}
+    };
+    chart.draw(data, options);
+  }
+});
+</script>
+{% endblock %}
