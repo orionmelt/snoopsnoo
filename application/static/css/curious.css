@@ -129,9 +129,20 @@ h2 {
   margin-top: 20px;
 }
 
+.margin-top-40 {
+  margin-top: 40px;
+}
+
 #error {
   display: none;
   font-weight: 400;
+}
+
+.form-box {
+  padding:15px;
+  background-color: #f8f8f8;
+  border:1px solid #f0f0f0;
+  border-radius: 5px;
 }
 
 .highlight {
