@@ -339,8 +339,10 @@ def get_first_post():
     comment_id = post[0]["comment_id"] if len(post) and "comment_id" in post[0] else None
     comment_subreddit = post[0]["comment_subreddit"] \
         if len(post) and "comment_subreddit" in post[0] else None
-    comment_link_id = post[0]["comment_link_id"][3:] \
+    comment_link_id = post[0]["comment_link_id"] \
         if len(post) and "comment_link_id" in post[0] else None
+    if comment_link_id:
+        comment_link_id = comment_link_id[3:]
 
     submission_id = post[0]["submission_link_id"] \
         if len(post) and "submission_link_id" in post[0] else None
