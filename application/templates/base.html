@@ -7,8 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{% block meta_description %}{% endblock %}">
 
-    <title>SnoopSnoo{% block title %}{% endblock %}</title>
-    
+    <meta property="og:title" content="SnoopSnoo{% block title %}{% endblock %}"/>
+    <meta property="og:url" content="http://snoopsnoo.com"/>
+    <meta property="og:site_name" content="SnoopSnoo"/>
+    <meta property="og:image" content="http://snoopsnoo.com/static/icons/favicon-192x192.png"/>
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@SnoopSnooApp" />
+    <meta name="twitter:title" content="SnoopSnoo" />
+    <meta name="twitter:description" content="{{ self.meta_description() }}" />
+    <meta name="twitter:image" content="http://snoopsnoo.com/static/icons/favicon-192x192.png" />
+
+    <title>SnoopSnoo{{ self.title() }}</title>
+
     <!-- Styles -->
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css?v={{""|current_version}}" rel="stylesheet">
@@ -104,7 +115,7 @@
       <div class="container">
         <ul class="list-inline">
             <li>v0.3</li>
-            <li>&copy; 2015 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
+            <li>&copy; 2016 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
         </ul>
       </div>
     </footer>
