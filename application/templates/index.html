@@ -39,10 +39,34 @@
                         </section>
                     </div>
                     <div class="col-md-4">
-                        <div class="margin-btm-20">
-                            <a href="/nibble/reddit-history/"><h2>Ten years of reddit: an annotated history</h2></a>
-                            <a href="/nibble/reddit-history/"><img src="/static/img/nibble/reddit-history/reddit-history-sample.png" class="margin-btm-10 img-responsive"></a>
-                            <a href="/nibble/reddit-history/">Explore <i class="fa fa-chevron-circle-right"></i></a>
+                        <div class="form-box margin-40">
+                          <div class="text-center">
+                            <a href="/nibble/reddit-first-post/"><h2><strong>Your first post on reddit</strong></h2></a>
+                            <p class="small margin-btm-20">An analysis of over 2 billion comments and 215 million submissions.</p>
+                            <form id="first_post_form" method="post" action="/nibble/get-first-post">
+                              <h3 class="big margin-btm-20">See your first comment and submission on reddit.</h3>
+                              <div class="form-group">
+                                <div class="input-group col-md-8 col-md-offset-2">
+                                  <input
+                                    type="text"
+                                    name="username"
+                                    id="username"
+                                    class="form-control"
+                                    placeholder="reddit username">
+                                  <span class="input-group-btn">
+                                    <button
+                                      id="get_first_post"
+                                      class="btn btn-primary"
+                                      type="submit"
+                                      disabled="disabled"
+                                      data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                                      <i class="fa fa-search"></i>
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -78,9 +102,9 @@
                                     Browse safely at work &mdash; <a href="http://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse">hardcore over18:false</a>
                                 </li>
                             </ul>
-                            
+
                             <p class="margin-20"><a href="http://blog.snoopsnoo.com/2015/05/10/searching-for-subreddits/">Read more on the blog.</i></a></p>
-                            
+
                         </section>
                     </div>
                     <div class="col-md-4 margin-btm-40">
@@ -152,6 +176,9 @@
         <script>
             $(function () {
                 home_init();
+                $( "#first_post_form" ).submit(function( event ) {
+                    $( "#get_first_post" ).button("loading");
+                });
             });
         </script>
 
