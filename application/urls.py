@@ -180,6 +180,13 @@ app.add_url_rule(
     view_func=views.export_manual_category_suggestion_handler
 )
 
+# Export user summary MapReduce handler
+app.add_url_rule(
+    "/jobs/export-user-summary-to-bigquery",
+    "export_user_summary_handler",
+    view_func=views.export_user_summary_handler
+)
+
 app.add_url_rule(
     "/jobs/update-subscribers",
     "update_subscribers_handler",

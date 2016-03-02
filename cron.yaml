@@ -12,6 +12,10 @@ cron:
   url: /jobs/export-manual-suggestions-to-bigquery
   schedule: every day 07:00
 
+- description: Export user summary to BigQuery
+  url: /jobs/export-user-summary-to-bigquery
+  schedule: every day 08:00
+
 - description: Update trends
   url: /jobs/update-trends
   schedule: every day 11:00

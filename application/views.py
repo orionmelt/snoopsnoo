@@ -1444,6 +1444,114 @@ def export_manual_category_suggestion_handler():
     path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
     return "Kicked off job: %s" % path
 
+class ExportUserSummaryPipeline(pipeline.Pipeline):
+    """A pipeline that iterates through User entities."""
+    def run(self, start_ts, end_ts):
+        """Iterates through User entities and writes to GCS files."""
+        output = yield mapreduce_pipeline.MapperPipeline(
+            "ExportUserSummaryPipeline",
+            "application.views.export_user_summary_map",
+            "mapreduce.input_readers.DatastoreInputReader",
+            output_writer_spec="mapreduce.output_writers.GoogleCloudStorageOutputWriter",
+            params={
+                "input_reader": {
+                    "entity_kind": "application.models.User",
+                    "filters": \
+                        [
+                            ("last_updated", ">=", start_ts),
+                            ("last_updated", "<", end_ts)
+                        ]
+                },
+                "output_writer": {
+                    "bucket_name": app.config["GCS_BUCKET_NAME"],
+                }
+            },
+            shards=128
+        )
+        yield ImportUserSummaryIntoBigQuery(output)
+
+class ImportUserSummaryIntoBigQuery(pipeline.Pipeline):
+    """A pipeline that imports User entities into BigQuery."""
+    def run(self, user_summary_files):
+        """Import Feedback entities from GCS into BigQuery."""
+        bigquery_service = get_bq_service()
+        jobs = bigquery_service.jobs()
+        table_name = "_user_summary"
+        files = [str("gs:/" + f) for f in user_summary_files]
+        result = jobs.insert(
+            projectId=app.config["GOOGLE_CLOUD_PROJECT_ID"],
+            body={
+                "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                "configuration": {
+                    "load": {
+                        "quote": "",
+                        "sourceUris": files,
+                        "schema": {
+                            "fields": [
+                                {
+                                    "name": "log_date",
+                                    "type": "TIMESTAMP"
+                                },
+                                {
+                                    "name": "user_id",
+                                    "type": "STRING"
+                                },
+                                {
+                                    "name": "average_comment_karma",
+                                    "type": "FLOAT"
+                                },
+                                {
+                                    "name": "average_submission_karma",
+                                    "type": "FLOAT"
+                                },
+                                {
+                                    "name": "average_unique_words_pct",
+                                    "type": "FLOAT"
+                                }
+                            ]
+                        },
+                        "destinationTable": {
+                            "projectId": app.config["GOOGLE_CLOUD_PROJECT_ID"],
+                            "datasetId": app.config["BIGQUERY_DATASET_ID"],
+                            "tableId": table_name
+                        }
+                    }
+                }
+
+            }
+        ).execute()
+        logging.info(result)
+
+def export_user_summary_map(user):
+    """Map function for exporting User entities."""
+    unique_word_count = int(user.data["summary"]["comments"]["unique_word_count"])
+    total_word_count = int(user.data["summary"]["comments"]["total_word_count"])
+
+    total_comment_karma = int(user.data["summary"]["comments"]["computed_karma"])
+    total_comments = int(user.data["summary"]["comments"]["count"])
+
+    total_submission_karma = int(user.data["summary"]["submissions"]["computed_karma"])
+    total_submissions = int(user.data["summary"]["submissions"]["count"])
+
+    row = "%s,%s,%s,%s,%s\n" % (
+        user.last_updated.strftime("%Y-%m-%d %H:%M"),
+        user.key.id(),
+        total_comment_karma*1.00/max(total_comments,1),
+        total_submission_karma*1.00/max(total_submissions,1),
+        unique_word_count*100.0/max(total_word_count,1)
+    )
+    yield row
+
+def export_user_summary_handler():
+    """Handler function for exporting User entities."""
+    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    yesterday = today - datetime.timedelta(hours=24)
+    mr_pipeline = ExportUserSummaryPipeline(yesterday, today)
+    mr_pipeline.start()
+    path = mr_pipeline.base_path + "/status?root=" + mr_pipeline.pipeline_id
+    return "Kicked off job: %s" % path
+
+
 class UpdateSubscribersPipeline(pipeline.Pipeline):
     """A pipeline that updates subscriber counts for subreddits."""
     def run(self):
