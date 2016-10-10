@@ -333,7 +333,7 @@ def first_post():
 
 def get_first_post():
     """Retrieves user's first comment/submission from BigQuery."""
-    username = request.form["username"].lower()
+    username = request.form["username"].lower().strip()
     post = bq_query("first_post", params=(username), cached=False)
 
     comment_id = post[0]["comment_id"] if len(post) and "comment_id" in post[0] else None
