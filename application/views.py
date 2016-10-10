@@ -664,6 +664,21 @@ def subreddit(subreddit_name):
         is_admin=is_admin
     )
 
+def subreddit_category(subreddit_name):
+    """Returns subreddit category data as JSON."""
+    root = get_subreddits_root()
+    subreddit_name = subreddit_name.lower()
+    sub = get_subreddit(subreddit_name)
+    if not sub:
+        return jsonify(error=404)
+    breadcrumbs = []
+    for i, _ in enumerate(sub.parent_id.split("_")):
+        breadcrumbs.append(
+            Category.get_by_id("_".join(sub.parent_id.split("_")[:i+1])).display_name
+        )
+    return jsonify(categories=breadcrumbs[1:])
+
+
 def subreddit_frontpage():
     """Renders frontpage preview for given subreddit."""
     over18 = int(request.args.get("over18"))
