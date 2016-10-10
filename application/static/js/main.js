@@ -747,19 +747,24 @@ function populate_results(results) {
     });
 
     // Metrics chart - Date
+    var first_post_year = (new Date(data.summary.first_post_date*1000)).getFullYear();
+    var first_post_month = (new Date(data.summary.first_post_date*1000)).getMonth();
+    var graph_start_date = (new Date(first_post_year, first_post_month, 1, 0, 0, 0, 0)).toISOString();
     var start = 0;
     for(var i=0;i<data.metrics.date.length;i++) {
-        if(!(data.metrics.date[i].posts+data.metrics.date[i].submissions)) {
+        if(data.metrics.date[i].date < graph_start_date) {
             start++;
         } else {
             break;
         }
     }
 
+    start = start<0?0:start;
+
     curious.timeseries({
         container: "data-activity_date",
         id: "activity_date_chart",
-        data: data.metrics.date.slice(start).map(function(d) {
+        data: data.metrics.date.slice(start-1).map(function(d) {
             return {
                 date:d.date,
                 posts:d.comments+d.submissions,
