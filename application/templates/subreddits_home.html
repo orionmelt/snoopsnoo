@@ -116,7 +116,7 @@
                                     {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
                                     {% endif %}
                                 </td>
-                                <td class="text-right">{{ '{0:+,}'.format(sub["growth_3_days"] | int) }}</td>
+                                <td class="text-right">{{ '{0:+,}'.format(sub["growth"] | int) }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -144,7 +144,7 @@
                                     {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
                                     {% endif %}
                                 </td>
-                                <td class="text-right">{{ '{0:+,}'.format(sub["growth_1_day"] | int) }}</td>
+                                <td class="text-right">{{ '{0:+,}'.format(sub["growth"] | int) }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

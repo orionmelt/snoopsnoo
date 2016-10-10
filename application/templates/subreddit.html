@@ -80,7 +80,7 @@
                         {% if sub["over18"] %}
                         <span class="margin-lft-5 flair-danger">NSFW</span>
                         {% endif %}
-                        <span class="small pull-right">{{ '{0:+,}'.format(sub["growth_1_day"] | int) }} <i class="fa fa-arrow-up"></i></span>
+                        <span class="small pull-right">{{ '{0:+,}'.format(sub["growth"] | int) }} <i class="fa fa-arrow-up"></i></span>
                     </a>
                     {% endfor %}
                 </div>
