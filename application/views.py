@@ -950,13 +950,13 @@ def add_new_subs():
     other_category.subreddit_count += num_other
     other_category.total_subreddit_count += num_other
     other_category.put()
-    update_total_count("reddit")
-    update_category_tree("reddit")
     filters = [
         ("subreddit_id", ">", oldest.key.id()),
         ("subreddit_id", "<=", newest_id),
     ]
     export_subreddits_handler(filters=filters)
+    update_total_count("reddit")
+    update_category_tree("reddit")
     return "Done"
 
 def count_subreddits_handler(sub):
@@ -1160,7 +1160,7 @@ class ImportSubredditsIntoBigQuery(pipeline.Pipeline):
 
 def export_subreddits_map(sub):
     """Map function for exporting Subreddit entities."""
-    today = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.now().time())
     row = "%s,%s,%s,%s,%s,%s\n" % (
         today.strftime("%Y-%m-%d %H:%S"),
         str(sub.key.id()),
