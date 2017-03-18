@@ -9,7 +9,7 @@
         {%- if child["id"]=="more_cats" -%}
         {%- else -%}
         <url>
-            <loc>http://snoopsnoo.com/subreddits/{{ "/".join(child["id"].split("_")[1:]) }}/</loc>
+            <loc>https://snoopsnoo.com/subreddits/{{ "/".join(child["id"].split("_")[1:]) }}/</loc>
             <lastmod>{{ today }}</lastmod>
             <changefreq>daily</changefreq>
             <priority>0.8</priority>
@@ -61,7 +61,7 @@
 <div class="panel panel-default subreddit-listing">
     <div class="panel-heading big">
         {% if subreddit_page %}
-        <a target="_blank" href="http://www.reddit.com/r/{{ subreddit.display_name }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
+        <a target="_blank" href="https://www.reddit.com/r/{{ subreddit.display_name }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
         {% else %}
         <a href="{{ url_for("subreddit", subreddit_name=subreddit.display_name) }}"><strong>/r/{{ subreddit.display_name }}</strong></a>
         {% endif %}

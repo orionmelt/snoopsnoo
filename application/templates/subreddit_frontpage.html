@@ -21,7 +21,7 @@
                     <div class="domain">({{ p["data"]["domain"] }})</div>
                 </div>
                 <p>submitted {{ p["data"]["created_utc"]|from_timestamp|time_since }} ago by <span class="author">{{ p["data"]["author"] }}</span></p>
-                <p class="comments"><a target="_blank" href="http://www.reddit.com{{ p["data"]["permalink"] }}">{{ p["data"]["num_comments"] }} comments</a></p>
+                <p class="comments"><a target="_blank" href="https://www.reddit.com{{ p["data"]["permalink"] }}">{{ p["data"]["num_comments"] }} comments</a></p>
             </div>
             
         </div>

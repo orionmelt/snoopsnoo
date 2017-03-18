@@ -92,8 +92,8 @@
 
     <script>
     function load_frontpage_preview(over18, age_confirmed) {
-        var sub_url = "http://www.reddit.com/r/{{subreddit.display_name}}.json?sort=hot";
-        var sub_about_url = "http://www.reddit.com/r/{{subreddit.display_name}}/about.json";
+        var sub_url = "https://www.reddit.com/r/{{subreddit.display_name}}.json?sort=hot";
+        var sub_about_url = "https://www.reddit.com/r/{{subreddit.display_name}}/about.json";
         $.ajax({
             url: sub_url,
             timeout: 30000,

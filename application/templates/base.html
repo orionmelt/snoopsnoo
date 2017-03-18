@@ -8,15 +8,15 @@
     <meta name="description" content="{% block meta_description %}{% endblock %}">
 
     <meta property="og:title" content="SnoopSnoo{% block title %}{% endblock %}"/>
-    <meta property="og:url" content="http://snoopsnoo.com"/>
+    <meta property="og:url" content="https://snoopsnoo.com"/>
     <meta property="og:site_name" content="SnoopSnoo"/>
-    <meta property="og:image" content="http://snoopsnoo.com/static/icons/favicon-192x192.png"/>
+    <meta property="og:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png"/>
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@SnoopSnooApp" />
     <meta name="twitter:title" content="SnoopSnoo" />
     <meta name="twitter:description" content="{{ self.meta_description() }}" />
-    <meta name="twitter:image" content="http://snoopsnoo.com/static/icons/favicon-192x192.png" />
+    <meta name="twitter:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png" />
 
     <title>SnoopSnoo{{ self.title() }}</title>
 
@@ -38,7 +38,7 @@
     {% include 'includes/d3.html' %}
     {% include 'includes/select2.html' %}
     <!-- Blockspring -->
-    <script src="http://cdn.blockspring.com/blockspring.js"></script>
+    <script src="//cdn.blockspring.com/blockspring.js"></script>
 
     <!-- Snoop Snoo Custom -->
     <script src="/static/js/curious.min.js?v={{""|current_version}}"></script>
@@ -93,7 +93,7 @@
                         <a href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="{% block nav_subreddits %}{% endblock %}"><a href="{{ url_for('subreddits_home') }}">Subreddits</a></li>
-                    <li><a href="http://blog.snoopsnoo.com">Blog</a></li>
+                    <li><a href="https://blog.snoopsnoo.com">Blog</a></li>
                     <li class="{% block nav_about %}{% endblock %}"><a href="{{ url_for('about') }}">About</a></li>
                 </ul>
             </div>
@@ -115,7 +115,7 @@
       <div class="container">
         <ul class="list-inline">
             <li>v0.3</li>
-            <li>&copy; 2016 <a href="http://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
+            <li>&copy; 2017 <a href="https://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
         </ul>
       </div>
     </footer>

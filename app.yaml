@@ -30,6 +30,12 @@ handlers:
 - url: /_ah/pipeline(/.*)?
   script: pipeline.handlers._APP
 
+# Invalidate old recommended subreddits URL
+- url: /subreddits/recommended(/.*)?
+  static_files: application/static/robots.txt
+  upload: application/static/robots.txt
+  login: admin
+
 - url: /favicon.ico
   static_files: application/static/icons/favicon.ico
   upload: application/static/icons/favicon.ico
@@ -59,3 +65,4 @@ handlers:
 
 - url: .*
   script: application.app
+  secure: always
