@@ -413,6 +413,13 @@ def user_profile(username):
         user_averages=json.dumps(user_averages)
     )
 
+def get_user_data(username):
+    """Returns user data."""
+    user = User.query(User.username_lower == username.lower()).get()
+    if user:
+        user.data["metadata"]["last_updated"]=user.last_updated
+    return jsonify(data=user.data) if user else jsonify(error=404)
+
 def update_user():
     """Updates user data given the data in a POST request."""
     data = request.get_json()

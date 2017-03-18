@@ -66,7 +66,7 @@ app.add_url_rule(
 
 # Subreddit Recommendations
 app.add_url_rule(
-    "/subreddits/recommended/<subreddits>",
+    "/subreddits/recommend/<subreddits>",
     "get_recommended_subreddits",
     view_func=views.get_recommended_subreddits
 )
@@ -109,6 +109,13 @@ app.add_url_rule(
     "/api/r/<subreddit_name>/category",
     "subreddit_category",
     view_func=views.subreddit_category
+)
+
+# User data API
+app.add_url_rule(
+    "/api/u/<username>",
+    "user_data",
+    view_func=views.get_user_data
 )
 
 # Subreddit Frontpage preview
