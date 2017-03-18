@@ -307,12 +307,7 @@ function call_blockspring(local_fetch) {
             }
         }        
     }).fail(function(jqXHR, status_text, error_thrown) {
-        if(g_retry_attempts<4) {
-            g_retry_attempts++;
-            call_blockspring(local_fetch);
-        } else {
-            jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring - "+(g_retry_attempts+1)+" retries.");
-        }
+        jqXHR_error(jqXHR, status_text, error_thrown, "Error while calling Blockspring");
     });
 }
 
@@ -972,7 +967,7 @@ function populate_results(results) {
     
     if(reco_qs && subreddits_array.length>=2) {
         $.ajax({
-            url: "/subreddits/recommended/" + reco_qs,
+            url: "/subreddits/recommend/" + reco_qs,
             type: "GET",
         }).done(function(response) {
             if(response.recommended && response.recommended.length) {
