@@ -65,7 +65,7 @@ It's been really exciting to watch <span class="logo logo-small">SNOOP<img src="
 
 <hr> 
 
-**Bonus Picture Time:** I was in [Austin last weekend](http://goo.gl/DkfiK8) hanging out with the Google Cloud Platform team, and a small crowd formed around the table to check out <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span>. It was a lot of fun to see users' reactions in person!
+**Bonus Picture Time:** I was in [Austin last weekend](https://goo.gl/DkfiK8) hanging out with the Google Cloud Platform team, and a small crowd formed around the table to check out <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span>. It was a lot of fun to see users' reactions in person!
 
 <blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/reddit">@reddit</a> users discovering how creepy and awesome <a href="http://t.co/VYOTQmPtYX">http://t.co/VYOTQmPtYX</a> is.&#10;Great tool on the <a href="https://twitter.com/googlecloud">@googlecloud</a> platform! <a href="http://t.co/yRaQAiIh94">pic.twitter.com/yRaQAiIh94</a></p>&mdash; Francesc (@francesc) <a href="https://twitter.com/francesc/status/577296097778925568">March 16, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>

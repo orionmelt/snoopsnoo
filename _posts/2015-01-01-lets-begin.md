@@ -17,7 +17,7 @@ As of today, it simply does two things:
 
 I built the web app in about three weeks, but I've been working on its NLP components for a couple of months now. I'm still new to NLP and as I try to wrap my head around it, results may often be erratic. 
 
-The site is built on [Flask](http://flask.pocoo.org/) and hosted on the [Google Cloud Platform](https://cloud.google.com/). Charts are generated using [D3.js](http://d3js.org/). The NLP component is built on [TextBlob](https://github.com/sloria/TextBlob) and [NLTK](http://www.nltk.org/), and is hosted on [Blockspring](https://www.blockspring.com/).
+The site is built on [Flask](http://flask.pocoo.org/) and hosted on the [Google Cloud Platform](https://cloud.google.com/). Charts are generated using [D3.js](https://d3js.org/). The NLP component is built on [TextBlob](https://github.com/sloria/TextBlob) and [NLTK](http://www.nltk.org/), and is hosted on [Blockspring](https://www.blockspring.com/).
 
 
 I plan to update this blog regularly as the site evolves. Really. I've even made a New Year's resolution and everything.

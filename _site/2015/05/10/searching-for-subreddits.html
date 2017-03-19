@@ -9,8 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SnoopSnoo Blog - Archive</title>
-    
+    <title>SnoopSnoo Blog - Searching for subreddits</title>
+    <meta name="description" content="">
     <meta name="author" content="OrionMelt">
     
     <!-- Styles -->
@@ -90,153 +90,90 @@
         <div id="blog-wrapper" class="row margin-20">
             <div id="blog-content" class="col-md-8">
                 
+		<div class="post">
+			<div class="header">
+				<h2>Searching for subreddits </h2>
+				<h4>10 May 2015</h4>
+			</div>
+
+			<div class="content margin-btm-40">
+			
+<p>reddit announced last week that they’re bringing back the reddit.com beta testing program, and one of the interesting new features is the <a href="https://www.reddit.com/r/beta/comments/35762a/welcome_to_rbeta/">improved subreddit search</a>. As the admins themselves admit, searching for subreddits has always been a major pain point, and the new search vastly improves the quality of results. I had been working on a subreddit search feature for <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span> as well, and right now seems like a good time to release it!</p>
+
+<p>Let’s compare reddit’s old and new search algorithms — searching for <a href="https://www.reddit.com/subreddits/search?q=robots&amp;sort=activity">“robots” using the old search</a> gives us results with /r/DaftPunk and /r/plotholes pretty high up in the list, presumably because both these subreddits include the word “robots” in their descriptions. The <a href="https://beta.reddit.com/subreddits/search?q=robots">new search for “robots”</a> returns results that are a lot more relevant — /r/DaftPunk and /r/plotholes still appear, but they are preceded by subreddits that are actually about robots. Great!</p>
+
+<p>Now, how can <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span> improve search results? One advantage it has is that it <em>knows</em> /r/DaftPunk is about music and /r/plotholes is about movies, thanks to the categorization of subreddits that I had <a href="https://blog.snoopsnoo.com/2015/02/15/theres-a-subreddit-for-that">written about earlier</a>. And this comes in handy when searching for subreddits.</p>
+
+<p>Let’s <a href="https://snoopsnoo.com/subreddits/search?q=robots">search for “robots”</a> on <span class="logo logo-small">SNOOP<img src="/assets/themes/snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10" />SNOO</span>. Thanks to <a href="https://en.wikipedia.org/wiki/Stemming">stemming</a>, it also includes results for “robotics”. Yay! Of course, not-entirely-relevant subreddits such as /r/DaftPunk, /r/plotholes and /r/robotchicken are included (and they should be, because they do have the word “robots” in them somwehere), but the search lets you restrict your results to particular topics — <a href="https://snoopsnoo.com/subreddits/search?q=robots+topic%3Atechnology">search for “robots topic:technology”</a>, and only subreddits that are classified under Technology are returned.</p>
+
+<p>Let’s look at a few more interesting examples:</p>
+
+<ul>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=python">Searching for “python”</a> returns /r/pygame — even though the word “python” does not appear in the subreddit’s title or description, because we know that it is classified under the Python topic. The search results also include /r/montypython and /r/ballpython, but <a href="https://snoopsnoo.com/subreddits/search?q=python+topic%3Aprogramming">add “topic:programming” to your search query</a> and they’re gone. On the other hand, if you’re really looking for subreddits about the <em>other</em> python, simply <a href="https://snoopsnoo.com/subreddits/search?q=python+topic%3Aanimals">search for “python topic:animals”</a>.</li>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=universities+in+texas">Searching for “universities in texas”</a> returns /r/aggies, because we know that the subreddit is about “Universities and Colleges” and because “Texas” appears in its title/description.</li>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=india">Searching for “india”</a> returns /r/mumbai and /r/bangalore (although only on page 2), even when they don’t have the word India in their title or description.</li>
+</ul>
+
+<p>The search also supports a small number of filters and operators that I hope you find useful:</p>
+
+<ul>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=cats+subscribers%3C5000">“cats subscribers&lt;5000”</a> returns subreddits about cats that have fewer than 5000 subscribers, for when you are purposely looking for smaller subreddits.</li>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=music+created%3E2013-05-10">“music created&gt;2013-05-10”</a> returns subreddits about music that were created within the past two years.</li>
+  <li><a href="https://snoopsnoo.com/subreddits/search?q=hardcore+over18%3Afalse">“hardcore over18:false”</a> excludes 18+ subreddits from the results. Use “over18:true” if you want only 18+ subreddits returned — the search does not judge.</li>
+  <li>Common search operators:
+    <ul>
+      <li><a href="https://snoopsnoo.com/subreddits/search?q=modeling+-3d">“modeling -3d”</a> returns subreddits that match “modeling” but not “3d”</li>
+      <li><a href="https://snoopsnoo.com/subreddits/search?q=cats+OR+dogs">“cats OR dogs”</a> returns subreddits that match either “cats” or “dogs”</li>
+    </ul>
+  </li>
+</ul>
+
+<p>It’s exciting to release this new feature, but it does have its limitations — it only searches subreddit metadata, not content in posts. The index is also currently limited to the 30K subreddits that I have data for (<strong>UPDATE 05/13:</strong> The index has now been updated to include over 800K subreddits, thanks <a href="https://www.reddit.com/user/GoldenSights">/u/GoldenSights</a>!) but I’m working hard on adding more and more subreddits.</p>
+
+<p>Thanks for reading, and I hope you enjoy the new search feature. Feedback and bug reports are welcome!</p>
+
+			</div>
+
+			  
+
+			  
+			
+			<div class="comments">
+				
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_developer = 1;
+    var disqus_shortname = 'snoopsnoo'; // required: replace example with your forum shortname
     
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
 
 
+			</div>
 
-  
-    
-    
-    
-    
-  
-    
-      <h2>2015</h2>
-      <h3>May</h3>
-      <ul>
-    
-  
-    <li><span>May 10, 2015</span> &raquo; <a href="/2015/05/10/searching-for-subreddits">Searching for subreddits</a></li>
-  
-    
-          
-        
-          </ul>
-          <h3>April</h3>
-          <ul>
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>April 10, 2015</span> &raquo; <a href="/2015/04/10/your-stats-compared-to-the-rest-of-us">Your stats compared to the rest of us</a></li>
-  
-    
-          
-        
-          </ul>
-          <h3>March</h3>
-          <ul>
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>March 20, 2015</span> &raquo; <a href="/2015/03/20/a-hundred-thousand-users-in-80-days">A hundred thousand users in 80 days</a></li>
-  
-    
-          
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>March  1, 2015</span> &raquo; <a href="/2015/03/01/show-off-your-snoovatar">Show off your snoovatar</a></li>
-  
-    
-          
-        
-          </ul>
-          <h3>February</h3>
-          <ul>
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>February 15, 2015</span> &raquo; <a href="/2015/02/15/theres-a-subreddit-for-that">There's a subreddit for that!</a></li>
-  
-    
-          
-        
-          </ul>
-          <h3>January</h3>
-          <ul>
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>January 10, 2015</span> &raquo; <a href="/2015/01/10/whats-better-than-version-01">What's better than version 0.1?</a></li>
-  
-    
-          
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>January  5, 2015</span> &raquo; <a href="/2015/01/05/hello-reddit">Hello reddit</a></li>
-  
-    
-          
-        
-      
-    
-  
-    
-    
-    
-    
-  
-    
-  
-    <li><span>January  1, 2015</span> &raquo; <a href="/2015/01/01/lets-begin">Let's begin</a></li>
-  
-    
-      </ul>
-    
-  
+			<ul class="pager">
+				
+				<li class="previous"><a href="/2015/04/10/your-stats-compared-to-the-rest-of-us" title="Your stats compared to the rest of us"><i class="fa fa-arrow-circle-o-left fa-lg"></i> Previous</a></li>
+				
+				<!--<li><a href="/archive.html">Archive</a></li>-->
+				
+				<li class="next disabled"><a>Next <i class="fa fa-arrow-circle-o-right fa-lg"></i></a></li>
+				
+			</ul>
+		</div>
 
-
+		
 
             </div>
             <div id="blog-sidebar" class="col-md-3 col-md-offset-1">

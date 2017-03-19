@@ -18,4 +18,4 @@ Version 0.2, of course. Since the public release of <span class="logo logo-small
 * Marginally improved NLP.
 * Bug fixes and cosmetic changes.
 
-Like the new features? Hate the changes? Want a new feature altogether? Let me know in the comments below, [PM me on reddit](http://www.reddit.com/message/compose/?to=orionmelt) or head over to [/r/SnoopSnoo](http://www.reddit.com/r/SnoopSnoo).
+Like the new features? Hate the changes? Want a new feature altogether? Let me know in the comments below, [PM me on reddit](https://www.reddit.com/message/compose/?to=orionmelt) or head over to [/r/SnoopSnoo](https://www.reddit.com/r/SnoopSnoo).

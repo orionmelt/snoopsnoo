@@ -11,4 +11,4 @@ As I'd written in my [previous blog post](/2015/03/20/a-hundred-thousand-users-i
 
 <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> now shows how better (or worse) your stats are than the average user's. The average values will only get more accurate as the user base grows. The comparison is currently limited to average karma and unique words usage &mdash; if you'd like to see other kinds of comparisons, let me know!
 
-![SnoopSnoo stats comparison](http://i.imgur.com/qSny9R1.png)
+![SnoopSnoo stats comparison](https://i.imgur.com/qSny9R1.png)

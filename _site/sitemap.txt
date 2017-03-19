@@ -1,12 +1,12 @@
 
-blog.snoopsnoo.com/archive.html
+blog.snoopsnoo.com/archive
 blog.snoopsnoo.com/atom.xml
-blog.snoopsnoo.com/categories.html
-blog.snoopsnoo.com/index.html
-blog.snoopsnoo.com/pages.html
+blog.snoopsnoo.com/categories
+blog.snoopsnoo.com/
+blog.snoopsnoo.com/pages
 blog.snoopsnoo.com/rss.xml
 blog.snoopsnoo.com/sitemap.txt
-blog.snoopsnoo.com/tags.html
+blog.snoopsnoo.com/tags
 
 blog.snoopsnoo.com/2015/05/10/searching-for-subreddits
 blog.snoopsnoo.com/2015/04/10/your-stats-compared-to-the-rest-of-us

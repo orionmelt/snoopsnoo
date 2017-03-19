@@ -15,11 +15,11 @@ I think there are two interesting areas where there's a lot of room for improvem
 
 There are already a few resources to help you find subreddits:
 
-1. reddit's own [subreddit listing page](http://www.reddit.com/subreddits).
-2. Meta subreddits such as [/r/SubredditOfTheDay](http://www.reddit.com/r/subredditoftheday) and [/r/FindAReddit](http://www.reddit.com/r/findareddit).
+1. reddit's own [subreddit listing page](https://www.reddit.com/subreddits).
+2. Meta subreddits such as [/r/SubredditOfTheDay](https://www.reddit.com/r/subredditoftheday) and [/r/FindAReddit](https://www.reddit.com/r/findareddit).
 3. Third-party websites such as [reddit metrics](http://redditmetrics.com) and [redditlist](http://redditlist.com/).
 
-These are great if you already have a specific keyword in mind, or if you are simply interested in finding new and trending subreddits regardless of topic. But what if you wanted to browse subreddits by topic, like a dmoz-style directory? You could visit [subreddits.org](http://subreddits.org/) or [metareddit.com](http://metareddit.com/tags/), but they seem outdated. So I built a [directory of subreddits](http://snoopsnoo.com/subreddits/).
+These are great if you already have a specific keyword in mind, or if you are simply interested in finding new and trending subreddits regardless of topic. But what if you wanted to browse subreddits by topic, like a dmoz-style directory? You could visit [subreddits.org](http://subreddits.org/) or [metareddit.com](http://metareddit.com/tags/), but they seem outdated. So I built a [directory of subreddits](https://snoopsnoo.com/subreddits/).
 
 **A brief background:** while building <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span>, I decided to manually group the top 2,500 subreddits by topics so I would be able to tell, at least at a high level, what subject areas a user was interested in. For example, it was straightforward to presume that a user's activity in /r/python and /r/java meant that they were interested in "Technology > Programming". The tedious (_and painful_) prerequisite was, of course, having to manually file /r/python and /r/java under "Programming" (and do this for each of the 2,500 subreddits). After several frustrating attempts, I managed to categorize most of the top 2,500 subreddits under several topics and continued to build the rest of the site. I then realized that I had already created a mini-directory subreddits grouped by topic!
 
@@ -30,7 +30,7 @@ The next logical step was to expand the directory by adding more subreddits, but
 * <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> currently lets users suggest topics for subreddits that have none assigned. Using this helpful data along with the manual list I already had, I wrote a program to automatically assign topics to the remaining subreddits.
 * Subreddits that couldn't be assigned a topic (such as self-post only subreddits that have no useful crossposts data) were assigned "General" by default. 
 
-And that's how I built a directory of thousands of subreddits categorized by topic. You can [check it out here](http://snoopsnoo.com/subreddits/) and I hope you find it useful.
+And that's how I built a directory of thousands of subreddits categorized by topic. You can [check it out here](https://snoopsnoo.com/subreddits/) and I hope you find it useful.
 
 ###Subreddit Recommendations
 
