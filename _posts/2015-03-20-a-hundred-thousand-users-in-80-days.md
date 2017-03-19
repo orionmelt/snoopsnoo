@@ -7,7 +7,7 @@ tags: []
 ---
 {% include JB/setup %}
 
-<span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> went online on December 30, 2014 and since then, it's been posted on several subreddits and even made it to the frontpage a couple of times. Over 100,000 users were analyzed, and they gave feedback more than 200,000 times! Here's a brief look at the data from the past 80 days.
+<span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> went online on December 30, 2014 and since then, it's been posted on several subreddits and even made it to the frontpage a couple of times. Over 100,000 users were analyzed, and they gave feedback more than 200,000 times! Here's a brief look at the data from the past 80 days.
 
 ###Users
 
@@ -61,11 +61,11 @@ tags: []
   </div>
 </div>
 
-It's been really exciting to watch <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> grow &mdash; keep an eye out for more features coming soon!
+It's been really exciting to watch <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span> grow &mdash; keep an eye out for more features coming soon!
 
 <hr> 
 
-**Bonus Picture Time:** I was in [Austin last weekend](https://goo.gl/DkfiK8) hanging out with the Google Cloud Platform team, and a small crowd formed around the table to check out <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}snoopsnoo/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span>. It was a lot of fun to see users' reactions in person!
+**Bonus Picture Time:** I was in [Austin last weekend](https://goo.gl/DkfiK8) hanging out with the Google Cloud Platform team, and a small crowd formed around the table to check out <span class="logo logo-small">SNOOP<img src="{{ ASSET_PATH }}/img/logo_sm.png" alt="(SnoopSnoo Logo)" width="21" height="10">SNOO</span>. It was a lot of fun to see users' reactions in person!
 
 <blockquote class="twitter-tweet" lang="en"><p><a href="https://twitter.com/reddit">@reddit</a> users discovering how creepy and awesome <a href="http://t.co/VYOTQmPtYX">http://t.co/VYOTQmPtYX</a> is.&#10;Great tool on the <a href="https://twitter.com/googlecloud">@googlecloud</a> platform! <a href="http://t.co/yRaQAiIh94">pic.twitter.com/yRaQAiIh94</a></p>&mdash; Francesc (@francesc) <a href="https://twitter.com/francesc/status/577296097778925568">March 16, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
