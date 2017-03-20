@@ -882,7 +882,7 @@ def add_new_subs():
     oldest = Subreddit.query().order(-Subreddit.created_utc).get()
     index = search.Index(name="subreddits_search")
 
-    response = requests.get("http://www.reddit.com/subreddits/new.json?limit=1", headers=HEADERS)
+    response = requests.get("https://www.reddit.com/subreddits/new.json?limit=1", headers=HEADERS)
     response_json = response.json()
     newest_id = str(response_json["data"]["children"][0]["data"]["id"])
     num_nsfw = 0
@@ -890,7 +890,7 @@ def add_new_subs():
     time.sleep(10)
 
     for ids in chunk(range(b36(oldest.key.id())+1, b36(newest_id)+1), 100):
-        url = "http://www.reddit.com/api/info.json?id=" + ",".join(
+        url = "https://www.reddit.com/api/info.json?id=" + ",".join(
             ["t5_" + b36(x) for x in ids]
         )
         ndb_subs = []
