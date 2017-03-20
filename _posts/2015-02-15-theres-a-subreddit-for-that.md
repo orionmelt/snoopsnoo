@@ -11,7 +11,7 @@ There are over [9,000 active subreddits](https://www.reddit.com/about/) on reddi
 
 I think there are two interesting areas where there's a lot of room for improvement &mdash; subreddit discovery and recommendations.
 
-###Subreddit Discovery
+### Subreddit Discovery
 
 There are already a few resources to help you find subreddits:
 
@@ -32,7 +32,7 @@ The next logical step was to expand the directory by adding more subreddits, but
 
 And that's how I built a directory of thousands of subreddits categorized by topic. You can [check it out here](https://snoopsnoo.com/subreddits/) and I hope you find it useful.
 
-###Subreddit Recommendations
+### Subreddit Recommendations
 
 Another problem that I find interesting is recommending subreddits based on user activity. Currently, reddit doesn't seem to provide tailored subreddit recommendations to users based on their activity. For instance, if you are already active on /r/Cooking and /r/recipes, perhaps you would also like /r/AskCulinary or /r/budgetfood? 
 
