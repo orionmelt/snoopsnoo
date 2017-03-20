@@ -14,3 +14,6 @@ application/
 
 # Third-party libs
 lib/
+
+# Generated pages
+_site/
