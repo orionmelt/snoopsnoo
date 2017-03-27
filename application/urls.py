@@ -226,6 +226,12 @@ app.add_url_rule(
 )
 
 app.add_url_rule(
+    "/jobs/update-preprocessed-subreddit-categories",
+    "update_preprocessed_subreddit_categories",
+    view_func=views.update_preprocessed_subreddit_categories
+)
+
+app.add_url_rule(
     "/sitemap.xml",
     "sitemap",
     view_func=views.sitemap

@@ -1675,6 +1675,21 @@ def update_search_subscribers():
         index.put(docs)
     return "Done"
 
+def update_preprocessed_subreddit_categories():
+    categories = {c.key.id(): c.display_name for c in Category.query().fetch(1000)}
+    category_names = []
+    for category in categories:
+        if category == 'reddit': continue
+        keys = category.split("_")[1:]
+        combined_keys = ["reddit_" + "_".join(keys[:keys.index(k)+1]) for k in keys]
+        text = " > ".join([categories[k] for k in combined_keys])
+        category_names.append({"id": category, "text": text})
+    category_names.sort(key=lambda x:x["id"])
+    all_categories = PreprocessedItem.get_by_id("all_subreddit_categories")
+    all_categories.data = json.dumps(category_names)
+    all_categories.put()
+    return "Done"
+
 def sitemap():
     """Renders sitemap XML."""
     subreddits_root = get_subreddits_root()
