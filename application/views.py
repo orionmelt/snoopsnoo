@@ -110,7 +110,8 @@ SUBREDDIT_TYPES = {
     None:4,
     'employees_only':5,
     'gold_restricted':6,
-    'gold_only':6
+    'gold_only':6,
+    'user':7
 }
 SUBMISSION_TYPES = {
     'any':0,
