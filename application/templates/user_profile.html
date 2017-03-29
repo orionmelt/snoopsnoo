@@ -355,9 +355,27 @@
                 <h2>Most Common Words <span class="permalink"><a href="#common-words" title="Permalink">#</a></span></h2>
                 <h3>{{ ["A word is worth ten imgur links. True story.", "Don't forget to use that new word you learned!"]|random }}</h3>
                 <h4>Size of a word is directly proportional to its frequency.</h4>
-                <p id="top-words-count" class="text-muted">Showing all words. Drag slider below to exclude top words.</p>
-                <div id="top-words-slider"></div>
-                <div id="data-common_words"></div>
+                <form id="common_words_control">
+                    <label><input type="radio" name="mode" value="cloud" checked> word cloud</label>
+                    <label><input type="radio" name="mode" value="table"> table</label>
+                </form>
+                <div id="common-words-word-cloud">
+                    <p id="top-words-count" class="text-muted">Showing all words. Drag slider below to exclude top words.</p>
+                    <div id="top-words-slider"></div>
+                    <div id="data-common_words"></div>
+                </div>
+                <div id="common-words-table">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Word</th>
+                                <th class="text-center">Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div id="corpus-stats" class="col-md-6 text-center margin-btm-20" id="posts_words">

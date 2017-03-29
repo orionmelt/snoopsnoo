@@ -323,7 +323,7 @@ h2 {
   margin:0px 5px;
 }
 
-#posts_by_sub_control label {
+#posts_by_sub_control label, #common_words_control label {
   margin-right: 10px;
   margin-bottom: 10px;
 }
@@ -573,6 +573,13 @@ h2 {
   margin-right: 10px;
 }
 
+#common-words-table {
+  display: none;
+  max-width: 430px;
+  max-height: 430px;
+  margin: auto auto;
+  overflow: scroll;
+}
 
 /* D3 */
 

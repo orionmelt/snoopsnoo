@@ -728,6 +728,24 @@ function populate_results(results) {
         $( "#top-words-slider" ).hide();
     }
 
+    var common_words_table = $("#common-words-table>table>tbody");
+
+    $("#common_words_control input").change(function() {
+        if(this.value==="cloud") {
+            $("#common-words-word-cloud").show();
+            $("#common-words-table").hide();
+        } else {
+            $("#common-words-table").show();
+            $("#common-words-word-cloud").hide();
+        }
+    });
+
+    data.metrics.common_words.forEach(function(w) {
+        common_words_table.append(
+            "<tr><td>" + w.text + "</td><td>" + w.size + "</td></tr>"
+        );
+    });
+
     curious.wordcloud({
         container: "data-common_words",
         width: Math.min(430,$("#data-common_words").parent().width()-80),
