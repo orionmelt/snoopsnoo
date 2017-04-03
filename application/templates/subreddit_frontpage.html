@@ -17,7 +17,7 @@
             {% endif %}
             <div class="title">
                 <div class="title-text {{ "stickied" if p["data"]["stickied"] }}">
-                    <h3><a target="_blank" href="{{ p["data"]["url"] }}">{{ p["data"]["title"] }}</a></h3>
+                    <h3><a target="_blank" href="{{ p["data"]["url"] }}">{{ p["data"]["title"] | safe}}</a></h3>
                     <div class="domain">({{ p["data"]["domain"] }})</div>
                 </div>
                 <p>submitted {{ p["data"]["created_utc"]|from_timestamp|time_since }} ago by <span class="author">{{ p["data"]["author"] }}</span></p>
