@@ -1139,6 +1139,8 @@ function home_init() {
         var $form = $( this ),
         username = $form.find( "input[name='username']" ).val().trim();
         if(!username || !username.length) return;
+        username = username.replace(/https?:\/\/www\.reddit\.com\/user\/([A-Za-z0-9\-\_]+)\/?/gi, "$1").trim();
+        $("#username").val(username);
         g_username = username;
         $( "#go" ).button("loading");
         $.ajax({
