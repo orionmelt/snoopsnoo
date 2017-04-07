@@ -7,12 +7,12 @@
 
 {% block content %}
     <div class="container margin-20">
-        {{ snoopsnoo_macros.subreddits_breadcrumbs(breadcrumbs) }}
-
+        {{ snoopsnoo_macros.subreddits_breadcrumbs(breadcrumbs, show_topic_suggest=True) }}
         <div class="row">
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-9">
+                    {{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=True) }}
                     {% if is_admin %}
                     <div class="margin-btm-20">
                         <form id="admin-set-category-form" class="form-horizontal">
@@ -34,7 +34,6 @@
                         </form>
                     </div>
                     {% endif %}
-                    {{ snoopsnoo_macros.subreddit_listing(subreddit, all_subreddit_categories, subreddit_page=True) }}
                     </div>
                     <div class="col-md-3">
                         {% if related_subreddits %}
@@ -53,8 +52,6 @@
                         {% endif %}
                     </div>
                 </div>
-
-
                 <div class="row margin-20">
                     <div class="col-md-12">
                         <h3 class="big margin-btm-20 no-top-margin"><strong>Frontpage Preview</strong></h3>
@@ -65,7 +62,6 @@
                             <p id="frontpage-loading" class="text-muted">Loading frontpage preview <i class="fa fa-spinner fa-spin margin-lft-10"></i></p>
                         </div>
                     </div>
-                    
                 </div>
             </div>
             <div class="col-md-3">
@@ -86,6 +82,35 @@
                 </div>
                 {% endif %}
                 {{ snoopsnoo_macros.topics_menu(root["children"]) }}
+            </div>
+        </div>
+        <div id="suggest-topic">
+            <hr/>
+            <div class="row">
+                <div class="col-md-9">
+                    <form id="suggest-category-form" class="form-horizontal">
+                        <input type="hidden" name="subreddit_name" value="{{ subreddit.display_name }}">
+                        <input type="hidden" name="suggested_category" value="">
+                        <p class="margin-btm-10">
+                            <strong>/r/{{ subreddit.display_name }}</strong> is categorized under 
+                            <strong>{{ breadcrumbs|join(' > ', attribute='display_name') }}</strong>. If this is incorrect, please suggest a different topic:
+                        </p>
+                        <div class="row">
+                            <div class="col-md-9 margin-btm-5">
+                                <select name="category_id" class="form-control small">
+                                    <option value="">-- Select topic --</option>
+                                    {% for c in all_subreddit_categories %}
+                                    <option value="{{c["id"]}}">{{c["text"]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                <span class="save_done margin-lft-10"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -174,9 +199,9 @@
     }
 
     $(function () {
-        {% if is_admin %}
         $("select").select2();
-
+        $("[data-toggle='tooltip']").tooltip(); 
+        {% if is_admin %}
         $(document).on('submit', '#admin-set-category-form', function(event) {
             event.preventDefault();
             var form = $(this);
@@ -191,8 +216,21 @@
                 done_span.html('<i class="fa fa-check text-success"></i>');
             });
         });
-        
         {% endif %}
+        $(document).on('submit', '#suggest-category-form', function(event) {
+            event.preventDefault();
+            var form = $(this);
+            var done_span = $(this).parent().find(".save_done");
+            var data=$(this).serializeArray();
+            var action="{{ url_for("save_sub_category_suggestion") }}";
+            $.ajax({
+                url: action,
+                type: "POST",
+                data: data
+            }).done(function(response) {
+                done_span.html('<i class="fa fa-check text-success"></i>');
+            });
+        });
         load_frontpage_preview({{ 1 if subreddit.over18 else 0 }}, 0);
         load_subreddit_metrics();
         $("#show-thumbnail").click(function() {

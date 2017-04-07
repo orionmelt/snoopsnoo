@@ -128,14 +128,23 @@
 {%- endmacro %}
 
 
-{% macro subreddits_breadcrumbs(breadcrumbs) %}
+{% macro subreddits_breadcrumbs(breadcrumbs, show_topic_suggest=False) %}
 <div class="row">
     <div class="col-md-9">
-        <ul class="breadcrumb">
+        <ul class="topic breadcrumb">
             <li><a href="{{ url_for("subreddits_home") }}"><i class="fa fa-home"></i></a></li>
             {% for crumb in breadcrumbs %}
             <li><a href="/subreddits/{{ "/".join(crumb.key.id().split("_")[1:]) }}/">{{ crumb.display_name }}</a></li>
             {% endfor %}
+            {% if show_topic_suggest %}
+            <li>
+                <a href="#suggest-topic" title="Suggest a different topic">
+                    <i class="text-info fa fa-exclamation-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="Suggest a different topic"></i>
+                </a>
+            </li>
+            {% else %}
+            <li></li>
+            {% endif %}
         </ul>
     </div>
     <div class="col-md-3">

@@ -581,6 +581,15 @@ h2 {
   overflow: scroll;
 }
 
+.topic.breadcrumb>li:last-child {
+  float: right;
+}
+
+.topic.breadcrumb>li:last-child:before {
+  content: "";
+  content: none;
+}
+
 /* D3 */
 
 text {
