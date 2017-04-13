@@ -1,185 +1,237 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %} - reddit user and subreddit analytics{% endblock %}
-{% block meta_description %}User statistics for your reddit account - see your reddit account summary, comments and submissions statistics and more.{% endblock %}
+{% block meta_description %}
+User statistics for your reddit account - see your reddit account summary, comments and 
+submissions statistics and more.
+{% endblock %}
 {% block nav_home %}active{% endblock %}
 
-{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+{% import 'snoopsnoo_macros.html' as snoopsnoo_macros %}
 
 {% block content %}
-        <div class="bg-container">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8">
-                        <section id="main">
-                            <div class="jumbotron">
-                                {% set title = ["Analyze this.", "You are what you post."]|random %}
-                                <h1 class="purple">{{ title }}</h1>
-                                <p>Enter your username below and get insights on your reddit activity.</p>
-                                <p><small>Not ready yet? <a href="/random-user">View a random redditor's profile.</a></small></p>
-                                <div class="row margin-20">
-                                    <form id="process_form">
-                                        <div class="col-md-6 col-s-6 col-xs-6">
-                                            <input type="text" class="form-control" id="username" name="username" placeholder="reddit username">
-                                        </div>
-                                        <div class="col-md-6 col-s-6 col-xs-6">
-                                            <button id="go" type="submit" class="btn btn-primary" disabled="disabled" data-loading-text="Analyzing <i class='fa fa-spinner fa-spin'></i>">Go</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <p><small>(Sit tight. This might take up to a minute.)</small></p>
-                                <div id="error" class="row">
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                        <div class="alert alert-dismissable alert-danger">
-                                            <button type="button" class="close" data-hide="alert">×</button>
-                                            <span id="error-message"></span>
-                                        </div>
-                                    </div>
-                                </div>  
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-box margin-40">
-                          <div class="text-center">
-                            <a href="/nibble/reddit-first-post/"><h2><strong>Your first post on reddit</strong></h2></a>
-                            <p class="small margin-btm-20">An analysis of over 2 billion comments and 215 million submissions.</p>
-                            <form id="first_post_form" method="post" action="/nibble/get-first-post">
-                              <h3 class="big margin-btm-20">See your first comment and submission on reddit.</h3>
-                              <div class="form-group">
-                                <div class="input-group col-md-8 col-md-offset-2">
-                                  <input
-                                    type="text"
-                                    name="username"
-                                    id="username"
-                                    class="form-control"
-                                    placeholder="reddit username">
-                                  <span class="input-group-btn">
-                                    <button
-                                      id="get_first_post"
-                                      class="btn btn-primary"
-                                      type="submit"
-                                      disabled="disabled"
-                                      data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
-                                      <i class="fa fa-search"></i>
-                                    </button>
-                                  </span>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                    </div>
+<div class="bg-container">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <section id="main">
+          <div class="jumbotron">
+            {% set title = ['Analyze this.', 'You are what you post.']|random %}
+            <h1 class="purple">{{title}}</h1>
+            <p>Enter your username below and get insights on your reddit activity.</p>
+            <p>
+              <small>
+                Not ready yet? <a href="/random-user">View a random redditor's profile.</a>
+              </small>
+            </p>
+            <div class="row margin-20">
+              <form id="process_form">
+                <div class="col-md-6 col-s-6 col-xs-6">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    placeholder="reddit username">
                 </div>
-            </div>
-        </div>
-
-        <div class="margin-20">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 margin-btm-40">
-                        <section id="announcements" class="bottom-buffer">
-                            <h2>Try the new subreddit search</h2>
-                            <form class="margin-20" action="{{ url_for("search_subreddits") }}" method="get">
-                                <div class="form-group">
-                                    <div class="input-group col-md-10">
-                                        <input type="text" name="q" class="form-control" placeholder="Search for subreddits or topics">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <p class="big">Try these searches:</p>
-                            <ul>
-                                <li>
-                                    Filter searches by topics &mdash; <a href="/subreddits/search?q=robots+topic%3Atechnology">robots topic:technology</a>
-                                </li>
-                                <li>
-                                    Explore smaller subreddits &mdash; <a href="/subreddits/search?q=cats+subscribers%3C5000">cats subscribers<5000</a>
-                                </li>
-                                <li>
-                                    Browse safely at work &mdash; <a href="/subreddits/search?q=hardcore+over18%3Afalse">hardcore over18:false</a>
-                                </li>
-                            </ul>
-
-                            <p class="margin-20"><a href="https://blog.snoopsnoo.com/2015/05/10/searching-for-subreddits/">Read more on the blog.</i></a></p>
-
-                        </section>
-                    </div>
-                    <div class="col-md-4 margin-btm-40">
-                        <h2>New Subreddits</h2>
-                        <table class="table table-condensed table-striped small">
-                            <thead>
-                                <td class="col-xs-6">Subreddit</td>
-                                <td class="col-xs-4">Topic</td>
-                                <td class="col-xs-2 text-right">Subscribers</td>
-                            </thead>
-                            <tbody>
-                                {% for sub in new_subs[:5] %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
-                                        {% if sub["over18"] %}
-                                        <span class="margin-lft-5 smaller text-danger">(18+)</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                    {% if "parent_name" in sub %}
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
-                                    {% endif %}
-                                    </td>
-                                    <td class="text-right">{{ '{0:,}'.format(sub["current_subscribers"] | int) }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <div class="text-right">
-                            <a href="/subreddits/#new-subreddits">See more new subreddits</a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 margin-btm-40">
-                        <h2>Trending Subreddits</h2>
-                        <table class="table table-condensed table-striped small">
-                            <thead>
-                                <td class="col-xs-6">Subreddit</td>
-                                <td class="col-xs-4">Topic</td>
-                                <td class="col-xs-2 text-right"><i class="text-muted fa fa-plus-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
-                            </thead>
-                            <tbody>
-                                {% for sub in trending_subs[:5] %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
-                                        {% if sub["over18"] %}
-                                        <span class="margin-lft-5 smaller text-danger">(18+)</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                    {% if "parent_name" in sub %}
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
-                                    {% endif %}
-                                    </td>
-                                    <td class="text-right">{{ '{0:+,}'.format(sub["growth"] | int) }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        <div class="text-right">
-                            <a href="/subreddits/#trending-subreddits">See more trending subreddits</a>
-                        </div>
-                    </div>
+                <div class="col-md-6 col-s-6 col-xs-6">
+                  <button
+                    id="go"
+                    type="submit"
+                    class="btn btn-primary"
+                    disabled="disabled"
+                    data-loading-text="Analyzing <i class='fa fa-spinner fa-spin'></i>">
+                    Go
+                  </button>
                 </div>
+              </form>
             </div>
+            <p><small>(Sit tight. This might take up to a minute.)</small></p>
+            <div id="error" class="row">
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="alert alert-dismissable alert-danger">
+                  <button type="button" class="close" data-hide="alert">×</button>
+                  <span id="error-message"></span>
+                </div>
+              </div>
+            </div>  
+          </div>
+        </section>
+      </div>
+      <div class="col-md-4">
+        <div class="form-box margin-40">
+          <div class="text-center">
+          <a href="/nibble/reddit-first-post/">
+            <h2><strong>Your first post on reddit</strong></h2>
+          </a>
+          <p class="small margin-btm-20">
+            An analysis of over 2 billion comments and 215 million submissions.
+          </p>
+          <form id="first_post_form" method="post" action="/nibble/get-first-post">
+            <h3 class="big margin-btm-20">See your first comment and submission on reddit.</h3>
+            <div class="form-group">
+            <div class="input-group col-md-8 col-md-offset-2">
+              <input
+              type="text"
+              name="username"
+              id="username"
+              class="form-control"
+              placeholder="reddit username">
+              <span class="input-group-btn">
+              <button
+                id="get_first_post"
+                class="btn btn-primary"
+                type="submit"
+                disabled="disabled"
+                data-loading-text="<i class='fa fa-spinner fa-spin'></i>">
+                <i class="fa fa-search"></i>
+              </button>
+              </span>
+            </div>
+            </div>
+          </form>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <script>
-            $(function () {
-                home_init();
-                $( "#first_post_form" ).submit(function( event ) {
-                    $( "#get_first_post" ).button("loading");
-                });
-            });
-        </script>
+<div class="margin-20">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 margin-btm-40">
+        <section id="announcements" class="bottom-buffer">
+          <h2>Try the new subreddit search</h2>
+          <form class="margin-20" action="{{url_for('search_subreddits')}}" method="get">
+            <div class="form-group">
+              <div class="input-group col-md-10">
+                <input
+                  type="text"
+                  name="q"
+                  class="form-control"
+                  placeholder="Search for subreddits or topics">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="submit" disabled="disabled">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </form>
+          <p class="big">Try these searches:</p>
+          <ul>
+            <li>
+              Filter searches by topics &mdash; 
+              <a href="/subreddits/search?q=robots+topic%3Atechnology">robots topic:technology</a>
+            </li>
+            <li>
+              Explore smaller subreddits &mdash; 
+              <a href="/subreddits/search?q=cats+subscribers%3C5000">cats subscribers<5000</a>
+            </li>
+            <li>
+              Browse safely at work &mdash; 
+              <a href="/subreddits/search?q=hardcore+over18%3Afalse">hardcore over18:false</a>
+            </li>
+          </ul>
+          <p class="margin-20">
+            <a href="https://blog.snoopsnoo.com/2015/05/10/searching-for-subreddits/">
+              Read more on the blog.
+            </a>
+          </p>
+        </section>
+      </div>
+      <div class="col-md-4 margin-btm-40">
+        <h2>New Subreddits</h2>
+        <table class="table table-condensed table-striped small">
+          <thead>
+            <td class="col-xs-6">Subreddit</td>
+            <td class="col-xs-4">Topic</td>
+            <td class="col-xs-2 text-right">Subscribers</td>
+          </thead>
+          <tbody>
+            {% for sub in new_subs[:5] %}
+            <tr>
+              <td>
+                <a href="{{url_for('subreddit', subreddit_name=sub['display_name'])}}">
+                  /r/{{sub['display_name']}}
+                </a>
+                {% if sub['over18'] %}
+                <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                {% endif %}
+              </td>
+              <td>
+              {% if 'parent_name' in sub %}
+              {{snoopsnoo_macros.link_to_subreddits_category(
+                sub['parent_id'],
+                sub['parent_name'],
+                class='flair-subtle'
+              )}}
+              {% endif %}
+              </td>
+              <td class="text-right">{{'{0:,}'.format(sub['current_subscribers']|int)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="text-right">
+          <a href="/subreddits/#new-subreddits">See more new subreddits</a>
+        </div>
+      </div>
+      <div class="col-md-4 margin-btm-40">
+        <h2>Trending Subreddits</h2>
+        <table class="table table-condensed table-striped small">
+          <thead>
+            <td class="col-xs-6">Subreddit</td>
+            <td class="col-xs-4">Topic</td>
+            <td class="col-xs-2 text-right">
+              <i
+                class="text-muted fa fa-plus-circle"
+                data-toggle="tooltip"
+                data-placement="left"
+                title=""
+                data-original-title="New subscribers yesterday">
+              </i>
+            </td>
+          </thead>
+          <tbody>
+            {% for sub in trending_subs[:5] %}
+            <tr>
+              <td>
+                <a href="{{url_for('subreddit', subreddit_name=sub['display_name'])}}">
+                  /r/{{sub['display_name']}}
+                </a>
+                {% if sub['over18'] %}
+                <span class="margin-lft-5 smaller text-danger">(18+)</span>
+                {% endif %}
+              </td>
+              <td>
+              {% if 'parent_name' in sub %}
+              {{snoopsnoo_macros.link_to_subreddits_category(
+                sub['parent_id'],
+                sub['parent_name'],
+                class='flair-subtle'
+              )}}
+              {% endif %}
+              </td>
+              <td class="text-right">{{'{0:+,}'.format(sub['growth']|int)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="text-right">
+          <a href="/subreddits/#trending-subreddits">See more trending subreddits</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script>
+  $(function () {
+    home_init();
+    $( "#first_post_form" ).submit(function( event ) {
+      $( "#get_first_post" ).button("loading");
+    });
+  });
+</script>
 {% endblock %}

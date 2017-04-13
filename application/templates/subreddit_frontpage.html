@@ -1,29 +1,37 @@
-{% for p in front_page["data"]["children"] %}
-    <div class="post row">
-        <div class="col-md-12">
-            <div class="vote">
-                <div class="arrow up"></div>
-                <div class="score">{{ p["data"]["score"] }}</div>
-                <div class="arrow down"></div>
-            </div>
-            {% if p["data"]["thumbnail"] and (over18 == age_confirmed) %}
-            <div class="r_thumbnail">
-                {% if "thumbs.redditmedia" in p["data"]["thumbnail"] %}
-                <a target="_blank" href="{{ p["data"]["url"] }}"><img src="{{ p["data"]["thumbnail"] }}" width="70"></a>
-                {% else %}
-                <div class="placeholder_thumbnail"></div>
-                {% endif %}
-            </div>
-            {% endif %}
-            <div class="title">
-                <div class="title-text {{ "stickied" if p["data"]["stickied"] }}">
-                    <h3><a target="_blank" href="{{ p["data"]["url"] }}">{{ p["data"]["title"] | safe}}</a></h3>
-                    <div class="domain">({{ p["data"]["domain"] }})</div>
-                </div>
-                <p>submitted {{ p["data"]["created_utc"]|from_timestamp|time_since }} ago by <span class="author">{{ p["data"]["author"] }}</span></p>
-                <p class="comments"><a target="_blank" href="https://www.reddit.com{{ p["data"]["permalink"] }}">{{ p["data"]["num_comments"] }} comments</a></p>
-            </div>
-            
-        </div>
+{% for p in front_page['data']['children'] %}
+<div class="post row">
+  <div class="col-md-12">
+    <div class="vote">
+      <div class="arrow up"></div>
+      <div class="score">{{p['data']['score']}}</div>
+      <div class="arrow down"></div>
     </div>
+    {% if p['data']['thumbnail'] and (over18 == age_confirmed) %}
+    <div class="r_thumbnail">
+      {% if 'thumbs.redditmedia' in p['data']['thumbnail'] %}
+      <a target="_blank" href="{{p['data']['url']}}">
+        <img src="{{p['data']['thumbnail']}}" width="70">
+      </a>
+      {% else %}
+      <div class="placeholder_thumbnail"></div>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="title">
+      <div class="title-text {{'stickied' if p['data']['stickied']}}">
+        <h3><a target="_blank" href="{{p['data']['url']}}">{{p['data']['title']|safe}}</a></h3>
+        <div class="domain">({{p['data']['domain']}})</div>
+      </div>
+      <p>
+        submitted {{p['data']['created_utc']|from_timestamp|time_since}} ago by 
+        <span class="author">{{p['data']['author']}}</span>
+      </p>
+      <p class="comments">
+        <a target="_blank" href="https://www.reddit.com{{p['data']['permalink']}}">
+          {{p['data']['num_comments']}} comments
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
 {% endfor %}

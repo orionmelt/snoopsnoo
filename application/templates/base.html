@@ -2,124 +2,141 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{% block meta_description %}{% endblock %}">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
 
-    <meta property="og:title" content="SnoopSnoo{% block title %}{% endblock %}"/>
-    <meta property="og:url" content="https://snoopsnoo.com"/>
-    <meta property="og:site_name" content="SnoopSnoo"/>
-    <meta property="og:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png"/>
+  <meta property="og:title" content="SnoopSnoo{% block title %}{% endblock %}"/>
+  <meta property="og:url" content="https://snoopsnoo.com"/>
+  <meta property="og:site_name" content="SnoopSnoo"/>
+  <meta property="og:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png"/>
 
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@SnoopSnooApp" />
-    <meta name="twitter:title" content="SnoopSnoo" />
-    <meta name="twitter:description" content="{{ self.meta_description() }}" />
-    <meta name="twitter:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@SnoopSnooApp" />
+  <meta name="twitter:title" content="SnoopSnoo" />
+  <meta name="twitter:description" content="{{self.meta_description()}}" />
+  <meta name="twitter:image" content="https://snoopsnoo.com/static/icons/favicon-192x192.png" />
 
-    <title>SnoopSnoo{{ self.title() }}</title>
+  <title>SnoopSnoo{{self.title()}}</title>
 
-    <!-- Styles -->
-    <!-- Bootstrap -->
-    <link href="/static/css/bootstrap.min.css?v={{""|current_version}}" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- SnoopSnoo Custom -->
-    <link href="/static/css/curious.min.css?v={{""|current_version}}" rel="stylesheet">
+  <!-- Styles -->
+  <!-- Bootstrap -->
+  <link href="/static/css/bootstrap.min.css?v={{''|current_version}}" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link
+    href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+    rel="stylesheet">
+  <!-- SnoopSnoo Custom -->
+  <link href="/static/css/curious.min.css?v={{''|current_version}}" rel="stylesheet">
 
-    <!-- Scripts -->
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    {% include 'includes/jquery-ui.html' %}
-    <!-- Bootstrap -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    {% include 'includes/jstz.html' %}
-    {% include 'includes/d3.html' %}
-    {% include 'includes/select2.html' %}
-    <!-- Blockspring -->
-    <script src="//cdn.blockspring.com/blockspring.js"></script>
+  <!-- Scripts -->
+  <!-- jQuery -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  {% include 'includes/jquery-ui.html' %}
+  <!-- Bootstrap -->
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  {% include 'includes/jstz.html' %}
+  {% include 'includes/d3.html' %}
+  {% include 'includes/select2.html' %}
+  <!-- Blockspring -->
+  <script src="//cdn.blockspring.com/blockspring.js"></script>
 
-    <!-- Snoop Snoo Custom -->
-    <script src="/static/js/curious.min.js?v={{""|current_version}}"></script>
-    <script src="/static/js/main.min.js?v={{""|current_version}}"></script>
+  <!-- Snoop Snoo Custom -->
+  <script src="/static/js/curious.min.js?v={{''|current_version}}"></script>
+  <script src="/static/js/main.min.js?v={{''|current_version}}"></script>
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png">
-    <link rel="shortcut icon" href="/static/icons/favicon.ico">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-160x160.png" sizes="160x160">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
-    <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
-    <meta name="msapplication-TileColor" content="#00a300">
-    <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png">
-    <meta name="msapplication-config" content="/static/icons/browserconfig.xml">
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/static/icons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/static/icons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/static/icons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/static/icons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/static/icons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/static/icons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/icons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon-180x180.png">
+  <link rel="shortcut icon" href="/static/icons/favicon.ico">
+  <link rel="icon" type="image/png" href="/static/icons/favicon-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/static/icons/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/static/icons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/static/icons/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/static/icons/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#00a300">
+  <meta name="msapplication-TileImage" content="/static/icons/mstile-144x144.png">
+  <meta name="msapplication-config" content="/static/icons/browserconfig.xml">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
 
-    {% block page_includes %}
-    {% endblock %}
+  {% block page_includes %}
+  {% endblock %}
 </head>
 
 <body>
-    <nav class="navbar navbar-inverse" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand logo" href="{{ url_for('home') }}">Snoop<img src="/static/img/logo_md.png" alt="(SnoopSnoo Logo)" width="36" height="16" class="logo">Snoo</a>
-            </div>
-            <div class="collapse navbar-collapse navbar-right" id="navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="{% block nav_home %}{% endblock %}">
-                        <a href="{{ url_for('home') }}">Home</a>
-                    </li>
-                    <li class="{% block nav_subreddits %}{% endblock %}"><a href="{{ url_for('subreddits_home') }}">Subreddits</a></li>
-                    <li><a href="https://blog.snoopsnoo.com">Blog</a></li>
-                    <li class="{% block nav_about %}{% endblock %}"><a href="{{ url_for('about') }}">About</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    {% block content %}
-    {% endblock %}
-
-    <script>
-    $(function () {
-        $('.cat_collapse i').parent().click(function() {
-            $(this).find("i").toggleClass("fa-minus-square");
-        });
-    });
-    </script>
-
-    <footer class="footer text-right">
-      <div class="container">
-        <ul class="list-inline">
-            <li>v0.3</li>
-            <li>&copy; 2017 <a href="https://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
+  <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target="#navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand logo" href="{{url_for('home')}}">
+          Snoop<img
+            src="/static/img/logo_md.png"
+            alt="(SnoopSnoo Logo)"
+            width="36"
+            height="16"
+            class="logo">Snoo
+        </a>
+      </div>
+      <div class="collapse navbar-collapse navbar-right" id="navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="{% block nav_home %}{% endblock %}">
+            <a href="{{url_for('home')}}">Home</a>
+          </li>
+          <li class="{% block nav_subreddits %}{% endblock %}">
+            <a href="{{url_for('subreddits_home')}}">Subreddits</a>
+          </li>
+          <li><a href="https://blog.snoopsnoo.com">Blog</a></li>
+          <li class="{% block nav_about %}{% endblock %}">
+            <a href="{{url_for('about')}}">About</a>
+          </li>
         </ul>
       </div>
-    </footer>
-    {% include 'includes/google-analytics.html' %}
+    </div>
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+  <script>
+  $(function () {
+    $('.cat_collapse i').parent().click(function() {
+      $(this).find("i").toggleClass("fa-minus-square");
+    });
+  });
+  </script>
+
+  <footer class="footer text-right">
+    <div class="container">
+    <ul class="list-inline">
+      <li>v0.3</li>
+      <li>&copy; 2017 <a href="https://www.reddit.com/user/orionmelt">/u/orionmelt</a></li>
+    </ul>
+    </div>
+  </footer>
+  {% include 'includes/google-analytics.html' %}
 </body>
 
 </html>

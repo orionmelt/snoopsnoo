@@ -9,18 +9,18 @@ import os
 from flask import Flask
 
 from application.jinja_filters import (
-    format_date, time_since, format_month, format_day,
-    safe_markdown, from_timestamp, strip_links, current_version
+  format_date, time_since, format_month, format_day,
+  safe_markdown, from_timestamp, strip_links, current_version
 )
 
 app = Flask(__name__) # pylint: disable=C0103
 
 if os.getenv('FLASK_CONF') == 'TEST':
-    app.config.from_object('application.settings.Testing')
+  app.config.from_object('application.settings.Testing')
 elif 'SERVER_SOFTWARE' in os.environ and os.environ['SERVER_SOFTWARE'].startswith('Dev'):
-    app.config.from_object('application.settings.Development')
+  app.config.from_object('application.settings.Development')
 else:
-    app.config.from_object('application.settings.Production')
+  app.config.from_object('application.settings.Production')
 
 app.jinja_env.add_extension("jinja2.ext.loopcontrols")
 app.jinja_env.add_extension("jinja2.ext.autoescape")

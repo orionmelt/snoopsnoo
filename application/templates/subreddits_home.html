@@ -1,185 +1,228 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %} - Subreddits | Browse subreddits by topics{% endblock %}
-{% block meta_description %}Organized directory of {{ '{:0.2f}'.format(subreddit_count/1000000 | float) }} million subreddits, categorized by thousands of topics. Browse and find subreddits by topics. Discover new and trending subreddits.{% endblock %}
+{% block meta_description %}
+Organized directory of {{'{:0.2f}'.format(subreddit_count/1000000 | float)}} million subreddits, 
+categorized by thousands of topics. Browse and find subreddits by topics. 
+Discover new and trending subreddits.
+{% endblock %}
 {% block nav_subreddits %}active{% endblock %}
 
-{% import "snoopsnoo_macros.html" as snoopsnoo_macros %}
+{% import 'snoopsnoo_macros.html' as snoopsnoo_macros %}
 
 {% block content %}
-    <div class="bg-container">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <section id="subreddits-intro">
-                        <div class="jumbotron">
-                            {% set title = "There's a subreddit for that." %}
-                            <h1 class="purple">{{ title }}</h1>
-                            <p>reddit is more than just the defaults. Try something new today.</p>
-                            <ul class="list-unstyled margin-20 intro-items topic-items">
-                                {% for intro_item in intro_items %}
-                                <li class="bigger">
-                                    <img class="icon" alt="{{intro_item["icon"]}}" src="/static/icons/topics/{{intro_item["icon"]}}.png">
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(intro_item["id"], intro_item["caption"]) }}
-                                </li>
-                                {% endfor %}
-                            </ul>   
-                        </div>
-                    </section>
+<div class="bg-container">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <section id="subreddits-intro">
+          <div class="jumbotron">
+            {% set title = 'There\'s a subreddit for that.' %}
+            <h1 class="purple">{{title}}</h1>
+            <p>reddit is more than just the defaults. Try something new today.</p>
+            <ul class="list-unstyled margin-20 intro-items topic-items">
+              {% for item in intro_items %}
+              <li class="bigger">
+                <img
+                  class="icon"
+                  alt="{{item['icon']}}"
+                  src="/static/icons/topics/{{item['icon']}}.png">
+                  {{snoopsnoo_macros.link_to_subreddits_category(item['id'], item['caption'])}}
+              </li>
+              {% endfor %}
+            </ul>   
+          </div>
+        </section>
+      </div>
+      <div class="col-md-5 col-md-offset-1">
+        <div class="margin-btm-20">
+          <h3 class="bigger margin-btm-15">Search for subreddits or topics.</h3>
+          <div class="row">
+            <div class="col-md-8 col-sm-8">
+              <form action="{{url_for('search_subreddits')}}" method="get">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input type="text" name="q" class="form-control">
+                    <span class="input-group-btn">
+                      <button
+                        class="btn btn-primary"
+                        type="submit"
+                        disabled="disabled">
+                        <i class="fa fa-search"></i> 
+                      </button>
+                    </span>
+                  </div>
                 </div>
-                <div class="col-md-5 col-md-offset-1">
-                    <div class="margin-btm-20">
-                        <h3 class="bigger margin-btm-15">Search for subreddits or topics.</h3>
-                        <div class="row">
-                            <div class="col-md-8 col-sm-8">
-                                <form action="{{ url_for("search_subreddits") }}" method="get">
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" name="q" class="form-control">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-primary" type="submit" disabled="disabled"><i class="fa fa-search"></i> </button>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="margin-btm-20">
-                        <h3 class="bigger margin-btm-15">Explore subreddits by topic.</h3>
-                        <ul class="list-inline">
-                            {% for category in root["children"] %}
-                            <li>
-                                <a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
-                                    {{ category["display_name"] }} 
-                                    {% if category["id"]=="reddit_adult-and-nsfw" %}
-                                    <span class="flair-danger">NSFW</span>
-                                    {% endif %}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+              </form>
             </div>
+          </div>
         </div>
-    </div>
-    <div class="margin-40">
-        <div class="container">
-            <div class="row">
-                <div id="new-subreddits" class="col-md-4 margin-btm-40">
-                    <h2>New</h2>
-                    <table class="table table-condensed table-striped small">
-                        <thead>
-                            <td class="col-xs-6">Subreddit</td>
-                            <td class="col-xs-4">Topic</td>
-                            <td class="col-xs-2 text-right">Subscribers</td>
-                        </thead>
-                        <tbody>
-                            {% for sub in new_subs %}
-                            <tr>
-                                <td>
-                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
-                                    {% if sub["over18"] %}
-                                    <span class="margin-lft-5 flair-danger">NSFW</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if "parent_name" in sub %}
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">{{ '{0:,}'.format(sub["current_subscribers"] | int) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div id="trending-subreddits" class="col-md-4 margin-btm-40">
-                    <h2>Trending</h2>
-                    <table class="table table-condensed table-striped small">
-                        <thead>
-                            <td class="col-xs-6">Subreddit</td>
-                            <td class="col-xs-4">Topic</td>
-                            <td class="col-xs-2 text-right"><i class="text-muted fa fa-plus-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
-                        </thead>
-                        <tbody>
-                            {% for sub in trending_subs %}
-                            <tr>
-                                <td>
-                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
-                                    {% if sub["over18"] %}
-                                    <span class="margin-lft-5 flair-danger">NSFW</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if "parent_name" in sub %}
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">{{ '{0:+,}'.format(sub["growth"] | int) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div id="growing-subreddits" class="col-md-4 margin-btm-40">
-                    <h2>Growing</h2>
-                    <table class="table table-condensed table-striped small">
-                        <thead>
-                            <td class="col-xs-6">Subreddit</td>
-                            <td class="col-xs-4">Topic</td>
-                            <td class="col-xs-2 text-right"><i class="text-muted fa fa-plus-circle" data-toggle="tooltip" data-placement="left" title="" data-original-title="New subscribers yesterday"></i></td>
-                        </thead>
-                        <tbody>
-                            {% for sub in growing_subs %}
-                            <tr>
-                                <td>
-                                    <a href="{{ url_for("subreddit", subreddit_name=sub["display_name"]) }}">/r/{{sub["display_name"]}}</a>
-                                    {% if sub["over18"] %}
-                                    <span class="margin-lft-5 flair-danger">NSFW</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if "parent_name" in sub %}
-                                    {{ snoopsnoo_macros.link_to_subreddits_category(sub["parent_id"], sub["parent_name"], class="flair-subtle") }}
-                                    {% endif %}
-                                </td>
-                                <td class="text-right">{{ '{0:+,}'.format(sub["growth"] | int) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <h2 class="margin-btm-40">Subreddits by Topic</h2>
-            <div class="row">
-                <div class="col-md-8">
-                    {% for category in root["children"] %}
-                    {% set level = category["id"].split("_")|length - 1 %}
-                    <div class="margin-btm-40 category-bg topic-items">
-                        <h2 class="margin-btm-15">
-                            <a href="{{ url_for('subreddits_category', level1=category["id"].split("_")[1]) }}">
-                                <img class="icon" src="/static/icons/topics/{{category["id"]}}.png">
-                                <span class="category-heading" title="{{ category["id"] }}">{{ category["display_name"] }}</span>
-                            </a>
-                        </h2>
-                        {{ snoopsnoo_macros.subreddits_category(category, level) }}
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="col-md-3 col-md-offset-1">
-                    <div class="margin-btm-40">
-                        {{ snoopsnoo_macros.topics_menu(root["children"]) }}
-                    </div>
-                    <!--
-                    <div class="margin-btm-20">
-                        <p class="tiny text-uppercase text-right text-muted">
-                            {{subreddit_count}} subreddits indexed {{last_updated|time_since}} ago.
-                        </p>
-                    </div>
-                    -->
-                </div>
-            </div>
+        <div class="margin-btm-20">
+          <h3 class="bigger margin-btm-15">Explore subreddits by topic.</h3>
+          <ul class="list-inline">
+            {% for category in root['children'] %}
+            <li>
+              <a href="{{url_for('subreddits_category', level1=category['id'].split('_')[1])}}">
+                {{category['display_name']}} 
+                {% if category['id']=='reddit_adult-and-nsfw' %}
+                <span class="flair-danger">NSFW</span>
+                {% endif %}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
         </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="margin-40">
+  <div class="container">
+    <div class="row">
+      <div id="new-subreddits" class="col-md-4 margin-btm-40">
+        <h2>New</h2>
+        <table class="table table-condensed table-striped small">
+          <thead>
+            <td class="col-xs-6">Subreddit</td>
+            <td class="col-xs-4">Topic</td>
+            <td class="col-xs-2 text-right">Subscribers</td>
+          </thead>
+          <tbody>
+            {% for sub in new_subs %}
+            <tr>
+              <td>
+                <a href="{{url_for('subreddit', subreddit_name=sub['display_name'])}}">
+                  /r/{{sub['display_name']}}
+                </a>
+                {% if sub['over18'] %}
+                <span class="margin-lft-5 flair-danger">NSFW</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if 'parent_name' in sub %}
+                  {{snoopsnoo_macros.link_to_subreddits_category(
+                    sub['parent_id'], sub['parent_name'], class='flair-subtle'
+                  )}}
+                {% endif %}
+              </td>
+              <td class="text-right">{{'{0:,}'.format(sub["current_subscribers"] | int)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="trending-subreddits" class="col-md-4 margin-btm-40">
+        <h2>Trending</h2>
+        <table class="table table-condensed table-striped small">
+          <thead>
+            <td class="col-xs-6">Subreddit</td>
+            <td class="col-xs-4">Topic</td>
+            <td class="col-xs-2 text-right">
+              <i
+                class="text-muted fa fa-plus-circle"
+                data-toggle="tooltip"
+                data-placement="left"
+                title=""
+                data-original-title="New subscribers yesterday">
+              </i>
+            </td>
+          </thead>
+          <tbody>
+            {% for sub in trending_subs %}
+            <tr>
+              <td>
+                <a href="{{url_for('subreddit', subreddit_name=sub['display_name'])}}">
+                  /r/{{sub['display_name']}}
+                </a>
+                {% if sub['over18'] %}
+                <span class="margin-lft-5 flair-danger">NSFW</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if 'parent_name' in sub %}
+                {{snoopsnoo_macros.link_to_subreddits_category(
+                  sub['parent_id'], sub['parent_name'], class='flair-subtle'
+                )}}
+                {% endif %}
+              </td>
+              <td class="text-right">{{'{0:+,}'.format(sub["growth"] | int)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="growing-subreddits" class="col-md-4 margin-btm-40">
+        <h2>Growing</h2>
+        <table class="table table-condensed table-striped small">
+          <thead>
+            <td class="col-xs-6">Subreddit</td>
+            <td class="col-xs-4">Topic</td>
+            <td class="col-xs-2 text-right">
+              <i
+                class="text-muted fa fa-plus-circle"
+                data-toggle="tooltip"
+                data-placement="left"
+                title=""
+                data-original-title="New subscribers yesterday">
+              </i>
+            </td>
+          </thead>
+          <tbody>
+            {% for sub in growing_subs %}
+            <tr>
+              <td>
+                <a href="{{url_for('subreddit', subreddit_name=sub['display_name'])}}">
+                  /r/{{sub['display_name']}}
+                </a>
+                {% if sub['over18'] %}
+                <span class="margin-lft-5 flair-danger">NSFW</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if 'parent_name' in sub %}
+                {{snoopsnoo_macros.link_to_subreddits_category(
+                  sub['parent_id'], sub['parent_name'], class='flair-subtle'
+                )}}
+                {% endif %}
+              </td>
+              <td class="text-right">{{'{0:+,}'.format(sub["growth"] | int)}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <h2 class="margin-btm-40">Subreddits by Topic</h2>
+    <div class="row">
+      <div class="col-md-8">
+        {% for category in root['children'] %}
+        {% set level = category['id'].split('_')|length - 1 %}
+        <div class="margin-btm-40 category-bg topic-items">
+          <h2 class="margin-btm-15">
+            <a href="{{url_for('subreddits_category', level1=category['id'].split('_')[1])}}">
+              <img class="icon" src="/static/icons/topics/{{category['id']}}.png">
+              <span class="category-heading" title="{{category['id']}}">
+                {{category['display_name']}}
+              </span>
+            </a>
+          </h2>
+          {{snoopsnoo_macros.subreddits_category(category, level)}}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col-md-3 col-md-offset-1">
+        <div class="margin-btm-40">
+          {{snoopsnoo_macros.topics_menu(root['children'])}}
+        </div>
+        <div class="margin-btm-20">
+          <p class="tiny text-right text-muted">
+            {{subreddit_count}} subreddits indexed {{last_updated|time_since}} ago.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
