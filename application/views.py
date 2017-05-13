@@ -410,7 +410,7 @@ def user_profile(username):
     "user_profile.html",
     user=user,
     data=json.dumps(user.data),
-    all_subreddit_categories=all_subreddit_categories,
+    all_subreddit_categories=all_subreddit_categories or [],
     user_averages=json.dumps(user_averages)
   )
 
