@@ -20,7 +20,11 @@ See {{user.username}}'s reddit account summary, comments and submissions statist
         </a>
       </h1>
       <ul class="list-inline">
-        <li><h3>Last updated {{user.last_updated|time_since}} ago</h3></li>
+        <li>
+          <h3 title="{{user.last_updated.strftime('%Y-%m-%dT%H:%M:%SZ')}}">
+            Last updated {{user.last_updated|time_since}} ago
+          </h3>
+        </li>
         <li>
           <button
             id="go"
