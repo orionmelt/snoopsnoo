@@ -800,10 +800,11 @@
 
     for(var i=0; i<data.length; i++) {
       for(var j=0; j<data[i].length; j++) {
+        if(data[i][j]==="-") continue;
         _data.push({
           "x": i,
           "y": j,
-          "value": +data[i][j]
+          "value": data[i][j]===null ? null : data[i][j]
         });
       }
     }
@@ -835,7 +836,9 @@
     }
 
     heatMap.transition().duration(1000)
-      .style("fill", function(d) { return color(d.value); });        
+      .style("fill", function(d) { 
+        return d.value===null ? "#eee" : (d.value==="-" ? "#fff" : color(d.value));
+      });
   };
 
   // Draws a word cloud.

@@ -672,19 +672,30 @@ function populate_results(results) {
   // Heatmap
   if(data.metrics.recent_activity_heatmap) {
     var heatmap=data.metrics.recent_activity_heatmap;
-    var local_last_updated_hour = 
-      offset_hours>0 ?
-      (24 + new Date(g_last_updated).getHours()-offset_hours)%24 :
-      (new Date(g_last_updated).getHours()-offset_hours)%24;
-    var hours_to_add = 23 - local_last_updated_hour;
-    heatmap += Array(hours_to_add+1).join("0");
+    var last_updated_hour = g_last_updated.getUTCHours();
+    var last_updated_local_hour = g_last_updated.getHours();
+    var hours_to_chop = 24 - (last_updated_hour+1);
+    var hours_to_add = 24 - (last_updated_local_hour+1);
+    heatmap = heatmap.substring(0, heatmap.length-hours_to_chop);
+    heatmap += Array(hours_to_add+1).join("-");
     heatmap = heatmap.substring(heatmap.length-(60*24));
-    
+    var num_hours_data_available = Math.floor(
+      Math.abs(new Date(g_last_updated).setHours(23,59,59) - new Date(first_post_date*1000))
+      /(1000*60*60)
+    );
+    var num_days_data_available = Math.ceil(num_hours_data_available/24);
     var heatmap_data = [];
     for(var i=0;i<heatmap.length/24;i++) {
       heatmap_data[i] = [];
       for(var j=0;j<24;j++) {
-        heatmap_data[i][j] = parseInt("0x"+heatmap[i*24+j],16);
+        if(heatmap[i*24+j]==="-") {
+          heatmap_data[i][j] = "-";
+        }
+        else if((i*24+j)>=(60*24-num_hours_data_available)) {
+          heatmap_data[i][j] = parseInt("0x"+heatmap[i*24+j],16);
+        } else {
+          heatmap_data[i][j] = null;
+        }
       }
     }
 
@@ -701,9 +712,11 @@ function populate_results(results) {
       },
       tooltips:true,
       tooltips_msg: function(d) {
+        var no_data_text = d.value===null ? "<p>No data available</p>" : "";
         return  "<p>" +
-                new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-d.x-1))).toLocaleDateString() +
-                "</p>" + hour_names[d.y];
+          new Date(
+            new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-d.x-1))
+          ).toLocaleDateString() + "</p><p>" + hour_names[d.y] + "</p>" + no_data_text;
       }
     });
   } else {
@@ -723,12 +736,13 @@ function populate_results(results) {
   ) {
     var recent_activity = data.metrics.recent_karma.slice(1).map(function(d,i) {
       return {
-        date: new Date(new Date(g_last_updated).setDate(g_last_updated.getDate()-(60-i-1))).toLocaleDateString(),
-        posts: data.metrics.recent_posts[i],
-        karma: d
+        date: new Date(
+          new Date(g_last_updated).setDate(g_last_updated.getUTCDate()-(60-i-1))
+        ).toLocaleDateString() + " (UTC)",
+        posts: (60-i)<=num_days_data_available ? data.metrics.recent_posts[i+1] : 0,
+        karma: (60-i)<=num_days_data_available ? d : 0
       };
     });
-
 
     curious.bar({
       container: "data-recent_activity",
