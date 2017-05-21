@@ -20,10 +20,6 @@ cron:
   url: /jobs/update-trends
   schedule: every day 11:00
 
-- description: Update search subscribers
-  url: /jobs/update-search-subscribers
-  schedule: every day 13:00
-
 - description: Process category stage entries
   url: /jobs/process-category-stage
   schedule: every day 14:00
