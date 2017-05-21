@@ -435,6 +435,31 @@ function populate_results(results) {
   }
 
   // Posts across topics
+  var range = d3.scale.category20().range();
+  range.push("#e7ba52");
+  var topics_color = d3.scale.ordinal().domain([
+    "General",
+    "News and Politics",
+    "Gaming",
+    "Architecture",
+    "Entertainment",
+    "Art",
+    "Adult and NSFW",
+    "Business",
+    "Education",
+    "Hobbies and Interests",
+    "Law",
+    "Locations",
+    "Lifestyle",
+    "Meta",
+    "Music",
+    "Travel",
+    "Other",
+    "Science",
+    "Social Science and Humanities",
+    "Sports",
+    "Technology"
+  ]).range(range);
   curious.sunburst({
     container: "data-topics",
     legend_container: "data-topics_legend",
@@ -446,7 +471,8 @@ function populate_results(results) {
       right: 40,
       bottom: 40,
       left: 40
-    }
+    },
+    color: topics_color
   });
 
   // Common words
@@ -628,7 +654,8 @@ function populate_results(results) {
       left: 0
     },
     tooltips:true,
-    size_col: "posts"
+    size_col: "posts",
+    color: topics_color
   });
 
   // Metrics chart - Submissions by Type and Domain
@@ -645,7 +672,8 @@ function populate_results(results) {
         right: 40,
         bottom: 40,
         left: 40
-      }
+      },
+      color: d3.scale.category20().domain(["Self", "Image", "Video", "Other"])
     });
   }
 
