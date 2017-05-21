@@ -17,6 +17,9 @@ from collections import Counter
 import markdown
 import httplib2
 import requests
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
 from google.appengine.api import memcache
 from google.appengine.ext import ndb
 from google.appengine.api import search
@@ -883,7 +886,11 @@ def add_new_subs():
   oldest = Subreddit.query().order(-Subreddit.created_utc).get()
   index = search.Index(name="subreddits_search")
 
-  response = requests.get("https://www.reddit.com/subreddits/new.json?limit=1", headers=HEADERS)
+  session = requests.Session()
+  retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+  session.mount("http://", HTTPAdapter(max_retries=retries))
+
+  response = session.get("https://www.reddit.com/subreddits/new.json?limit=1", headers=HEADERS)
   response_json = response.json()
   newest_id = str(response_json["data"]["children"][0]["data"]["id"])
   num_nsfw = 0
@@ -896,7 +903,7 @@ def add_new_subs():
     )
     ndb_subs = []
     search_docs = []
-    response = requests.get(url, headers=HEADERS)
+    response = session.get(url, headers=HEADERS)
     if response.status_code != 200:
       raise Exception("Invalid response: HTTP %d" % response.status_code)
     try:
